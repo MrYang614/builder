@@ -1,0 +1,1505 @@
+{
+  "scope": "Windows Chromium/SwiftShader browser UI and independent GLTFLoader. No Tauri/native GUI or macOS acceptance.",
+  "runs": [
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:52:46.637Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\tests\\artifacts\\slab-floor\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murz6oaj_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:53:32.038Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\tests\\artifacts\\slab-floor-retry\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murz7ndi_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A11",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:53:34.995Z",
+      "details": {
+        "realPointerTargets": [
+          {
+            "name": "wall",
+            "x": -1,
+            "z": -1.14,
+            "y": 1.2
+          },
+          {
+            "name": "slab",
+            "x": 0,
+            "z": -0.4,
+            "y": 0
+          },
+          {
+            "name": "door",
+            "x": -2.19,
+            "z": -1.215,
+            "y": 1
+          },
+          {
+            "name": "window",
+            "x": 0.16,
+            "z": -1.24,
+            "y": 1.5
+          }
+        ],
+        "ghostObjects": [
+          "wall_murz7p48_5",
+          "slab_murz7prp_e",
+          "door_murz7pgm_8",
+          "window_murz7pl1_b"
+        ],
+        "ghostDisplay": [
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murz7p48_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murz7pgm_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murz7pl1_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murz7pl1_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murz7pl1_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murz7pl1_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murz7pl1_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murz7prp_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murz7prp_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murz7prp_e",
+            "opacity": 0.25,
+            "transparent": true
+          }
+        ],
+        "selectionAndMaterialExcluded": true,
+        "ghostDoorAndWindowPlacementExcluded": true,
+        "offGridGhostEndpoint": {
+          "x": 0.96,
+          "z": -1.2400000000000002
+        },
+        "actualCurrentFloorWallStart": {
+          "x": 0.9,
+          "z": -1.2000000000000002
+        },
+        "activeLayerSelectionAndPlacementPositiveControl": true,
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:54:56.395Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\tests\\artifacts\\slab-floor-final\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murz9ges_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:56:46.341Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\tests\\artifacts\\slab-floor-complete\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murzbt99_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:58:37.112Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\tests\\artifacts\\slab-floor-verified\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murze6yv_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A11",
+      "status": "passed",
+      "measuredAt": "2026-10-03T05:58:39.875Z",
+      "details": {
+        "realPointerTargets": [
+          {
+            "name": "wall",
+            "x": -1,
+            "z": -1.14,
+            "y": 1.2
+          },
+          {
+            "name": "slab",
+            "x": 0,
+            "z": -0.4,
+            "y": 0
+          },
+          {
+            "name": "door",
+            "x": -2.19,
+            "z": -1.215,
+            "y": 1
+          },
+          {
+            "name": "window",
+            "x": 0.16,
+            "z": -1.24,
+            "y": 1.5
+          }
+        ],
+        "ghostObjects": [
+          "wall_murze8fk_5",
+          "slab_murze8xl_e",
+          "door_murze8py_8",
+          "window_murze8tc_b"
+        ],
+        "ghostDisplay": [
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murze8fk_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murze8py_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murze8tc_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murze8tc_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murze8tc_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murze8tc_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murze8tc_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murze8xl_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murze8xl_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murze8xl_e",
+            "opacity": 0.25,
+            "transparent": true
+          }
+        ],
+        "selectionAndMaterialExcluded": true,
+        "ghostDoorAndWindowPlacementExcluded": true,
+        "offGridGhostEndpoint": {
+          "x": 0.96,
+          "z": -1.2400000000000002
+        },
+        "actualCurrentFloorWallStart": {
+          "x": 0.9,
+          "z": -1.2000000000000002
+        },
+        "offGridGhostSlabCorner": {
+          "x": -3.04,
+          "z": -2.04
+        },
+        "actualCurrentFloorWallFromSlabCorner": {
+          "x": -3,
+          "z": -2
+        },
+        "activeLayerSelectionAndPlacementPositiveControl": true,
+        "activeWallMaterials": [
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murze9vu_i",
+            "opacity": 1,
+            "transparent": false
+          }
+        ],
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T06:06:17.398Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\test-results\\final-verified\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_murzo257_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A11",
+      "status": "passed",
+      "measuredAt": "2026-10-03T06:06:20.651Z",
+      "details": {
+        "realPointerTargets": [
+          {
+            "name": "wall",
+            "x": -1,
+            "z": -1.14,
+            "y": 1.2
+          },
+          {
+            "name": "slab",
+            "x": 0,
+            "z": -0.4,
+            "y": 0
+          },
+          {
+            "name": "door",
+            "x": -2.19,
+            "z": -1.215,
+            "y": 1
+          },
+          {
+            "name": "window",
+            "x": 0.16,
+            "z": -1.24,
+            "y": 1.5
+          }
+        ],
+        "ghostObjects": [
+          "wall_murzo3o3_5",
+          "slab_murzo4cb_e",
+          "door_murzo40r_8",
+          "window_murzo45j_b"
+        ],
+        "ghostDisplay": [
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_murzo3o3_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_murzo40r_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murzo45j_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murzo45j_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murzo45j_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murzo45j_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_murzo45j_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murzo4cb_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murzo4cb_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_murzo4cb_e",
+            "opacity": 0.25,
+            "transparent": true
+          }
+        ],
+        "selectionAndMaterialExcluded": true,
+        "ghostDoorAndWindowPlacementExcluded": true,
+        "offGridGhostEndpoint": {
+          "x": 0.96,
+          "z": -1.2400000000000002
+        },
+        "actualCurrentFloorWallStart": {
+          "x": 0.9,
+          "z": -1.2000000000000002
+        },
+        "offGridGhostSlabCorner": {
+          "x": -3.04,
+          "z": -2.04
+        },
+        "actualCurrentFloorWallFromSlabCorner": {
+          "x": -3,
+          "z": -2
+        },
+        "activeLayerSelectionAndPlacementPositiveControl": true,
+        "activeWallMaterials": [
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_murzo5eu_i",
+            "opacity": 1,
+            "transparent": false
+          }
+        ],
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T06:53:17.363Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\test-results\\final-delivery\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_mus1ci09_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A11",
+      "status": "passed",
+      "measuredAt": "2026-10-03T06:53:20.763Z",
+      "details": {
+        "realPointerTargets": [
+          {
+            "name": "wall",
+            "x": -1,
+            "z": -1.14,
+            "y": 1.2
+          },
+          {
+            "name": "slab",
+            "x": 0,
+            "z": -0.4,
+            "y": 0
+          },
+          {
+            "name": "door",
+            "x": -2.19,
+            "z": -1.215,
+            "y": 1
+          },
+          {
+            "name": "window",
+            "x": 0.16,
+            "z": -1.24,
+            "y": 1.5
+          }
+        ],
+        "ghostObjects": [
+          "wall_mus1cjlh_5",
+          "slab_mus1ckc1_e",
+          "door_mus1cjyo_8",
+          "window_mus1ck58_b"
+        ],
+        "ghostDisplay": [
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_mus1cjlh_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_mus1cjyo_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_mus1ck58_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_mus1ck58_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_mus1ck58_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_mus1ck58_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_mus1ck58_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_mus1ckc1_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_mus1ckc1_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_mus1ckc1_e",
+            "opacity": 0.25,
+            "transparent": true
+          }
+        ],
+        "selectionAndMaterialExcluded": true,
+        "ghostDoorAndWindowPlacementExcluded": true,
+        "offGridGhostEndpoint": {
+          "x": 0.96,
+          "z": -1.2400000000000002
+        },
+        "actualCurrentFloorWallStart": {
+          "x": 0.9,
+          "z": -1.2000000000000002
+        },
+        "offGridGhostSlabCorner": {
+          "x": -3.04,
+          "z": -2.04
+        },
+        "actualCurrentFloorWallFromSlabCorner": {
+          "x": -3,
+          "z": -2
+        },
+        "activeLayerSelectionAndPlacementPositiveControl": true,
+        "activeWallMaterials": [
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_mus1cldk_i",
+            "opacity": 1,
+            "transparent": false
+          }
+        ],
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A08",
+      "status": "passed",
+      "measuredAt": "2026-10-03T15:57:59.913Z",
+      "details": {
+        "actualMouseCreation": true,
+        "uiIndependentMaterialAssignment": true,
+        "exportedFile": "D:\\Code\\builder\\test-results\\rendering-owned-server\\slab-floor.browser-A08-rea-4549b-ly-exports-one-closed-solid\\actual-thick-slab.glb",
+        "validator": {
+          "errors": 0,
+          "warnings": 0
+        },
+        "independentLoad": {
+          "entities": [
+            "Slab_slab_muskt09s_5"
+          ],
+          "primitiveCount": 3,
+          "triangleCount": 12,
+          "materials": {
+            "top": {
+              "name": "Image_builtin_wood",
+              "image": "Image_builtin_wood"
+            },
+            "bottom": {
+              "name": "Image_builtin_plaster",
+              "image": "Image_builtin_plaster"
+            },
+            "edge": {
+              "name": "Colour_a89981",
+              "image": null
+            }
+          },
+          "areas": {
+            "top": 12,
+            "bottom": 12,
+            "edge": 4.900000333786011
+          },
+          "volume": 4.200000286102295,
+          "closedEdgeCounts": [
+            2
+          ],
+          "bounds": {
+            "min": [
+              -2,
+              0.6499999761581421,
+              -1.5
+            ],
+            "max": [
+              2,
+              1,
+              1.5
+            ]
+          },
+          "animations": 0
+        },
+        "pageErrors": []
+      }
+    },
+    {
+      "name": "A11",
+      "status": "passed",
+      "measuredAt": "2026-10-03T15:58:02.725Z",
+      "details": {
+        "realPointerTargets": [
+          {
+            "name": "wall",
+            "x": -1,
+            "z": -1.14,
+            "y": 1.2
+          },
+          {
+            "name": "slab",
+            "x": 0,
+            "z": -0.4,
+            "y": 0
+          },
+          {
+            "name": "door",
+            "x": -2.19,
+            "z": -1.215,
+            "y": 1
+          },
+          {
+            "name": "window",
+            "x": 0.16,
+            "z": -1.24,
+            "y": 1.5
+          }
+        ],
+        "ghostObjects": [
+          "wall_muskt1l2_5",
+          "slab_muskt23d_e",
+          "door_muskt1ut_8",
+          "window_muskt1xq_b"
+        ],
+        "ghostDisplay": [
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "wall_muskt1l2_5",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "door_muskt1ut_8",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_muskt1xq_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_muskt1xq_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_muskt1xq_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_muskt1xq_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "window_muskt1xq_b",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_muskt23d_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_muskt23d_e",
+            "opacity": 0.25,
+            "transparent": true
+          },
+          {
+            "id": "slab_muskt23d_e",
+            "opacity": 0.25,
+            "transparent": true
+          }
+        ],
+        "selectionAndMaterialExcluded": true,
+        "ghostDoorAndWindowPlacementExcluded": true,
+        "offGridGhostEndpoint": {
+          "x": 0.96,
+          "z": -1.2400000000000002
+        },
+        "actualCurrentFloorWallStart": {
+          "x": 0.9,
+          "z": -1.2000000000000002
+        },
+        "offGridGhostSlabCorner": {
+          "x": -3.04,
+          "z": -2.04
+        },
+        "actualCurrentFloorWallFromSlabCorner": {
+          "x": -3,
+          "z": -2
+        },
+        "activeLayerSelectionAndPlacementPositiveControl": true,
+        "activeWallMaterials": [
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          },
+          {
+            "id": "wall_muskt315_i",
+            "opacity": 1,
+            "transparent": false
+          }
+        ],
+        "pageErrors": []
+      }
+    }
+  ],
+  "finalRun": {
+    "command": "npx playwright test tests/slab-floor.browser.spec.ts --output=tests/artifacts/slab-floor-verified --reporter=list",
+    "status": "passed",
+    "passedTests": 2,
+    "elapsedSeconds": 5.6,
+    "scope": "Windows Chromium browser UI only; no Computer Use/native GUI/Tauri/macOS verification",
+    "typecheck": "npx tsc --noEmit: passed"
+  },
+  "retryNotes": [
+    {
+      "attempt": "tests/artifacts/slab-floor",
+      "status": "failed",
+      "cause": "Test observation hook targeted WebGLRenderer.prototype.render, but Three render is an instance method; __renderedMaterials was not recorded. Replaced observation with Scene.onBeforeRender without changing product code or reducing assertions."
+    },
+    {
+      "attempt": "tests/artifacts/slab-floor-retry",
+      "status": "passed",
+      "cause": "Both original A08/A11 cases passed; then coverage expanded to non-grid slab corner and active-wall opacity."
+    },
+    {
+      "attempt": "tests/artifacts/slab-floor-final",
+      "status": "failed",
+      "cause": "Expanded test used incorrect hard-coded slab button index1; actual sidebar groups walls then slabs then openings, so slab was index2."
+    },
+    {
+      "attempt": "tests/artifacts/slab-floor-complete",
+      "status": "failed",
+      "cause": "Incorrect replacement button index4 still did not match the observed sidebar. Final locator selects the single visible slab button by its actual accessible name pattern."
+    },
+    {
+      "attempt": "tests/artifacts/slab-floor-verified",
+      "status": "passed",
+      "cause": "Expanded tests fully pass after correcting observation and locator; old failure traces retained in their distinct output folders."
+    }
+  ],
+  "finalMeasuredAt": "2026-10-03T05:59:36.233Z"
+}

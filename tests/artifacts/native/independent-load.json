@@ -1,0 +1,24 @@
+{
+  "clips": {
+    "Door_door_murx81gw_4_Close": [
+      -1.5707963267948966,
+      -0.7853981563084851,
+      0
+    ],
+    "Door_door_murx81gw_4_Open": [
+      0,
+      -0.7853981563084851,
+      -1.5707963267948966
+    ]
+  },
+  "images": [
+    "Image_builtin_brick",
+    "Image_builtin_plaster"
+  ],
+  "objects": [
+    "Building_project_murws1dt_1"
+  ],
+  "stable": true,
+  "staticAngle": -0.7853981633974484,
+  "thicknessHasImages": false
+}

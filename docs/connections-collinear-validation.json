@@ -1,0 +1,121 @@
+{
+  "acceptance": "A02",
+  "platform": "Windows Chromium SwiftShader browser; native L test is separately recorded",
+  "path": "Actual wall tool pointer clicks → actual camera right-button rotation → actual GLB download → independent GLTFLoader surface inspection",
+  "walls": [
+    {
+      "id": "wall_muskmjux_5",
+      "start": {
+        "x": 0,
+        "z": 0
+      },
+      "end": {
+        "x": 2,
+        "z": 0
+      },
+      "height": 2.8,
+      "thickness": 0.2
+    },
+    {
+      "id": "wall_muskmjvs_8",
+      "start": {
+        "x": 2,
+        "z": 0
+      },
+      "end": {
+        "x": 4,
+        "z": 0
+      },
+      "height": 2.8,
+      "thickness": 0.2
+    }
+  ],
+  "validator": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "geometry": {
+    "triangles": 20,
+    "area": 25.119999639987945,
+    "volume": 2.239999995231628,
+    "bounds": {
+      "min": [
+        0,
+        0,
+        -0.10000000149011612
+      ],
+      "max": [
+        4,
+        2.799999952316284,
+        0.10000000149011612
+      ]
+    },
+    "degenerate": 0,
+    "duplicateTriangles": 0,
+    "internalFaces": [],
+    "coplanarOverlaps": [],
+    "nonmanifoldEdges": [],
+    "rays": [
+      {
+        "origin": [
+          -1,
+          1.37,
+          0
+        ],
+        "direction": [
+          1,
+          0,
+          0
+        ],
+        "expected": [
+          1,
+          5
+        ],
+        "actual": [
+          1,
+          5
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "area": 25.12,
+    "volume": 2.24,
+    "bounds": {
+      "min": [
+        0,
+        0,
+        -0.1
+      ],
+      "max": [
+        4,
+        2.8,
+        0.1
+      ]
+    }
+  },
+  "screenshots": [
+    "docs/screenshots/connections-collinear-0.png",
+    "docs/screenshots/connections-collinear-1.png",
+    "docs/screenshots/connections-collinear-2.png"
+  ],
+  "cameraPositions": [
+    [
+      8.468644357080407,
+      7.464354060921024,
+      8.08580544635051
+    ],
+    [
+      -0.24690432089729653,
+      10.290634939165098,
+      7.740027837630258
+    ],
+    [
+      11.090073716414846,
+      8.760620114703528,
+      2.681758938865314
+    ]
+  ],
+  "objectiveConclusion": "Exact exported welded-edge incidence is two; every face separates analytical union interior from exterior; no duplicate or overlapping coplanar triangles; expected union bounds, area, volume and ray entry/exit distances match. These fixture solids have no geometric cracks, internal end covers or coincident faces causing Z-fighting.",
+  "visualScope": "Actual renderer screenshots at three real rotated camera views retained for human review; this does not certify every camera/device combination."
+}

@@ -1,0 +1,74 @@
+{
+  "copiedAt": "2026-10-03T15:55:37.989Z",
+  "generation": "Real UI wall/slab/door tools, HDR file chooser, path trace Start/Pause/Resume and Save/Export downloads; no command injection or fixed model",
+  "fixedEvidence": "validation.json",
+  "fixedEvidenceSha256": "e8ff1e746d10e40ec062269e2173d3365c920b5f5837457b2630b088e582ed75",
+  "sourceReportSha256": "904a90cee7f4f0ab8c725bd362ce6e1f1f64c966a3c23247cce4a96d590a43a0",
+  "fixedEvidenceNormalization": "oxfmt JSON whitespace formatting only; parsed values match the original successful-case report",
+  "sourceReport": "docs/rendering-pathtrace-validation.json at this successful run; future full-suite runs may replace that source report",
+  "successfulCase": {
+    "test": "real WebGL path tracing reaches 16 samples pauses resumes downloads a nonuniform clean PNG and releases three cycles",
+    "outputDirectory": "test-results/rendering-final/rendering.browser-real-Web-18d01-G-and-releases-three-cycles",
+    "casePassed": true,
+    "firstWholeSuite": "23 passed; 16 failed after the external reused development server exited. This sample records only the successful path-tracing case."
+  },
+  "scope": "Windows Chromium SwiftShader WebGL browser; software GPU results are not native or hardware performance certification",
+  "project": {
+    "id": "project_muskidmz_1",
+    "schemaVersion": 1,
+    "walls": 2,
+    "slabs": 1,
+    "doors": 1
+  },
+  "environment": {
+    "intensity": 1.3,
+    "rotationDegrees": 35,
+    "background": false,
+    "panoramaWidth": 32,
+    "panoramaHeight": 16,
+    "originalPanoramaSha256": "4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+    "originalPanoramaLicense": "CC0-1.0"
+  },
+  "pathTracing": {
+    "targetSamples": 16,
+    "cycles": 3,
+    "png": {
+      "width": 970,
+      "height": 722,
+      "uniqueColors": 26819,
+      "min": 92.66666666666667,
+      "max": 248.33333333333334,
+      "sha256": "01e4b79bf4eba1c67d3b2dc413bc6c6af31362046811db97894e2a389ce6bc10"
+    },
+    "renderer": "Chromium SwiftShader WebGL"
+  },
+  "glTF": {
+    "validatorErrors": 0,
+    "validatorWarnings": 0,
+    "clips": ["Door_door_muskie28_e_Open", "Door_door_muskie28_e_Close"],
+    "environmentEmbedded": false
+  },
+  "files": [
+    {
+      "kind": "project",
+      "name": "pathtrace-environment.building",
+      "bytes": 2129,
+      "sha256": "890988b73d1e20108e052e86090f3fee5fd6d203d610fa117f99cb9077186c95",
+      "source": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\pathtrace-environment.building"
+    },
+    {
+      "kind": "glb",
+      "name": "pathtrace-environment.glb",
+      "bytes": 29592,
+      "sha256": "5ae64f5f070a2f186d21429c78c12b441cb829df1548fa09f0595b562c308177",
+      "source": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\pathtrace-environment.glb"
+    },
+    {
+      "kind": "png",
+      "name": "pathtrace-environment.png",
+      "bytes": 221130,
+      "sha256": "01e4b79bf4eba1c67d3b2dc413bc6c6af31362046811db97894e2a389ce6bc10",
+      "source": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\actual-16-sample-pathtrace.png"
+    }
+  ]
+}

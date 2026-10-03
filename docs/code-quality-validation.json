@@ -1,0 +1,229 @@
+{
+  "measuredAt": "2026-10-03T11:54:27.891Z",
+  "scope": "Windows source quality integration and relevant headless browser regression. No new native Tauri, Rust, installer, macOS or full 33-test E2E execution.",
+  "standard": {
+    "name": "Google TypeScript Style Guide, documented project adaptation",
+    "source": "https://google.github.io/styleguide/tsguide.html",
+    "license": "CC BY 3.0",
+    "adaptations": [
+      "Existing 100-column formatting",
+      "Oxc native rules rather than Google internal tooling",
+      "Existing project architecture, token and translation checks",
+      "Physical runtime collections retain dispatch snapshots",
+      "TypeScript 6 retained; type-aware Oxlint not enabled"
+    ]
+  },
+  "tools": {
+    "node": "v26.1.0",
+    "packageManager": "npm@12.2.0",
+    "oxfmt": {
+      "version": "0.71.0",
+      "license": "MIT",
+      "engines": "^20.19.0 || >=22.12.0"
+    },
+    "oxlint": {
+      "version": "1.86.0",
+      "license": "MIT",
+      "engines": "^20.19.0 || >=22.12.0"
+    },
+    "typescript": "6.0.3",
+    "directPrettierRemoved": true,
+    "oldPrettierConfigsRemoved": true
+  },
+  "qualityEntry": {
+    "command": "npm run verify",
+    "runner": "node C:/Program Files/nodejs/node_modules/npm/bin/npm-cli.js run verify",
+    "status": "passed",
+    "exitCode": 0,
+    "log": "test-results/code-quality/verify.txt",
+    "steps": [
+      {
+        "command": "npm run check",
+        "status": "passed",
+        "checks": [
+          "format",
+          "zero-warning lint",
+          "dependency boundaries",
+          "UI colors",
+          "both theme keys",
+          "generated CSS",
+          "pinned Skills"
+        ]
+      },
+      {
+        "command": "npm run typecheck",
+        "status": "passed",
+        "projects": [
+          "root",
+          "tsconfig.node.json",
+          "packages/editor-core",
+          "packages/building-geometry"
+        ]
+      },
+      {
+        "command": "npm test",
+        "status": "passed",
+        "tests": 71,
+        "files": 6
+      },
+      {
+        "command": "npm run build",
+        "status": "passed",
+        "vite": "8.0.16"
+      }
+    ]
+  },
+  "format": {
+    "status": "passed",
+    "files": 120,
+    "sourceWriteThenCheck": true,
+    "ignoreContract": ".oxfmtrc.json"
+  },
+  "lint": {
+    "status": "passed",
+    "diagnostics": 0,
+    "files": 82,
+    "rules": 177,
+    "raw": "test-results/code-quality/final-lint.json",
+    "initialDiagnostics": 589
+  },
+  "gateProbe": {
+    "expectedFailure": true,
+    "exitCode": 1,
+    "diagnostics": [
+      "eqeqeq error",
+      "unused-disable warning"
+    ],
+    "probeRemoved": true,
+    "raw": "test-results/code-quality/lint-gate-probe.txt"
+  },
+  "migration": {
+    "sourceBaselineFiles": 81,
+    "rawDirectory": "test-results/code-quality",
+    "safeFixOnly": true,
+    "recoveredTypedArrayMap": "Strict tsc caught unsafe nested array conversion; explicit Array.from restored original geometry-test semantics.",
+    "react": "Layout effects update callback/theme refs after commit; service-owned attachRuntime cleanup preserves one renderer. No refs/immutability/exhaustive-deps rule disabled."
+  },
+  "browserRegression": {
+    "command": "node node_modules/@playwright/test/cli.js test tests/ui-states.browser.spec.ts tests/runtime.browser.spec.ts tests/snapshot.browser.spec.ts tests/async-theme.browser.spec.ts --output=test-results/code-quality/e2e-permitted --reporter=list",
+    "status": "passed",
+    "observedTerminalTests": 14,
+    "files": {
+      "ui-states.browser.spec.ts": 5,
+      "runtime.browser.spec.ts": 5,
+      "snapshot.browser.spec.ts": 2,
+      "async-theme.browser.spec.ts": 2
+    },
+    "observedTerminalDuration": "1.3 minutes",
+    "lastRun": {
+      "status": "passed",
+      "failedTests": []
+    },
+    "evidenceDirectory": "test-results/code-quality/e2e-permitted",
+    "firstAttempt": {
+      "status": "environment blocked",
+      "reason": "Chromium spawn EPERM in sandbox before tests could exercise UI",
+      "evidence": "test-results/code-quality/e2e",
+      "subsequentlyApprovedSameTestsPassed": true
+    }
+  },
+  "production": {
+    "command": "node scripts/production-smoke.mjs",
+    "status": "passed",
+    "measuredAt": "2026-10-03T11:44:23.372Z",
+    "checks": [
+      {
+        "name": "Actual production assets create editable example and one Canvas without dev instrument",
+        "status": "passed"
+      },
+      {
+        "name": "Actual production English/dark Portal, stable renderer, minimum900x600 layout",
+        "status": "passed",
+        "size": {
+          "width": 900,
+          "body": 900
+        }
+      },
+      {
+        "name": "Compiled production user property edit and actual GLB download/Validator",
+        "status": "passed",
+        "byteLength": 120120,
+        "errors": 0,
+        "warnings": 0,
+        "animations": [
+          "Door_door_musbqufr_8_Open",
+          "Door_door_musbqufr_8_Close",
+          "Door_door_musbqufr_f_Open",
+          "Door_door_musbqufr_f_Close"
+        ]
+      },
+      {
+        "name": "No production page exceptions",
+        "status": "passed"
+      }
+    ],
+    "report": "docs/production-smoke.json",
+    "previousEvidence": "test-results/code-quality/previous-production"
+  },
+  "productionAssets": [
+    {
+      "name": "index-DKCTEhdz.js",
+      "sha256": "3e5b64169290ecc7421e0d253378fbd3b362263aea8ed979d6306b9d250e9d2c"
+    },
+    {
+      "name": "index-DPZZnLgz.css",
+      "sha256": "7acf2b03fbe0c22e83a09e5dd9cc66302bd1722ad36dd63492093fccd20faaae"
+    },
+    {
+      "name": "window-rLX9x0U_.js",
+      "sha256": "1aea0091f01128ce32313c9dd9a21ea8164bcc45598ed90cf2d1aa18740b9bda"
+    }
+  ],
+  "nativeScript": {
+    "syntaxCheck": "passed",
+    "cookedStrings": {
+      "retainedNativeScriptCookedStringsUnchanged": true,
+      "beforeRetained": 287,
+      "afterRetained": 287,
+      "removed": "Unused css selector helper declaration only"
+    },
+    "executedGUI": false
+  },
+  "originalPRD": {
+    "sha256": "548cf937d1042681bf0887b6a71d1e0d9b9e428ecc515cd09b75215dd6b618ed",
+    "unchanged": true
+  },
+  "acceptance": {
+    "originalConditionsUnchanged": true,
+    "count": 42,
+    "counts": {
+      "未实现": 0,
+      "已实现未验证": 5,
+      "验证通过": 33,
+      "验证失败": 0,
+      "环境阻塞": 4,
+      "需求待确认": 0
+    },
+    "newPlatformAcceptance": false
+  },
+  "workflow": {
+    "file": ".github/workflows/quality.yml",
+    "configured": true,
+    "remoteExecution": "not executed; current workspace has no Git metadata or remote",
+    "runner": "windows-latest",
+    "checkout": "d23441a48e516b6c34aea4fa41551a30e30af803",
+    "setupNode": "820762786026740c76f36085b0efc47a31fe5020"
+  },
+  "remainingScope": [
+    "Existing NSIS not rebuilt for tooling revision",
+    "Native GUI intentionally not executed",
+    "Rust unchanged and not rerun",
+    "Previous full 33-test browser report preserved as historical evidence",
+    "macOS unavailable"
+  ],
+  "warnings": [
+    "Existing production chunk exceeds 500KB",
+    "Existing npm allow-scripts user config warning; global configuration unchanged",
+    "Existing shadcn development dependency audit issues remain; no forced dependency rewrite"
+  ]
+}

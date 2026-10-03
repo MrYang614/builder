@@ -1,0 +1,5676 @@
+{
+  "measuredAt": "2026-10-03T15:53:21.938Z",
+  "status": "completed",
+  "scope": "Chromium browser development build with software WebGL; not Tauri desktop or hardware GPU acceptance",
+  "targetStatus": "Q5 reference hardware/OS decision pending; measured results do not establish the PRD FPS/latency target",
+  "environment": {
+    "os": "win32",
+    "release": "10.0.26200",
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor           ",
+    "logicalCpus": 16,
+    "totalMemoryBytes": 33488437248,
+    "browserVersion": "153.0.8010.12",
+    "node": "v26.1.0",
+    "launchFlags": [
+      "--enable-webgl",
+      "--use-angle=swiftshader",
+      "--enable-unsafe-swiftshader"
+    ]
+  },
+  "methods": {
+    "load": "From immediately before the real file chooser receives a .building ZIP until all objects and 20 textures are rendered; includes protocol file delivery and decoding/upload",
+    "camera": "Real right-button pointer drag with 100 moves and requested 15 ms waits, plus Playwright protocol delay. requestAnimationFrame observer reads renderer frameCount; durations are observed rendered-frame intervals, not maximum GPU throughput or GPU timer queries",
+    "property": "Capture-phase Enter key timestamp until changed document revision and first renderer frame are observed; includes command, scene update and render scheduling",
+    "resources": "Renderer.info.memory geometry and texture counts after the same selected wall is rendered at the end of each edit/delete/undo/floor cycle. GPU totals include Three.js internal DFG_LUT in addition to the 20 project textures; texture bytes and VRAM residency are not exposed by these counters",
+    "exports": "Five actual GLB downloads through the app export button, each validated independently with glTF Validator. Duration runs from before clicking Export to the browser download event; file copying and Validator execution are excluded"
+  },
+  "fixture": {
+    "levels": 3,
+    "walls": 100,
+    "openings": 60,
+    "slabs": 24,
+    "images": 20,
+    "uniqueImageContents": 20,
+    "imageWidth": 2048,
+    "imageHeight": 2048,
+    "containerBytes": 230206,
+    "estimatedBaseRgbaBytes": 335544320,
+    "fixturePath": "D:\\Code\\builder\\test-results\\rendering-owned-server\\performance.browser-PRD-wo-87076-source-cycles-and-5-exports\\prd-workload.building",
+    "source": "Original procedural brick PNGs; generated once per run, carried in the project ZIP"
+  },
+  "loadMs": 3469.8999999910593,
+  "loadSamples": 1,
+  "loadDistribution": "One cold project-load observation; no load percentile distribution inferred",
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "cssWidth": 1920,
+    "cssHeight": 1080.8125,
+    "devicePixelRatio": 1
+  },
+  "webgl": {
+    "available": true,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "vendor": "Google Inc. (Google)",
+    "softwareWebGL": true,
+    "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "initialBaseline": {
+    "frameCount": 6,
+    "objects": 184,
+    "geometries": 399,
+    "textures": 21,
+    "pendingFrame": false,
+    "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 28,
+      "textures": 20,
+      "references": 716
+    },
+    "rebuiltIds": [
+      "benchmark_wall_0",
+      "benchmark_wall_1",
+      "benchmark_wall_2",
+      "benchmark_wall_3",
+      "benchmark_wall_4",
+      "benchmark_wall_5",
+      "benchmark_wall_6",
+      "benchmark_wall_7",
+      "benchmark_wall_8",
+      "benchmark_wall_9",
+      "benchmark_wall_10",
+      "benchmark_wall_11",
+      "benchmark_wall_12",
+      "benchmark_wall_13",
+      "benchmark_wall_14",
+      "benchmark_wall_15",
+      "benchmark_wall_16",
+      "benchmark_wall_17",
+      "benchmark_wall_18",
+      "benchmark_wall_19",
+      "benchmark_wall_20",
+      "benchmark_wall_21",
+      "benchmark_wall_22",
+      "benchmark_wall_23",
+      "benchmark_wall_24",
+      "benchmark_wall_25",
+      "benchmark_wall_26",
+      "benchmark_wall_27",
+      "benchmark_wall_28",
+      "benchmark_wall_29",
+      "benchmark_wall_30",
+      "benchmark_wall_31",
+      "benchmark_wall_32",
+      "benchmark_wall_33",
+      "benchmark_wall_34",
+      "benchmark_wall_35",
+      "benchmark_wall_36",
+      "benchmark_wall_37",
+      "benchmark_wall_38",
+      "benchmark_wall_39",
+      "benchmark_wall_40",
+      "benchmark_wall_41",
+      "benchmark_wall_42",
+      "benchmark_wall_43",
+      "benchmark_wall_44",
+      "benchmark_wall_45",
+      "benchmark_wall_46",
+      "benchmark_wall_47",
+      "benchmark_wall_48",
+      "benchmark_wall_49",
+      "benchmark_wall_50",
+      "benchmark_wall_51",
+      "benchmark_wall_52",
+      "benchmark_wall_53",
+      "benchmark_wall_54",
+      "benchmark_wall_55",
+      "benchmark_wall_56",
+      "benchmark_wall_57",
+      "benchmark_wall_58",
+      "benchmark_wall_59",
+      "benchmark_wall_60",
+      "benchmark_wall_61",
+      "benchmark_wall_62",
+      "benchmark_wall_63",
+      "benchmark_wall_64",
+      "benchmark_wall_65",
+      "benchmark_wall_66",
+      "benchmark_wall_67",
+      "benchmark_wall_68",
+      "benchmark_wall_69",
+      "benchmark_wall_70",
+      "benchmark_wall_71",
+      "benchmark_wall_72",
+      "benchmark_wall_73",
+      "benchmark_wall_74",
+      "benchmark_wall_75",
+      "benchmark_wall_76",
+      "benchmark_wall_77",
+      "benchmark_wall_78",
+      "benchmark_wall_79",
+      "benchmark_wall_80",
+      "benchmark_wall_81",
+      "benchmark_wall_82",
+      "benchmark_wall_83",
+      "benchmark_wall_84",
+      "benchmark_wall_85",
+      "benchmark_wall_86",
+      "benchmark_wall_87",
+      "benchmark_wall_88",
+      "benchmark_wall_89",
+      "benchmark_wall_90",
+      "benchmark_wall_91",
+      "benchmark_wall_92",
+      "benchmark_wall_93",
+      "benchmark_wall_94",
+      "benchmark_wall_95",
+      "benchmark_wall_96",
+      "benchmark_wall_97",
+      "benchmark_wall_98",
+      "benchmark_wall_99",
+      "benchmark_slab_0",
+      "benchmark_slab_1",
+      "benchmark_slab_2",
+      "benchmark_slab_3",
+      "benchmark_slab_4",
+      "benchmark_slab_5",
+      "benchmark_slab_6",
+      "benchmark_slab_7",
+      "benchmark_slab_8",
+      "benchmark_slab_9",
+      "benchmark_slab_10",
+      "benchmark_slab_11",
+      "benchmark_slab_12",
+      "benchmark_slab_13",
+      "benchmark_slab_14",
+      "benchmark_slab_15",
+      "benchmark_slab_16",
+      "benchmark_slab_17",
+      "benchmark_slab_18",
+      "benchmark_slab_19",
+      "benchmark_slab_20",
+      "benchmark_slab_21",
+      "benchmark_slab_22",
+      "benchmark_slab_23",
+      "benchmark_opening_0",
+      "benchmark_opening_1",
+      "benchmark_opening_2",
+      "benchmark_opening_3",
+      "benchmark_opening_4",
+      "benchmark_opening_5",
+      "benchmark_opening_6",
+      "benchmark_opening_7",
+      "benchmark_opening_8",
+      "benchmark_opening_9",
+      "benchmark_opening_10",
+      "benchmark_opening_11",
+      "benchmark_opening_12",
+      "benchmark_opening_13",
+      "benchmark_opening_14",
+      "benchmark_opening_15",
+      "benchmark_opening_16",
+      "benchmark_opening_17",
+      "benchmark_opening_18",
+      "benchmark_opening_19",
+      "benchmark_opening_20",
+      "benchmark_opening_21",
+      "benchmark_opening_22",
+      "benchmark_opening_23",
+      "benchmark_opening_24",
+      "benchmark_opening_25",
+      "benchmark_opening_26",
+      "benchmark_opening_27",
+      "benchmark_opening_28",
+      "benchmark_opening_29",
+      "benchmark_opening_30",
+      "benchmark_opening_31",
+      "benchmark_opening_32",
+      "benchmark_opening_33",
+      "benchmark_opening_34",
+      "benchmark_opening_35",
+      "benchmark_opening_36",
+      "benchmark_opening_37",
+      "benchmark_opening_38",
+      "benchmark_opening_39",
+      "benchmark_opening_40",
+      "benchmark_opening_41",
+      "benchmark_opening_42",
+      "benchmark_opening_43",
+      "benchmark_opening_44",
+      "benchmark_opening_45",
+      "benchmark_opening_46",
+      "benchmark_opening_47",
+      "benchmark_opening_48",
+      "benchmark_opening_49",
+      "benchmark_opening_50",
+      "benchmark_opening_51",
+      "benchmark_opening_52",
+      "benchmark_opening_53",
+      "benchmark_opening_54",
+      "benchmark_opening_55",
+      "benchmark_opening_56",
+      "benchmark_opening_57",
+      "benchmark_opening_58",
+      "benchmark_opening_59"
+    ],
+    "handles": 2,
+    "surfaceHighlights": 1,
+    "hingeMarkers": 0,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": null,
+      "textureId": null,
+      "textureName": null,
+      "width": 0,
+      "height": 0,
+      "intensity": 1,
+      "rotation": 0,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 394,
+      "meshes": 394,
+      "references": 394,
+      "constructed": 394,
+      "disposed": 0
+    },
+    "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+    "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+    "camera": {
+      "position": [
+        50.86247345740579,
+        33.655443603265866,
+        43.9405913458514
+      ],
+      "target": [
+        19.55000038072467,
+        4.3000000938773155,
+        4.8
+      ]
+    }
+  },
+  "cameraDurationMs": 4695.79999999702,
+  "baseline": {
+    "frameCount": 111,
+    "objects": 184,
+    "geometries": 400,
+    "textures": 21,
+    "pendingFrame": false,
+    "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 28,
+      "textures": 20,
+      "references": 716
+    },
+    "rebuiltIds": [
+      "benchmark_wall_0",
+      "benchmark_wall_1",
+      "benchmark_wall_2",
+      "benchmark_wall_3",
+      "benchmark_wall_4",
+      "benchmark_wall_5",
+      "benchmark_wall_6",
+      "benchmark_wall_7",
+      "benchmark_wall_8",
+      "benchmark_wall_9",
+      "benchmark_wall_10",
+      "benchmark_wall_11",
+      "benchmark_wall_12",
+      "benchmark_wall_13",
+      "benchmark_wall_14",
+      "benchmark_wall_15",
+      "benchmark_wall_16",
+      "benchmark_wall_17",
+      "benchmark_wall_18",
+      "benchmark_wall_19",
+      "benchmark_wall_20",
+      "benchmark_wall_21",
+      "benchmark_wall_22",
+      "benchmark_wall_23",
+      "benchmark_wall_24",
+      "benchmark_wall_25",
+      "benchmark_wall_26",
+      "benchmark_wall_27",
+      "benchmark_wall_28",
+      "benchmark_wall_29",
+      "benchmark_wall_30",
+      "benchmark_wall_31",
+      "benchmark_wall_32",
+      "benchmark_wall_33",
+      "benchmark_wall_34",
+      "benchmark_wall_35",
+      "benchmark_wall_36",
+      "benchmark_wall_37",
+      "benchmark_wall_38",
+      "benchmark_wall_39",
+      "benchmark_wall_40",
+      "benchmark_wall_41",
+      "benchmark_wall_42",
+      "benchmark_wall_43",
+      "benchmark_wall_44",
+      "benchmark_wall_45",
+      "benchmark_wall_46",
+      "benchmark_wall_47",
+      "benchmark_wall_48",
+      "benchmark_wall_49",
+      "benchmark_wall_50",
+      "benchmark_wall_51",
+      "benchmark_wall_52",
+      "benchmark_wall_53",
+      "benchmark_wall_54",
+      "benchmark_wall_55",
+      "benchmark_wall_56",
+      "benchmark_wall_57",
+      "benchmark_wall_58",
+      "benchmark_wall_59",
+      "benchmark_wall_60",
+      "benchmark_wall_61",
+      "benchmark_wall_62",
+      "benchmark_wall_63",
+      "benchmark_wall_64",
+      "benchmark_wall_65",
+      "benchmark_wall_66",
+      "benchmark_wall_67",
+      "benchmark_wall_68",
+      "benchmark_wall_69",
+      "benchmark_wall_70",
+      "benchmark_wall_71",
+      "benchmark_wall_72",
+      "benchmark_wall_73",
+      "benchmark_wall_74",
+      "benchmark_wall_75",
+      "benchmark_wall_76",
+      "benchmark_wall_77",
+      "benchmark_wall_78",
+      "benchmark_wall_79",
+      "benchmark_wall_80",
+      "benchmark_wall_81",
+      "benchmark_wall_82",
+      "benchmark_wall_83",
+      "benchmark_wall_84",
+      "benchmark_wall_85",
+      "benchmark_wall_86",
+      "benchmark_wall_87",
+      "benchmark_wall_88",
+      "benchmark_wall_89",
+      "benchmark_wall_90",
+      "benchmark_wall_91",
+      "benchmark_wall_92",
+      "benchmark_wall_93",
+      "benchmark_wall_94",
+      "benchmark_wall_95",
+      "benchmark_wall_96",
+      "benchmark_wall_97",
+      "benchmark_wall_98",
+      "benchmark_wall_99",
+      "benchmark_slab_0",
+      "benchmark_slab_1",
+      "benchmark_slab_2",
+      "benchmark_slab_3",
+      "benchmark_slab_4",
+      "benchmark_slab_5",
+      "benchmark_slab_6",
+      "benchmark_slab_7",
+      "benchmark_slab_8",
+      "benchmark_slab_9",
+      "benchmark_slab_10",
+      "benchmark_slab_11",
+      "benchmark_slab_12",
+      "benchmark_slab_13",
+      "benchmark_slab_14",
+      "benchmark_slab_15",
+      "benchmark_slab_16",
+      "benchmark_slab_17",
+      "benchmark_slab_18",
+      "benchmark_slab_19",
+      "benchmark_slab_20",
+      "benchmark_slab_21",
+      "benchmark_slab_22",
+      "benchmark_slab_23",
+      "benchmark_opening_0",
+      "benchmark_opening_1",
+      "benchmark_opening_2",
+      "benchmark_opening_3",
+      "benchmark_opening_4",
+      "benchmark_opening_5",
+      "benchmark_opening_6",
+      "benchmark_opening_7",
+      "benchmark_opening_8",
+      "benchmark_opening_9",
+      "benchmark_opening_10",
+      "benchmark_opening_11",
+      "benchmark_opening_12",
+      "benchmark_opening_13",
+      "benchmark_opening_14",
+      "benchmark_opening_15",
+      "benchmark_opening_16",
+      "benchmark_opening_17",
+      "benchmark_opening_18",
+      "benchmark_opening_19",
+      "benchmark_opening_20",
+      "benchmark_opening_21",
+      "benchmark_opening_22",
+      "benchmark_opening_23",
+      "benchmark_opening_24",
+      "benchmark_opening_25",
+      "benchmark_opening_26",
+      "benchmark_opening_27",
+      "benchmark_opening_28",
+      "benchmark_opening_29",
+      "benchmark_opening_30",
+      "benchmark_opening_31",
+      "benchmark_opening_32",
+      "benchmark_opening_33",
+      "benchmark_opening_34",
+      "benchmark_opening_35",
+      "benchmark_opening_36",
+      "benchmark_opening_37",
+      "benchmark_opening_38",
+      "benchmark_opening_39",
+      "benchmark_opening_40",
+      "benchmark_opening_41",
+      "benchmark_opening_42",
+      "benchmark_opening_43",
+      "benchmark_opening_44",
+      "benchmark_opening_45",
+      "benchmark_opening_46",
+      "benchmark_opening_47",
+      "benchmark_opening_48",
+      "benchmark_opening_49",
+      "benchmark_opening_50",
+      "benchmark_opening_51",
+      "benchmark_opening_52",
+      "benchmark_opening_53",
+      "benchmark_opening_54",
+      "benchmark_opening_55",
+      "benchmark_opening_56",
+      "benchmark_opening_57",
+      "benchmark_opening_58",
+      "benchmark_opening_59"
+    ],
+    "handles": 2,
+    "surfaceHighlights": 1,
+    "hingeMarkers": 0,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": null,
+      "textureId": null,
+      "textureName": null,
+      "width": 0,
+      "height": 0,
+      "intensity": 1,
+      "rotation": 0,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 394,
+      "meshes": 394,
+      "references": 394,
+      "constructed": 394,
+      "disposed": 0
+    },
+    "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+    "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+    "camera": {
+      "position": [
+        60.51570723012432,
+        38.008172374620344,
+        28.459435930184668
+      ],
+      "target": [
+        19.55000038072467,
+        4.3000000938773155,
+        4.8
+      ]
+    }
+  },
+  "propertyLatency": {
+    "samples": 50,
+    "minMs": 208.90000000596046,
+    "meanMs": 229.61599999785423,
+    "p50Ms": 228,
+    "p95Ms": 262.5,
+    "maxMs": 295.8999999910593
+  },
+  "cameraRenderedFrameInterval": {
+    "samples": 99,
+    "minMs": 33.29999999999927,
+    "meanMs": 46.630303030303025,
+    "p50Ms": 50,
+    "p95Ms": 50.099999999999454,
+    "maxMs": 50.100000000000364
+  },
+  "cameraObservedMeanFps": 21.445282037951653,
+  "idle": {
+    "frameCount": 461,
+    "objects": 184,
+    "geometries": 400,
+    "textures": 21,
+    "pendingFrame": false,
+    "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 28,
+      "textures": 20,
+      "references": 716
+    },
+    "rebuiltIds": [
+      "benchmark_wall_0",
+      "benchmark_wall_1",
+      "benchmark_wall_2",
+      "benchmark_wall_3",
+      "benchmark_opening_0",
+      "benchmark_opening_1",
+      "benchmark_opening_2",
+      "benchmark_opening_3"
+    ],
+    "handles": 2,
+    "surfaceHighlights": 1,
+    "hingeMarkers": 0,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": null,
+      "textureId": null,
+      "textureName": null,
+      "width": 0,
+      "height": 0,
+      "intensity": 1,
+      "rotation": 0,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 394,
+      "meshes": 394,
+      "references": 394,
+      "constructed": 4544,
+      "disposed": 4150
+    },
+    "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+    "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+    "camera": {
+      "position": [
+        60.51570723012432,
+        38.008172374620344,
+        28.459435930184668
+      ],
+      "target": [
+        19.55000038072467,
+        4.3000000938773155,
+        4.8
+      ]
+    },
+    "comparisonFrameCount": 461,
+    "observedIdleMs": 500,
+    "additionalFrames": 0
+  },
+  "resourceResult": "50 cycles and 5 exports preserved the selected-wall geometry/texture counts and Renderer identity; this establishes no observed GPU counter growth in this workload, not total native memory or VRAM stability",
+  "resourceSamples": [
+    {
+      "cycle": 1,
+      "frameCount": 118,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 477,
+        "disposed": 83
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 2,
+      "frameCount": 125,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 560,
+        "disposed": 166
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 3,
+      "frameCount": 132,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 643,
+        "disposed": 249
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 4,
+      "frameCount": 139,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 726,
+        "disposed": 332
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 5,
+      "frameCount": 146,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 809,
+        "disposed": 415
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 6,
+      "frameCount": 153,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 892,
+        "disposed": 498
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 7,
+      "frameCount": 160,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 975,
+        "disposed": 581
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 8,
+      "frameCount": 167,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1058,
+        "disposed": 664
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 9,
+      "frameCount": 174,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1141,
+        "disposed": 747
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 10,
+      "frameCount": 181,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1224,
+        "disposed": 830
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 11,
+      "frameCount": 188,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1307,
+        "disposed": 913
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 12,
+      "frameCount": 195,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1390,
+        "disposed": 996
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 13,
+      "frameCount": 202,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1473,
+        "disposed": 1079
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 14,
+      "frameCount": 209,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1556,
+        "disposed": 1162
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 15,
+      "frameCount": 216,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1639,
+        "disposed": 1245
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 16,
+      "frameCount": 223,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1722,
+        "disposed": 1328
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 17,
+      "frameCount": 230,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1805,
+        "disposed": 1411
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 18,
+      "frameCount": 237,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1888,
+        "disposed": 1494
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 19,
+      "frameCount": 244,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 1971,
+        "disposed": 1577
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 20,
+      "frameCount": 251,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2054,
+        "disposed": 1660
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 21,
+      "frameCount": 258,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2137,
+        "disposed": 1743
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 22,
+      "frameCount": 265,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2220,
+        "disposed": 1826
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 23,
+      "frameCount": 272,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2303,
+        "disposed": 1909
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 24,
+      "frameCount": 279,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2386,
+        "disposed": 1992
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 25,
+      "frameCount": 286,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2469,
+        "disposed": 2075
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 26,
+      "frameCount": 293,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2552,
+        "disposed": 2158
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 27,
+      "frameCount": 300,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2635,
+        "disposed": 2241
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 28,
+      "frameCount": 307,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2718,
+        "disposed": 2324
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 29,
+      "frameCount": 314,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2801,
+        "disposed": 2407
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 30,
+      "frameCount": 321,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2884,
+        "disposed": 2490
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 31,
+      "frameCount": 328,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 2967,
+        "disposed": 2573
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 32,
+      "frameCount": 335,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3050,
+        "disposed": 2656
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 33,
+      "frameCount": 342,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3133,
+        "disposed": 2739
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 34,
+      "frameCount": 349,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3216,
+        "disposed": 2822
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 35,
+      "frameCount": 356,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3299,
+        "disposed": 2905
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 36,
+      "frameCount": 363,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3382,
+        "disposed": 2988
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 37,
+      "frameCount": 370,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3465,
+        "disposed": 3071
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 38,
+      "frameCount": 377,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3548,
+        "disposed": 3154
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 39,
+      "frameCount": 384,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3631,
+        "disposed": 3237
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 40,
+      "frameCount": 391,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3714,
+        "disposed": 3320
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 41,
+      "frameCount": 398,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3797,
+        "disposed": 3403
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 42,
+      "frameCount": 405,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3880,
+        "disposed": 3486
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 43,
+      "frameCount": 412,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 3963,
+        "disposed": 3569
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 44,
+      "frameCount": 419,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4046,
+        "disposed": 3652
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 45,
+      "frameCount": 426,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4129,
+        "disposed": 3735
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 46,
+      "frameCount": 433,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4212,
+        "disposed": 3818
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 47,
+      "frameCount": 440,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4295,
+        "disposed": 3901
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 48,
+      "frameCount": 447,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4378,
+        "disposed": 3984
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 49,
+      "frameCount": 454,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4461,
+        "disposed": 4067
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    },
+    {
+      "cycle": 50,
+      "frameCount": 461,
+      "objects": 184,
+      "geometries": 400,
+      "textures": 21,
+      "pendingFrame": false,
+      "rendererId": "b00ded53-8bdf-49b4-b150-36714b38b931",
+      "lifecycle": {
+        "created": 2,
+        "disposed": 1,
+        "active": 1
+      },
+      "eventListeners": 8,
+      "resources": {
+        "materials": 28,
+        "textures": 20,
+        "references": 716
+      },
+      "rebuiltIds": [
+        "benchmark_wall_0",
+        "benchmark_wall_1",
+        "benchmark_wall_2",
+        "benchmark_wall_3",
+        "benchmark_opening_0",
+        "benchmark_opening_1",
+        "benchmark_opening_2",
+        "benchmark_opening_3"
+      ],
+      "handles": 2,
+      "surfaceHighlights": 1,
+      "hingeMarkers": 0,
+      "preview": {
+        "visible": false,
+        "valid": true,
+        "error": "",
+        "dragging": false,
+        "state": {
+          "kind": "idle",
+          "tool": "select"
+        }
+      },
+      "animations": [],
+      "render": {
+        "backend": "webgl",
+        "switching": false,
+        "mode": "raster",
+        "pathStatus": "idle",
+        "samples": 0,
+        "targetSamples": 128,
+        "environmentLoading": false
+      },
+      "actualBackend": "webgl",
+      "pathTracing": {
+        "stats": null,
+        "cleanBuildingChildren": 0,
+        "cleanBuilding": false,
+        "resources": null,
+        "cleanGeometryObjects": 0,
+        "auxiliaryObjects": 0,
+        "meshes": 0,
+        "displayMaterialOverrides": 0,
+        "sceneId": null,
+        "activeSession": 0
+      },
+      "environment": {
+        "resourceId": null,
+        "textureId": null,
+        "textureName": null,
+        "width": 0,
+        "height": 0,
+        "intensity": 1,
+        "rotation": 0,
+        "background": false
+      },
+      "bvh": {
+        "geometries": 394,
+        "meshes": 394,
+        "references": 394,
+        "constructed": 4544,
+        "disposed": 4150
+      },
+      "sceneId": "314ed161-aab5-45d4-b5f1-225039671026",
+      "cameraId": "4df5b573-c404-4eb2-ad7f-17f8b66f36b4",
+      "camera": {
+        "position": [
+          60.51570723012432,
+          38.008172374620344,
+          28.459435930184668
+        ],
+        "target": [
+          19.55000038072467,
+          4.3000000938773155,
+          4.8
+        ]
+      },
+      "jsHeapBytes": 56800000
+    }
+  ],
+  "exports": [
+    {
+      "cycle": 10,
+      "bytes": 14161612,
+      "durationMs": 1249.7999999970198,
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    },
+    {
+      "cycle": 20,
+      "bytes": 14161612,
+      "durationMs": 1085.7000000029802,
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    },
+    {
+      "cycle": 30,
+      "bytes": 14161612,
+      "durationMs": 1035.3999999910593,
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    },
+    {
+      "cycle": 40,
+      "bytes": 14161612,
+      "durationMs": 1057.0999999940395,
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    },
+    {
+      "cycle": 50,
+      "bytes": 14161612,
+      "durationMs": 1023.5,
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    }
+  ],
+  "pageErrors": [],
+  "exportDuration": {
+    "samples": 5,
+    "minMs": 1023.5,
+    "meanMs": 1090.2999999970198,
+    "p50Ms": 1057.0999999940395,
+    "p95Ms": 1249.7999999970198,
+    "maxMs": 1249.7999999970198
+  },
+  "resourceSummary": {
+    "completedCycles": 50,
+    "completedExports": 5,
+    "minGeometries": 400,
+    "maxGeometries": 400,
+    "minTextures": 21,
+    "maxTextures": 21
+  }
+}

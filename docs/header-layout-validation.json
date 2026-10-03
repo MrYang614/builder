@@ -1,0 +1,84 @@
+{
+  "clientDate": "2026-10-04",
+  "measuredAtUtc": "2026-10-03T17:11:48.9291549Z",
+  "scope": "Header UI layout and native window API integration. Browser and simulated IPC evidence do not replace native Windows/macOS acceptance.",
+  "requirements": {
+    "H01": "验证通过",
+    "H02": "验证通过",
+    "H03": "验证通过",
+    "H04": "已实现未验证",
+    "H05": "验证通过",
+    "H06": "验证通过"
+  },
+  "quality": {
+    "check": "passed",
+    "strictTypecheckTargets": 4,
+    "unitTests": 153,
+    "unitFiles": 17,
+    "rustTests": 18,
+    "productionBuild": "passed",
+    "windowsReleaseAndNSIS": "passed",
+    "log": "test-results/header-layout/final-release-build-retry.log"
+  },
+  "browser": {
+    "command": "playwright test --config playwright.header.config.ts",
+    "passed": 52,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "durationMs": 486495.913,
+    "report": "test-results/header-layout/full-results.json",
+    "artifacts": "test-results/header-layout-final",
+    "revisionScope": "Full suite passed before the final native mouse event correction; affected native Header tests were rerun below."
+  },
+  "nativeAPISimulationFinal": {
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "durationMs": 8621.075,
+    "report": "test-results/header-layout/e2e-results.json",
+    "artifacts": "test-results/header-window-final",
+    "doubleClick": "Real Chromium dblclick verified, only first mousedown requests native dragging; second click toggles maximize.",
+    "close": "Waits for preferences, Cancel preserves project, Discard reaches destroy."
+  },
+  "productionSmoke": {
+    "checks": 4,
+    "status": "passed",
+    "report": "test-results/header-production-smoke/production-smoke.json",
+    "gltfErrors": 0,
+    "gltfWarnings": 0,
+    "scope": "Actual compiled browser assets; final mouse correction only affects native drag controls, omitted in browser."
+  },
+  "designReview": {
+    "detectorInvocations": 1,
+    "detectorFindings": [],
+    "detectorCommand": ".agents/skills/impeccable/scripts/impeccable.cmd detect --json apps/desktop/src/App.tsx apps/desktop/src/ui/HeaderPreferences.tsx apps/desktop/src/ui/WindowControls.tsx apps/desktop/src/editor.css packages/ui/src/components/icon-button.tsx packages/ui/src/components/select.tsx",
+    "review": "docs/UI-REVIEW.md",
+    "screenshotScope": "Four browser locale/theme combinations at900x600 plus simulated IPC window and long project name."
+  },
+  "retainedFailures": [
+    "test-results/header-layout-first",
+    "test-results/header-layout-second",
+    "test-results/header-layout/final-release-build.log"
+  ],
+  "artifacts": [
+    {
+      "path": "test-results/header-layout-release/builder.exe",
+      "bytes": 6501376,
+      "sha256": "ac912499d50f6cb54e07c4c7955e3518f7e8becc450b58209140901bd6acc4f4"
+    },
+    {
+      "path": "test-results/header-layout-release/Building Editor_0.1.0_x64-setup.exe",
+      "bytes": 2451025,
+      "sha256": "d738de6071cc5735e0d7c17364f830e7f042657b05fc795142ef2ce4246fe33b"
+    }
+  ],
+  "limitations": [
+    "No native GUI was launched; actual Windows/macOS decoration, drag, DPI and close behavior remain unverified.",
+    "The old installed or running desktop app requires the rebuilt application or installer and a restart.",
+    "WebGPU hardware success and Q5 reference devices remain under the existing rendering acceptance matrix.",
+    "Existing uncommitted WebGPU work was preserved; this report concerns Header scope."
+  ],
+  "historicalEvidence": "Original acceptance conditions/statuses and historical reports preserved. New outputs use test-results/header-*; appended slab evidence retained separately."
+}

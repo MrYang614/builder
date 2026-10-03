@@ -1,0 +1,74 @@
+{
+  "measuredAt": "2026-10-03T05:10:29.191Z",
+  "scope": "Node.js CPU-only; no Renderer, GPU FPS, Tauri WebView, disk IO or interaction input latency measured",
+  "environment": {
+    "os": "win32",
+    "release": "10.0.26200",
+    "arch": "x64",
+    "node": "v26.1.0",
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor           ",
+    "logicalCpus": 16,
+    "totalMemoryBytes": 33488437248
+  },
+  "fixture": {
+    "levels": 3,
+    "walls": 100,
+    "openings": 60,
+    "slabs": 24,
+    "images": 20,
+    "imageWidth": 2048,
+    "imageHeight": 2048,
+    "uniqueImageContents": 20,
+    "encodedImageBytes": 2526671,
+    "imageDecodedRGBBytes": 251658240,
+    "geometryVertexCount": 11664,
+    "geometryTriangleCount": 5832
+  },
+  "setup": {
+    "proceduralPngGenerationMs": 1202.6221999999998,
+    "initialCoreValidationAndSnapshotMs": 13.873600000000124,
+    "fullGeometryMs": 110.63909999999987
+  },
+  "measurement": {
+    "warmupIterations": 10,
+    "measuredIterations": 50,
+    "change": "one wall height edit, command validation and dependency-aware geometry rebuild",
+    "coreCommit": {
+      "samples": 50,
+      "minMs": 1.666200000000572,
+      "meanMs": 2.441828000000096,
+      "p50Ms": 2.257499999999709,
+      "p95Ms": 3.7346000000002277,
+      "maxMs": 4.395199999999932
+    },
+    "topologyAndAffectedGeometry": {
+      "samples": 50,
+      "minMs": 74.27359999999953,
+      "meanMs": 92.5339839999999,
+      "p50Ms": 91.51020000000017,
+      "p95Ms": 111.09559999999965,
+      "maxMs": 113.21050000000014
+    },
+    "combined": {
+      "samples": 50,
+      "minMs": 76.11409999999978,
+      "meanMs": 94.975812,
+      "p50Ms": 94.11229999999978,
+      "p95Ms": 113.2475999999997,
+      "maxMs": 117.20929999999998
+    },
+    "affectedWallCounts": [
+      4
+    ]
+  },
+  "memory": {
+    "processHeapUsedBytes": 41461568,
+    "processRssBytes": 207511552
+  },
+  "limitations": [
+    "Formal FPS / pointer P95 thresholds await Q5 reference hardware.",
+    "This result cannot be claimed as Windows Tauri or macOS acceptance.",
+    "PNG resources are validated/retained but not decoded into GPU textures in this process.",
+    "Per-cycle WebGL resource stability and disk faults require their separate integration/E2E tests."
+  ]
+}

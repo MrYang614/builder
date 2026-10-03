@@ -1,0 +1,259 @@
+{
+  "acceptance": "A28",
+  "platform": "Windows Chromium SwiftShader browser; no native desktop inference",
+  "path": "Actual UI example → hold delivery of three genuinely decoded 128×128 PNG load events → actual UI New → release old completions",
+  "delayed": {
+    "pending": 3,
+    "released": 0,
+    "images": [
+      {
+        "width": 128,
+        "height": 128,
+        "complete": true
+      },
+      {
+        "width": 128,
+        "height": 128,
+        "complete": true
+      },
+      {
+        "width": 128,
+        "height": 128,
+        "complete": true
+      }
+    ]
+  },
+  "oldObjectIds": [
+    "wall_muskmhu7_4",
+    "wall_muskmhu7_5",
+    "wall_muskmhu7_6",
+    "wall_muskmhu7_7",
+    "wall_muskmhu7_b",
+    "wall_muskmhu7_c",
+    "wall_muskmhu7_d",
+    "wall_muskmhu7_e",
+    "slab_muskmhu7_8",
+    "slab_muskmhu7_f",
+    "slab_muskmhu7_i",
+    "door_muskmhu7_9",
+    "window_muskmhu7_a",
+    "door_muskmhu7_g",
+    "window_muskmhu7_h"
+  ],
+  "newProjectId": "project_muskmhyq_j",
+  "formalDocumentUnchangedAfterLateCompletion": true,
+  "before": {
+    "frameCount": 4,
+    "objects": 0,
+    "geometries": 1,
+    "textures": 1,
+    "pendingFrame": false,
+    "rendererId": "b75deae7-cda9-4a23-8a96-fca8dbfc5ad1",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 0,
+      "textures": 0,
+      "references": 0
+    },
+    "rebuiltIds": [],
+    "handles": 0,
+    "surfaceHighlights": 0,
+    "hingeMarkers": 0,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": null,
+      "textureId": null,
+      "textureName": null,
+      "width": 0,
+      "height": 0,
+      "intensity": 1,
+      "rotation": 0,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 0,
+      "meshes": 0,
+      "references": 0,
+      "constructed": 29,
+      "disposed": 29
+    },
+    "sceneId": "8e504ffb-a774-401d-b012-ba59a51056a9",
+    "cameraId": "a7547bc7-7227-403a-8890-4c87310ff501",
+    "camera": {
+      "position": [
+        6.792076574934427,
+        6.367571789001026,
+        8.490095718668032
+      ],
+      "target": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "after": {
+    "frameCount": 4,
+    "objects": 0,
+    "geometries": 1,
+    "textures": 1,
+    "pendingFrame": false,
+    "rendererId": "b75deae7-cda9-4a23-8a96-fca8dbfc5ad1",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 0,
+      "textures": 0,
+      "references": 0
+    },
+    "rebuiltIds": [],
+    "handles": 0,
+    "surfaceHighlights": 0,
+    "hingeMarkers": 0,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": null,
+      "textureId": null,
+      "textureName": null,
+      "width": 0,
+      "height": 0,
+      "intensity": 1,
+      "rotation": 0,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 0,
+      "meshes": 0,
+      "references": 0,
+      "constructed": 29,
+      "disposed": 29
+    },
+    "sceneId": "8e504ffb-a774-401d-b012-ba59a51056a9",
+    "cameraId": "a7547bc7-7227-403a-8890-4c87310ff501",
+    "camera": {
+      "position": [
+        6.792076574934427,
+        6.367571789001026,
+        8.490095718668032
+      ],
+      "target": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "poolAudit": {
+    "disposed": [
+      {
+        "before": {
+          "cached": 0,
+          "materials": 0,
+          "textures": 0,
+          "references": 0
+        },
+        "after": {
+          "cached": 0,
+          "materials": 0,
+          "textures": 0,
+          "references": 0
+        }
+      },
+      {
+        "before": {
+          "cached": 3,
+          "materials": 0,
+          "textures": 0,
+          "references": 0
+        },
+        "after": {
+          "cached": 0,
+          "materials": 0,
+          "textures": 0,
+          "references": 0
+        }
+      }
+    ],
+    "pools": [
+      {
+        "cached": 0,
+        "materials": 0,
+        "textures": 0,
+        "references": 0
+      }
+    ]
+  }
+}

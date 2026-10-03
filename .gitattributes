@@ -1,0 +1,10 @@
+# Maintained source must satisfy oxfmt and generated-text checks on every platform.
+* text=auto eol=lf
+
+# Preserve pinned third-party files, original requirements and historical evidence bytes.
+.agents/** -text
+docs/PRD-v0.3.md -text
+docs/ACCEPTANCE.md -text
+docs/*.json -text
+examples/*.source.json -text
+tests/artifacts/** -text

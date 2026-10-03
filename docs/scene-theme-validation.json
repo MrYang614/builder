@@ -1,0 +1,2626 @@
+{
+  "acceptance": "A38",
+  "platform": "Windows Chromium SwiftShader browser; no native desktop inference",
+  "measurement": "Actual Scene.onBeforeRender receives the current renderer, scene and camera; all tokens imported dynamically from packages/ui public API",
+  "exportEvidence": "tests/export.browser.spec.ts and docs/export-validation.json independently cover clean export/theme equality",
+  "lightsAndExposureUnchanged": true,
+  "displayedModelMaterialsUnchanged": true,
+  "helperColorsFollowTokens": true,
+  "formalDocumentUnchanged": true,
+  "light": {
+    "theme": "light",
+    "identity": {
+      "rendererId": "6792e277-a5e6-45c2-b32b-b077e5370738",
+      "sceneId": "a74b14e7-25f8-496e-8851-72db950e4d61",
+      "cameraId": "faa25d4c-d46b-4896-b087-69c7e7ce74e5"
+    },
+    "exposure": 1,
+    "toneMapping": 0,
+    "outputColorSpace": "srgb",
+    "background": "e7edf3",
+    "lights": [
+      {
+        "id": "adc98131-7fe0-4391-865e-182aecb8c4d8",
+        "type": "HemisphereLight",
+        "color": "ffffff",
+        "groundColor": "7c7c7c",
+        "intensity": 2.2,
+        "position": [
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "id": "e66becaa-8ac0-4139-8b79-7d9096c1f81c",
+        "type": "DirectionalLight",
+        "color": "ffffff",
+        "intensity": 2.4,
+        "position": [
+          8,
+          12,
+          6
+        ]
+      }
+    ],
+    "models": [
+      {
+        "id": "04a4bab7-1de3-46c5-be91-791051e7d1db",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameLeft_window_muskmimf_a",
+        "geometryId": "caf7da83-b734-4a74-bfb5-3dd26e0bcfa9",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8399d6b9-1d86-4b0e-85f6-79961f0c888b",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "0ea740d0-3395-47f0-b5cf-e698d3d3dd1d",
+        "objectId": "wall_muskmimf_c",
+        "name": "Surface_wall_muskmimf_c",
+        "geometryId": "7add4200-fb99-4c32-8170-1170bfe1703f",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c432d397-d6f4-41f5-a2f7-a8ff16424b9e",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "61d289d0-719d-4f47-8b8e-7dc8797e4b58",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "a6f80399-a5cd-4505-9887-a61d904e22ca",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "dd09a500-9404-48ed-b818-36c49dffed1b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "95f5a792-41ca-494a-adf5-c8788d42e74c",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "152b5110-1862-4aa8-bc10-ba4f0c9a8a93",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameRight_window_muskmimf_a",
+        "geometryId": "436e7fac-ecdb-4d79-b955-c0eefe73e26a",
+        "visible": true,
+        "materials": [
+          {
+            "id": "ed5a0df2-037f-4d56-9e70-b4db76694203",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "1c43beba-d72b-4fe3-b003-14d935bd16e4",
+        "objectId": "slab_muskmimf_f",
+        "name": "Surface_slab_muskmimf_f",
+        "geometryId": "2e28cc1c-161d-4826-8b51-2427a1462388",
+        "visible": true,
+        "materials": [
+          {
+            "id": "4f64fe5c-eb55-4927-9bde-0eb441113c77",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "024ec250-656d-457a-b128-c12ada136672",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "65bff5e0-33ab-4b83-9890-e2ecc141a3f9",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "2fc8b2a2-efd5-40de-989d-4ee42f379ffd",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameRight_door_muskmimf_9",
+        "geometryId": "ba3142ed-0e8e-4358-a345-b64c166e1bff",
+        "visible": true,
+        "materials": [
+          {
+            "id": "0ea334ae-ec8c-425e-8ad5-a6e7d4cfed02",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "3eb9bf94-8ca4-45d8-9d6a-c063d45e683c",
+        "objectId": "wall_muskmimf_d",
+        "name": "Surface_wall_muskmimf_d",
+        "geometryId": "67d95d02-040a-4e8a-bb25-21ec4389de5e",
+        "visible": true,
+        "materials": [
+          {
+            "id": "fd8b6e03-f618-4267-b318-aa64fc13e680",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "c5535096-72f1-4f13-a149-ac60078f7654",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "e86f0f43-5bf8-4872-b48d-cc23bdcf348b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "fa2c34be-119f-4058-aae4-0d1c4007352b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "3ff85ddc-7627-4105-9b89-1409df60033b",
+        "objectId": "slab_muskmimf_8",
+        "name": "Surface_slab_muskmimf_8",
+        "geometryId": "2939a79d-44c7-4b6c-ab7a-a381996fb277",
+        "visible": true,
+        "materials": [
+          {
+            "id": "7db19132-5fb4-4336-a4d6-06c24d9a89db",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6fc2a567-f624-45b5-ac01-91c512879aa3",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "eaa57110-856f-4202-bf92-02f900708535",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "427654b9-2c5d-424b-9001-56b7c8e54b46",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameTop_door_muskmimf_g",
+        "geometryId": "ae28afa6-841e-4da1-b063-a1e2aa9b5e83",
+        "visible": true,
+        "materials": [
+          {
+            "id": "bb9ea0d6-e7fb-485f-8ff1-ebe64b9cbdb3",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "44471d18-28a7-48d6-b4b1-eb1c649676f3",
+        "objectId": "slab_muskmimf_i",
+        "name": "Surface_slab_muskmimf_i",
+        "geometryId": "5a63f5c0-5eaf-4224-a4f5-80f501a26840",
+        "visible": true,
+        "materials": [
+          {
+            "id": "df9f91f1-c97b-4d18-8fc2-5c1759346e59",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "1ce05c39-cbbc-422a-bce5-bdfb37cdfd62",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "0cb17b66-c983-4337-bcfd-484b5dd1a6b4",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "46c63c79-de7c-4a04-b44f-e46d706054d6",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameTop_door_muskmimf_9",
+        "geometryId": "86b1cd8d-97c9-49f8-9376-29a801f46373",
+        "visible": true,
+        "materials": [
+          {
+            "id": "1f26956f-b3ff-4ca2-b4f5-2723bfe8fa69",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "4caa37fa-e8ce-44a3-b844-df3f0f321928",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameLeft_window_muskmimf_h",
+        "geometryId": "2734a180-24be-4c08-8ab0-3763d353e580",
+        "visible": true,
+        "materials": [
+          {
+            "id": "0fd0e681-2a09-46e5-8bd1-262c05a2e317",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "6326f6da-155a-4e6e-8719-d2812869bafb",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameLeft_door_muskmimf_9",
+        "geometryId": "068dae76-e890-4b56-9e03-2c64b41479a1",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c11182df-0750-46bb-b168-4b7bb7808ab3",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "64230bb8-54d1-48a1-9f82-f573a1085228",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameTop_window_muskmimf_a",
+        "geometryId": "7b181f0b-abec-4086-82b7-b239ab26e850",
+        "visible": true,
+        "materials": [
+          {
+            "id": "946714d9-3759-4f98-820e-7f1416229917",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "76bfca2f-16c4-4144-b09e-73cf5a581260",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameTop_window_muskmimf_h",
+        "geometryId": "eaad0feb-6c23-4fbe-a460-da09cd5ae6a3",
+        "visible": true,
+        "materials": [
+          {
+            "id": "edf2c840-c71a-412b-ac8f-cd612e4d3292",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8232ff6b-85db-4b28-bf49-6c8b0b2abfac",
+        "objectId": "door_muskmimf_9",
+        "name": "DoorPanel_door_muskmimf_9",
+        "geometryId": "5aaa8545-1a7b-4965-8cea-053a3ff26a63",
+        "visible": true,
+        "materials": [
+          {
+            "id": "59d56d60-7e81-4456-bc74-3e47f2f791af",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d9cab02a-79d1-4172-89ed-ab028a9a40dd",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "f9b4493d-32ba-45a5-b522-59f7db09953b",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "132d4a1f-312a-40c1-99dd-f61c7cd02df4",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "40a5c231-8962-448a-8ecf-06b9ed1aed79",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "f86b3e0d-74f0-4e28-b851-d91fdaf955bd",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8e209311-ab9f-4f5a-bc3f-c3433b161e83",
+        "objectId": "door_muskmimf_g",
+        "name": "DoorPanel_door_muskmimf_g",
+        "geometryId": "54af7b74-241c-435e-8369-b2803e8b0e14",
+        "visible": true,
+        "materials": [
+          {
+            "id": "1e94e074-6589-4f87-a622-d12010aeaf1c",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "71e1ab46-05df-4731-8040-f691fef228e1",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "c10ab8ae-06c9-414c-8310-fd3db4e4736a",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "37b34dee-8526-4526-a522-f45b10ccac7a",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "b137b9f9-5eea-4c89-b860-4fca1ab60b90",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "01743549-1186-4dcb-97d2-7983248f58b1",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8eaba26c-3a48-4bb7-9d8b-67144bd7ba3e",
+        "objectId": "wall_muskmimf_5",
+        "name": "Surface_wall_muskmimf_5",
+        "geometryId": "30b82b8e-2ef4-4182-baaf-87dcb1f0d12c",
+        "visible": true,
+        "materials": [
+          {
+            "id": "f7363abd-9d08-4df9-8b10-55b8f1f1edef",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "e40c3511-0965-4a4b-95d4-076dd13a71a6",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "f2c9ac6c-9fe4-411f-8590-12b7a922f1c7",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d1bcfe4d-1a7b-4fd8-9748-4db47f6e3266",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6171d085-bd9d-4adf-a3b9-a028cfb385a8",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8ffce899-661f-4e1b-8c4b-39b966c612e7",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameLeft_door_muskmimf_g",
+        "geometryId": "8a30f7df-4f6c-49d7-94dc-bb32264409a3",
+        "visible": true,
+        "materials": [
+          {
+            "id": "5fe23c00-e719-46df-8928-c0ef98148a34",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "9ff7097e-d28d-4119-a1b9-12abfb859876",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameBottom_window_muskmimf_a",
+        "geometryId": "a11179c4-c362-4a74-962c-2fc855f1b7b5",
+        "visible": true,
+        "materials": [
+          {
+            "id": "5ae87a02-620f-4cb9-8af2-710403deb490",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "a1eaa9c5-c4cb-4007-9eda-711f9f73a875",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameRight_door_muskmimf_g",
+        "geometryId": "ca113777-dcce-404a-8b99-f4b462ccd3ff",
+        "visible": true,
+        "materials": [
+          {
+            "id": "3c08ac90-b77f-4def-91eb-887dd7341ceb",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "b4fbf89a-a60f-4771-a0e5-8304ebf449c6",
+        "objectId": "wall_muskmimf_4",
+        "name": "Surface_wall_muskmimf_4",
+        "geometryId": "02eab661-2fe2-4566-b4d6-f402a61b5774",
+        "visible": true,
+        "materials": [
+          {
+            "id": "92aef221-a394-447d-a428-ad17658680c9",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6ec5655c-6504-4a26-8fbb-2685676de620",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "58e8f871-c41f-4ac5-9eef-92b8de1bc3cf",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d6eb4707-9cbb-4667-919a-e1441782bea2",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "9c93ab65-064f-43ce-9fa3-2637b0e96fe4",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "b5712712-6c6c-4b21-8340-0772185ee39a",
+        "objectId": "wall_muskmimf_e",
+        "name": "Surface_wall_muskmimf_e",
+        "geometryId": "6b5f7443-022b-4ae1-98ae-4d2acaacb4c7",
+        "visible": true,
+        "materials": [
+          {
+            "id": "82289284-aaf5-45b9-bbbd-cd7e8f9438f0",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "83e25cd3-4644-471b-bf22-3e0a5b438f9c",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "55c6abd3-0f40-4355-86ab-8d188cec63cb",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "37423f16-7acf-4005-b4c4-58e2bd70659a",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "c8114211-9328-4cd9-b7de-b8a454562f19",
+        "objectId": "wall_muskmimf_6",
+        "name": "Surface_wall_muskmimf_6",
+        "geometryId": "4b8a229a-9cb0-4ac3-9336-f4ca4a409051",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c4f34911-b865-43e0-9138-e7ac090fc217",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "04bd7852-3a3a-49ae-bb92-7eda59dc3d59",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "8321de5d-59e5-42f3-bea5-bbdb138e4e3a",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6ff1a85e-0e1f-4e1d-8294-86074d45b372",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "d99147fc-e0c7-452b-a1e6-a6da821d91fe",
+        "objectId": "window_muskmimf_a",
+        "name": "Glass_window_muskmimf_a",
+        "geometryId": "c9a98578-ae79-4473-9d2b-88def2580356",
+        "visible": true,
+        "materials": [
+          {
+            "id": "ee009189-f4c2-4ef6-8795-bae65c1beb72",
+            "name": "Glass",
+            "color": "8a6a49",
+            "opacity": 0.32,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.18,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e0925782-e667-4d5d-830b-902904fb22fd",
+        "objectId": "wall_muskmimf_7",
+        "name": "Surface_wall_muskmimf_7",
+        "geometryId": "b3bef230-a8ba-4c6a-be8e-9dd3e1d433b6",
+        "visible": true,
+        "materials": [
+          {
+            "id": "e181f44b-088b-453a-b13f-559d725e15e0",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "efbcca49-2b88-49a1-9594-64e6c06df86a",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "99cc7dd9-02f2-4b4f-b9fd-54cb1de71e7e",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "a513d4b1-9d91-43c4-8723-55c7aea4d0b1",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e55bc78d-dede-493e-a3ef-404085e59112",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameBottom_window_muskmimf_h",
+        "geometryId": "e94b2758-f425-4d9a-976c-a2170950d551",
+        "visible": true,
+        "materials": [
+          {
+            "id": "a49d9469-3937-4360-922d-06253ecd0c61",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e85c60ed-5260-4273-87f6-67f1bb794e33",
+        "objectId": "wall_muskmimf_b",
+        "name": "Surface_wall_muskmimf_b",
+        "geometryId": "2472d6e4-1f6d-47f3-9bd5-b11bbab74397",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8e058586-8737-4bb0-8ebd-1362c524dd6d",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6d3fd893-01e0-488a-8656-d831cb2617a6",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "f3aecb34-c1e1-4b14-9b3f-555a0cee7824",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6d892adc-6887-4b81-812e-30ec83b879de",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "0c9a4e53-8571-4d0a-8660-6f9d72d10fd9",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e8ac1a51-7036-4c82-9ad3-80a58b8a0a5b",
+        "objectId": "window_muskmimf_h",
+        "name": "Glass_window_muskmimf_h",
+        "geometryId": "afb275dc-d9c2-418e-9dfc-621a4d4b73e8",
+        "visible": true,
+        "materials": [
+          {
+            "id": "b5278232-e1d9-4d71-a1c2-618ab4be9447",
+            "name": "Glass",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.18,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "eae6d74a-1de4-4847-bf71-30722068831b",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameRight_window_muskmimf_h",
+        "geometryId": "1410d64b-e6f0-492b-adfd-af29eeaea17b",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8487e715-8ca0-40ff-8c50-772886548352",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      }
+    ],
+    "grid": [
+      [
+        0.366252601146698,
+        0.4507857859134674,
+        0.5457244515419006
+      ],
+      [
+        0.14995978772640228,
+        0.22696587443351746,
+        0.31398871541023254
+      ]
+    ],
+    "auxColors": {
+      "selected-face": [
+        "177cac"
+      ],
+      "hinge-marker": [
+        "177cac"
+      ],
+      "hinge-axis": [
+        "177cac"
+      ],
+      "selection-outline": [
+        "177cac"
+      ],
+      "preview": [
+        "328dba"
+      ],
+      "snap": [
+        "168563"
+      ]
+    },
+    "expected": {
+      "background": "#e7edf3",
+      "grid": "#a3b3c3",
+      "axis": "#6c8398",
+      "selection": "#177cac",
+      "snap": "#168563",
+      "preview": "#328dba",
+      "invalid": "#bc3d45"
+    },
+    "expectedGrid": [
+      [
+        0.1499597898006365,
+        0.22696587349938613,
+        0.3139887133649649
+      ],
+      [
+        0.36625259558833256,
+        0.450785782828426,
+        0.5457244613615395
+      ]
+    ]
+  },
+  "dark": {
+    "theme": "dark",
+    "identity": {
+      "rendererId": "6792e277-a5e6-45c2-b32b-b077e5370738",
+      "sceneId": "a74b14e7-25f8-496e-8851-72db950e4d61",
+      "cameraId": "faa25d4c-d46b-4896-b087-69c7e7ce74e5"
+    },
+    "exposure": 1,
+    "toneMapping": 0,
+    "outputColorSpace": "srgb",
+    "background": "202f3d",
+    "lights": [
+      {
+        "id": "adc98131-7fe0-4391-865e-182aecb8c4d8",
+        "type": "HemisphereLight",
+        "color": "ffffff",
+        "groundColor": "7c7c7c",
+        "intensity": 2.2,
+        "position": [
+          0,
+          1,
+          0
+        ]
+      },
+      {
+        "id": "e66becaa-8ac0-4139-8b79-7d9096c1f81c",
+        "type": "DirectionalLight",
+        "color": "ffffff",
+        "intensity": 2.4,
+        "position": [
+          8,
+          12,
+          6
+        ]
+      }
+    ],
+    "models": [
+      {
+        "id": "04a4bab7-1de3-46c5-be91-791051e7d1db",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameLeft_window_muskmimf_a",
+        "geometryId": "caf7da83-b734-4a74-bfb5-3dd26e0bcfa9",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8399d6b9-1d86-4b0e-85f6-79961f0c888b",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "0ea740d0-3395-47f0-b5cf-e698d3d3dd1d",
+        "objectId": "wall_muskmimf_c",
+        "name": "Surface_wall_muskmimf_c",
+        "geometryId": "7add4200-fb99-4c32-8170-1170bfe1703f",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c432d397-d6f4-41f5-a2f7-a8ff16424b9e",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "61d289d0-719d-4f47-8b8e-7dc8797e4b58",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "a6f80399-a5cd-4505-9887-a61d904e22ca",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "dd09a500-9404-48ed-b818-36c49dffed1b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "95f5a792-41ca-494a-adf5-c8788d42e74c",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "152b5110-1862-4aa8-bc10-ba4f0c9a8a93",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameRight_window_muskmimf_a",
+        "geometryId": "436e7fac-ecdb-4d79-b955-c0eefe73e26a",
+        "visible": true,
+        "materials": [
+          {
+            "id": "ed5a0df2-037f-4d56-9e70-b4db76694203",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "1c43beba-d72b-4fe3-b003-14d935bd16e4",
+        "objectId": "slab_muskmimf_f",
+        "name": "Surface_slab_muskmimf_f",
+        "geometryId": "2e28cc1c-161d-4826-8b51-2427a1462388",
+        "visible": true,
+        "materials": [
+          {
+            "id": "4f64fe5c-eb55-4927-9bde-0eb441113c77",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "024ec250-656d-457a-b128-c12ada136672",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "65bff5e0-33ab-4b83-9890-e2ecc141a3f9",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "2fc8b2a2-efd5-40de-989d-4ee42f379ffd",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameRight_door_muskmimf_9",
+        "geometryId": "ba3142ed-0e8e-4358-a345-b64c166e1bff",
+        "visible": true,
+        "materials": [
+          {
+            "id": "0ea334ae-ec8c-425e-8ad5-a6e7d4cfed02",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "3eb9bf94-8ca4-45d8-9d6a-c063d45e683c",
+        "objectId": "wall_muskmimf_d",
+        "name": "Surface_wall_muskmimf_d",
+        "geometryId": "67d95d02-040a-4e8a-bb25-21ec4389de5e",
+        "visible": true,
+        "materials": [
+          {
+            "id": "fd8b6e03-f618-4267-b318-aa64fc13e680",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "c5535096-72f1-4f13-a149-ac60078f7654",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "e86f0f43-5bf8-4872-b48d-cc23bdcf348b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "fa2c34be-119f-4058-aae4-0d1c4007352b",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "3ff85ddc-7627-4105-9b89-1409df60033b",
+        "objectId": "slab_muskmimf_8",
+        "name": "Surface_slab_muskmimf_8",
+        "geometryId": "2939a79d-44c7-4b6c-ab7a-a381996fb277",
+        "visible": true,
+        "materials": [
+          {
+            "id": "7db19132-5fb4-4336-a4d6-06c24d9a89db",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6fc2a567-f624-45b5-ac01-91c512879aa3",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "eaa57110-856f-4202-bf92-02f900708535",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "427654b9-2c5d-424b-9001-56b7c8e54b46",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameTop_door_muskmimf_g",
+        "geometryId": "ae28afa6-841e-4da1-b063-a1e2aa9b5e83",
+        "visible": true,
+        "materials": [
+          {
+            "id": "bb9ea0d6-e7fb-485f-8ff1-ebe64b9cbdb3",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "44471d18-28a7-48d6-b4b1-eb1c649676f3",
+        "objectId": "slab_muskmimf_i",
+        "name": "Surface_slab_muskmimf_i",
+        "geometryId": "5a63f5c0-5eaf-4224-a4f5-80f501a26840",
+        "visible": true,
+        "materials": [
+          {
+            "id": "df9f91f1-c97b-4d18-8fc2-5c1759346e59",
+            "name": "Image_builtin_wood",
+            "color": "9c8262",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "1e627066-e31d-4ee2-92ca-cc6bc30b3758",
+              "name": "builtin_wood",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "1ce05c39-cbbc-422a-bce5-bdfb37cdfd62",
+            "name": "Colour_eee9df",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "0cb17b66-c983-4337-bcfd-484b5dd1a6b4",
+            "name": "Colour_a89981",
+            "color": "a89981",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "46c63c79-de7c-4a04-b44f-e46d706054d6",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameTop_door_muskmimf_9",
+        "geometryId": "86b1cd8d-97c9-49f8-9376-29a801f46373",
+        "visible": true,
+        "materials": [
+          {
+            "id": "1f26956f-b3ff-4ca2-b4f5-2723bfe8fa69",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "4caa37fa-e8ce-44a3-b844-df3f0f321928",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameLeft_window_muskmimf_h",
+        "geometryId": "2734a180-24be-4c08-8ab0-3763d353e580",
+        "visible": true,
+        "materials": [
+          {
+            "id": "0fd0e681-2a09-46e5-8bd1-262c05a2e317",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "6326f6da-155a-4e6e-8719-d2812869bafb",
+        "objectId": "door_muskmimf_9",
+        "name": "FrameLeft_door_muskmimf_9",
+        "geometryId": "068dae76-e890-4b56-9e03-2c64b41479a1",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c11182df-0750-46bb-b168-4b7bb7808ab3",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "64230bb8-54d1-48a1-9f82-f573a1085228",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameTop_window_muskmimf_a",
+        "geometryId": "7b181f0b-abec-4086-82b7-b239ab26e850",
+        "visible": true,
+        "materials": [
+          {
+            "id": "946714d9-3759-4f98-820e-7f1416229917",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "76bfca2f-16c4-4144-b09e-73cf5a581260",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameTop_window_muskmimf_h",
+        "geometryId": "eaad0feb-6c23-4fbe-a460-da09cd5ae6a3",
+        "visible": true,
+        "materials": [
+          {
+            "id": "edf2c840-c71a-412b-ac8f-cd612e4d3292",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8232ff6b-85db-4b28-bf49-6c8b0b2abfac",
+        "objectId": "door_muskmimf_9",
+        "name": "DoorPanel_door_muskmimf_9",
+        "geometryId": "5aaa8545-1a7b-4965-8cea-053a3ff26a63",
+        "visible": true,
+        "materials": [
+          {
+            "id": "59d56d60-7e81-4456-bc74-3e47f2f791af",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d9cab02a-79d1-4172-89ed-ab028a9a40dd",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "f9b4493d-32ba-45a5-b522-59f7db09953b",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "132d4a1f-312a-40c1-99dd-f61c7cd02df4",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "40a5c231-8962-448a-8ecf-06b9ed1aed79",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "f86b3e0d-74f0-4e28-b851-d91fdaf955bd",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8e209311-ab9f-4f5a-bc3f-c3433b161e83",
+        "objectId": "door_muskmimf_g",
+        "name": "DoorPanel_door_muskmimf_g",
+        "geometryId": "54af7b74-241c-435e-8369-b2803e8b0e14",
+        "visible": true,
+        "materials": [
+          {
+            "id": "1e94e074-6589-4f87-a622-d12010aeaf1c",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "71e1ab46-05df-4731-8040-f691fef228e1",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "c10ab8ae-06c9-414c-8310-fd3db4e4736a",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "37b34dee-8526-4526-a522-f45b10ccac7a",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "b137b9f9-5eea-4c89-b860-4fca1ab60b90",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "01743549-1186-4dcb-97d2-7983248f58b1",
+            "name": "Colour_b28a5e",
+            "color": "b28a5e",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8eaba26c-3a48-4bb7-9d8b-67144bd7ba3e",
+        "objectId": "wall_muskmimf_5",
+        "name": "Surface_wall_muskmimf_5",
+        "geometryId": "30b82b8e-2ef4-4182-baaf-87dcb1f0d12c",
+        "visible": true,
+        "materials": [
+          {
+            "id": "f7363abd-9d08-4df9-8b10-55b8f1f1edef",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "e40c3511-0965-4a4b-95d4-076dd13a71a6",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "f2c9ac6c-9fe4-411f-8590-12b7a922f1c7",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d1bcfe4d-1a7b-4fd8-9748-4db47f6e3266",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6171d085-bd9d-4adf-a3b9-a028cfb385a8",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "8ffce899-661f-4e1b-8c4b-39b966c612e7",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameLeft_door_muskmimf_g",
+        "geometryId": "8a30f7df-4f6c-49d7-94dc-bb32264409a3",
+        "visible": true,
+        "materials": [
+          {
+            "id": "5fe23c00-e719-46df-8928-c0ef98148a34",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "9ff7097e-d28d-4119-a1b9-12abfb859876",
+        "objectId": "window_muskmimf_a",
+        "name": "FrameBottom_window_muskmimf_a",
+        "geometryId": "a11179c4-c362-4a74-962c-2fc855f1b7b5",
+        "visible": true,
+        "materials": [
+          {
+            "id": "5ae87a02-620f-4cb9-8af2-710403deb490",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "a1eaa9c5-c4cb-4007-9eda-711f9f73a875",
+        "objectId": "door_muskmimf_g",
+        "name": "FrameRight_door_muskmimf_g",
+        "geometryId": "ca113777-dcce-404a-8b99-f4b462ccd3ff",
+        "visible": true,
+        "materials": [
+          {
+            "id": "3c08ac90-b77f-4def-91eb-887dd7341ceb",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "b4fbf89a-a60f-4771-a0e5-8304ebf449c6",
+        "objectId": "wall_muskmimf_4",
+        "name": "Surface_wall_muskmimf_4",
+        "geometryId": "02eab661-2fe2-4566-b4d6-f402a61b5774",
+        "visible": true,
+        "materials": [
+          {
+            "id": "92aef221-a394-447d-a428-ad17658680c9",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6ec5655c-6504-4a26-8fbb-2685676de620",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "58e8f871-c41f-4ac5-9eef-92b8de1bc3cf",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "d6eb4707-9cbb-4667-919a-e1441782bea2",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "9c93ab65-064f-43ce-9fa3-2637b0e96fe4",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "b5712712-6c6c-4b21-8340-0772185ee39a",
+        "objectId": "wall_muskmimf_e",
+        "name": "Surface_wall_muskmimf_e",
+        "geometryId": "6b5f7443-022b-4ae1-98ae-4d2acaacb4c7",
+        "visible": true,
+        "materials": [
+          {
+            "id": "82289284-aaf5-45b9-bbbd-cd7e8f9438f0",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "83e25cd3-4644-471b-bf22-3e0a5b438f9c",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "55c6abd3-0f40-4355-86ab-8d188cec63cb",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "37423f16-7acf-4005-b4c4-58e2bd70659a",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "c8114211-9328-4cd9-b7de-b8a454562f19",
+        "objectId": "wall_muskmimf_6",
+        "name": "Surface_wall_muskmimf_6",
+        "geometryId": "4b8a229a-9cb0-4ac3-9336-f4ca4a409051",
+        "visible": true,
+        "materials": [
+          {
+            "id": "c4f34911-b865-43e0-9138-e7ac090fc217",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "04bd7852-3a3a-49ae-bb92-7eda59dc3d59",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "8321de5d-59e5-42f3-bea5-bbdb138e4e3a",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6ff1a85e-0e1f-4e1d-8294-86074d45b372",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "d99147fc-e0c7-452b-a1e6-a6da821d91fe",
+        "objectId": "window_muskmimf_a",
+        "name": "Glass_window_muskmimf_a",
+        "geometryId": "c9a98578-ae79-4473-9d2b-88def2580356",
+        "visible": true,
+        "materials": [
+          {
+            "id": "ee009189-f4c2-4ef6-8795-bae65c1beb72",
+            "name": "Glass",
+            "color": "8a6a49",
+            "opacity": 0.32,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.18,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e0925782-e667-4d5d-830b-902904fb22fd",
+        "objectId": "wall_muskmimf_7",
+        "name": "Surface_wall_muskmimf_7",
+        "geometryId": "b3bef230-a8ba-4c6a-be8e-9dd3e1d433b6",
+        "visible": true,
+        "materials": [
+          {
+            "id": "e181f44b-088b-453a-b13f-559d725e15e0",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "efbcca49-2b88-49a1-9594-64e6c06df86a",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "99cc7dd9-02f2-4b4f-b9fd-54cb1de71e7e",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "a513d4b1-9d91-43c4-8723-55c7aea4d0b1",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 1,
+            "transparent": false,
+            "depthWrite": true,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e55bc78d-dede-493e-a3ef-404085e59112",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameBottom_window_muskmimf_h",
+        "geometryId": "e94b2758-f425-4d9a-976c-a2170950d551",
+        "visible": true,
+        "materials": [
+          {
+            "id": "a49d9469-3937-4360-922d-06253ecd0c61",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e85c60ed-5260-4273-87f6-67f1bb794e33",
+        "objectId": "wall_muskmimf_b",
+        "name": "Surface_wall_muskmimf_b",
+        "geometryId": "2472d6e4-1f6d-47f3-9bd5-b11bbab74397",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8e058586-8737-4bb0-8ebd-1362c524dd6d",
+            "name": "Image_builtin_brick",
+            "color": "ded8cd",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "41964c3f-e1c7-4e3f-949e-d35f570697f0",
+              "name": "builtin_brick",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "6d3fd893-01e0-488a-8656-d831cb2617a6",
+            "name": "Image_builtin_plaster",
+            "color": "eee9df",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": {
+              "id": "6c615820-f149-4135-a1f4-d8ee03c4afd9",
+              "name": "builtin_plaster",
+              "colorSpace": "srgb",
+              "wrapS": 1000,
+              "wrapT": 1000,
+              "width": 128,
+              "height": 128
+            }
+          },
+          {
+            "id": "f3aecb34-c1e1-4b14-9b3f-555a0cee7824",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "6d892adc-6887-4b81-812e-30ec83b879de",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          },
+          {
+            "id": "0c9a4e53-8571-4d0a-8660-6f9d72d10fd9",
+            "name": "Colour_d3cbbc",
+            "color": "d3cbbc",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "e8ac1a51-7036-4c82-9ad3-80a58b8a0a5b",
+        "objectId": "window_muskmimf_h",
+        "name": "Glass_window_muskmimf_h",
+        "geometryId": "afb275dc-d9c2-418e-9dfc-621a4d4b73e8",
+        "visible": true,
+        "materials": [
+          {
+            "id": "b5278232-e1d9-4d71-a1c2-618ab4be9447",
+            "name": "Glass",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.18,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      },
+      {
+        "id": "eae6d74a-1de4-4847-bf71-30722068831b",
+        "objectId": "window_muskmimf_h",
+        "name": "FrameRight_window_muskmimf_h",
+        "geometryId": "1410d64b-e6f0-492b-adfd-af29eeaea17b",
+        "visible": true,
+        "materials": [
+          {
+            "id": "8487e715-8ca0-40ff-8c50-772886548352",
+            "name": "Colour_8a6a49",
+            "color": "8a6a49",
+            "opacity": 0.25,
+            "transparent": true,
+            "depthWrite": false,
+            "roughness": 0.82,
+            "metalness": 0,
+            "map": null
+          }
+        ]
+      }
+    ],
+    "grid": [
+      [
+        0.05126945674419403,
+        0.10461648553609848,
+        0.16202937066555023
+      ],
+      [
+        0.13013647496700287,
+        0.2581828534603119,
+        0.38642942905426025
+      ]
+    ],
+    "auxColors": {
+      "selected-face": [
+        "67c6f0"
+      ],
+      "hinge-marker": [
+        "67c6f0"
+      ],
+      "hinge-axis": [
+        "67c6f0"
+      ],
+      "selection-outline": [
+        "67c6f0"
+      ],
+      "preview": [
+        "70c2e5"
+      ],
+      "snap": [
+        "6ed4aa"
+      ]
+    },
+    "expected": {
+      "background": "#202f3d",
+      "grid": "#405b70",
+      "axis": "#658ba7",
+      "selection": "#67c6f0",
+      "snap": "#6ed4aa",
+      "preview": "#70c2e5",
+      "invalid": "#ed8f98"
+    },
+    "expectedGrid": [
+      [
+        0.13013647668074665,
+        0.25818285291079235,
+        0.38642943377667954
+      ],
+      [
+        0.05126945836711539,
+        0.10461648408208657,
+        0.16202937562896222
+      ]
+    ]
+  }
+}

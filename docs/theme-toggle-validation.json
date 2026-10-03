@@ -1,0 +1,117 @@
+{
+  "measuredAt": "2026-10-03T18:20:33.1601047Z",
+  "clientDate": "2026-10-04",
+  "scope": "Windows Chromium browser, simulated Tauri IPC, pure TypeScript/Rust, production assets and Windows release build; no new native GUI, installation or macOS acceptance",
+  "requirements": [
+    "H09: light/dark direct click and keyboard toggle; no system following or theme listbox; legacy system and invalid values migrate to light",
+    "H10: Tauri main starts at 1600x900, minimum 900x600; native size remains unverified"
+  ],
+  "focused": {
+    "report": "test-results/theme-toggle/focused/e2e-results.json",
+    "stats": {
+      "startTime": "2026-10-03T17:57:03.037Z",
+      "duration": 104612.09999999999,
+      "expected": 31,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "windowLayouts": {
+    "report": "test-results/theme-toggle/window-size-final/e2e-results.json",
+    "stats": {
+      "startTime": "2026-10-03T18:00:17.196Z",
+      "duration": 36686.768000000004,
+      "expected": 12,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "commitPreflight": {
+    "check": "passed",
+    "typecheck": "passed: workspace, Node configuration, pure core and geometry",
+    "unitAndIntegration": {
+      "status": "passed",
+      "files": 17,
+      "tests": 164
+    },
+    "rust": {
+      "status": "passed",
+      "tests": 20
+    },
+    "productionBuild": "passed; large bundle warning retained",
+    "productionSmoke": {
+      "status": "passed",
+      "groups": 4,
+      "gltfErrors": 0,
+      "gltfWarnings": 0,
+      "doorAnimationClips": 4,
+      "report": "test-results/commit-preflight/production/production-smoke.json"
+    },
+    "browser": {
+      "fullRegression": {
+        "command": "node node_modules/@playwright/test/cli.js test --config test-results/commit-preflight/browser-20261004/playwright.regression.config.ts",
+        "report": "test-results/commit-preflight/browser-20261004/full-regression-results.json",
+        "stats": {
+          "startTime": "2026-10-03T18:10:42.894Z",
+          "duration": 455018.53699999995,
+          "expected": 53,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        }
+      },
+      "hardwareWebgpu": {
+        "command": "node node_modules/@playwright/test/cli.js test --config test-results/commit-preflight/browser-20261004/playwright.webgpu.config.ts",
+        "report": "test-results/commit-preflight/browser-20261004/hardware-results.json",
+        "stats": {
+          "startTime": "2026-10-03T18:18:28.021Z",
+          "duration": 28351.741,
+          "expected": 4,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "normalPathGpuErrors": 0,
+        "expectedInjectedGpuErrors": 11,
+        "pngDimensions": [
+          970,
+          718
+        ],
+        "pngDistinctRgb": 862,
+        "stableExitResources": {
+          "geometry": 4,
+          "textures": 4
+        }
+      },
+      "summary": "test-results/commit-preflight/browser-20261004/summary.json",
+      "isolation": "Ignored copies replace only evidence paths and relative imports; original assertions retained and test source SHA256 unchanged; exclusive port1421, existing port1420 untouched",
+      "scope": "Chromium browser and simulated IPC, not new native Tauri GUI or macOS acceptance"
+    },
+    "stagedCheckout": "Passed independent checkout-index architecture, color tokens, generated CSS and pinned Skills SHA256 check. Full snapshot format command initially found no targets because its parent is intentionally ignored; final main-workspace format/lint/check passed."
+  },
+  "release": {
+    "command": "npm run tauri -- build --bundles nsis",
+    "status": "passed",
+    "log": "test-results/theme-toggle/release-build.log",
+    "artifacts": [
+      {
+        "path": "test-results/theme-toggle/release/builder.exe",
+        "byteLength": 6501888,
+        "sha256": "76a85ab3fc90c53ade9ce745e6d3f0713bd88262feb2c601e5711200d4243b0e"
+      },
+      {
+        "path": "test-results/theme-toggle/release/Building Editor_0.1.0_x64-setup.exe",
+        "byteLength": 2452509,
+        "sha256": "0af43f9a8a82e9781123413b9dd011b7d1dc86e3fb8d7c6469a65132cfb750fc"
+      }
+    ]
+  },
+  "limitations": [
+    "Browser viewport and simulated IPC do not prove actual native window movement, size, DPI or close behavior",
+    "New Windows release host has not been launched or installed; macOS has not been built or tested",
+    "Original A01-A42 rows and historical evidence remain unchanged; H09 supersedes three-state theme conditions",
+    "This report closes interrupted documentation; implementation and original focused/layout/build logs were already present"
+  ]
+}

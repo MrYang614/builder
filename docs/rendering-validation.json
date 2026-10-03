@@ -1,0 +1,329 @@
+{
+  "measuredAt": "2026-10-03T16:03:59.529Z",
+  "scope": "Final rendering extension; actual Windows CLI and Chromium software WebGL; historical PRD and native evidence remain separate",
+  "dependencies": {
+    "three": "0.186.1",
+    "threeMeshBvh": "0.9.15",
+    "threeGpuPathtracer": "0.0.26",
+    "oxfmt": "0.71.0",
+    "oxlint": "1.86.0"
+  },
+  "quality": {
+    "command": "npm run verify",
+    "passed": true,
+    "testFiles": 15,
+    "tests": 123,
+    "strictTypeScriptConfigurations": 4,
+    "formattingFiles": 146,
+    "lintWarningsAllowed": 0,
+    "log": "test-results/rendering-final-verify.log"
+  },
+  "rust": {
+    "command": "npm run test:rust",
+    "passed": 18,
+    "failed": 0,
+    "ignored": 0,
+    "log": "test-results/rendering-rust-final.log"
+  },
+  "projectInteroperability": {
+    "status": "passed",
+    "measuredAt": "2026-10-03T15:59:17.821Z",
+    "scope": "Windows actual filesystem + Rust binary project_tool; no native GUI or macOS inference",
+    "sourceImagesDeleted": true,
+    "projectMoved": true,
+    "flow": "TS ZIP → real Rust decode → real Rust ZIP → TS decode",
+    "hdrExrOriginalBytesAndFormalSettingsRetained": true,
+    "log": "test-results/rendering-environment-container-final.log"
+  },
+  "e2e": {
+    "command": "DEBUG=pw:webserver PLAYWRIGHT_JSON_OUTPUT_NAME=test-results/rendering-owned-server-e2e.json npx playwright test --reporter=list,json --output=test-results/rendering-owned-server",
+    "startTime": "2026-10-03T15:52:52.837Z",
+    "duration": 335540.858,
+    "expected": 39,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "files": 18,
+    "report": "test-results/rendering-owned-server-e2e.json",
+    "log": "test-results/rendering-owned-server-e2e.log",
+    "server": "Started, owned and terminated by Playwright; captured in debug log"
+  },
+  "production": {
+    "command": "node scripts/production-smoke.mjs",
+    "time": "2026-10-03T15:58:48.373Z",
+    "scope": "Actual Vite production assets in Chromium software WebGL browser; not release Tauri or installed application validation",
+    "results": [
+      {
+        "name": "Actual production assets create editable example and one Canvas without dev instrument",
+        "status": "passed"
+      },
+      {
+        "name": "Actual production English/dark Portal, stable renderer, minimum900x600 layout",
+        "status": "passed",
+        "size": {
+          "width": 900,
+          "body": 900
+        }
+      },
+      {
+        "name": "Compiled production user property edit and actual GLB download/Validator",
+        "status": "passed",
+        "byteLength": 120120,
+        "errors": 0,
+        "warnings": 0,
+        "animations": [
+          "Door_door_musku18m_8_Open",
+          "Door_door_musku18m_8_Close",
+          "Door_door_musku18m_f_Open",
+          "Door_door_musku18m_f_Close"
+        ]
+      },
+      {
+        "name": "No production page exceptions",
+        "status": "passed"
+      }
+    ],
+    "log": "test-results/rendering-production-smoke.log"
+  },
+  "actualWebGLPathTracing": {
+    "report": "docs/rendering-pathtrace-validation.json",
+    "cycles": [
+      {
+        "samples": 16,
+        "elapsedMs": 41374,
+        "releasedGeometries": 19,
+        "releasedTextures": 4,
+        "activeSession": 0
+      },
+      {
+        "samples": 16,
+        "elapsedMs": 38976,
+        "releasedGeometries": 19,
+        "releasedTextures": 4,
+        "activeSession": 0
+      },
+      {
+        "samples": 16,
+        "elapsedMs": 39147,
+        "releasedGeometries": 19,
+        "releasedTextures": 4,
+        "activeSession": 0
+      }
+    ],
+    "png": {
+      "width": 970,
+      "height": 722,
+      "uniqueColors": 22859,
+      "min": 80.66666666666667,
+      "max": 248.33333333333334,
+      "sha256": "04cdb9fdd859586c62a963d20b66dacb82ce0cf24eb4038bb6946281809f0431"
+    },
+    "formalDocumentUnchanged": true
+  },
+  "bvh": {
+    "report": "docs/benchmark-bvh.json",
+    "scope": "Node CPU-only actual editable wall geometry and Three Raycaster; no DOM, Canvas, GPU FPS, native Tauri or input-latency claim",
+    "fixture": {
+      "walls": 1,
+      "realWindowHoles": 96,
+      "wallLengthMetres": 154.10000000000002,
+      "wallHeightMetres": 5,
+      "triangles": 9692,
+      "materialGroups": 6,
+      "raysPerIteration": 96,
+      "hitRays": 72,
+      "missRays": 24
+    },
+    "setup": {
+      "sceneBuildMs": 37.58260000000001,
+      "bvhBuildMs": 9.206500000000005,
+      "indirect": true
+    },
+    "measurement": {
+      "warmupIterationsPerMethod": 10,
+      "measuredIterationsPerMethod": 100,
+      "raysPerMethod": 9600,
+      "measurementOrder": "alternating native→BVH then BVH→native",
+      "native": {
+        "iterations": 100,
+        "totalMs": 3614.1065000000026,
+        "meanMs": 36.141065000000026,
+        "p50Ms": 36.10539999999992,
+        "p95Ms": 39.71759999999995,
+        "minMs": 31.26359999999977,
+        "maxMs": 42.804600000000164
+      },
+      "bvh": {
+        "iterations": 100,
+        "totalMs": 16.484899999999698,
+        "meanMs": 0.16484899999999697,
+        "p50Ms": 0.1372999999998683,
+        "p95Ms": 0.2842000000000553,
+        "minMs": 0.10760000000027503,
+        "maxMs": 0.34730000000001837
+      },
+      "processCpuMicroseconds": {
+        "native": {
+          "user": 3547000,
+          "system": 47000
+        },
+        "bvh": {
+          "user": 0,
+          "system": 0
+        }
+      },
+      "observedMeanRatioNativeToBvh": 219.23739300815103,
+      "checksum": 22651.20127458615
+    },
+    "correctness": {
+      "equivalentNearestHits": 96,
+      "originalIndexAndGroupsUnchanged": true,
+      "nativeClosestSelection": "Three native Mesh.raycast plus Raycaster distance sorting",
+      "bvhClosestSelection": "instance-only acceleratedRaycast with firstHitOnly true",
+      "compared": [
+        "presence",
+        "distance",
+        "world point",
+        "UV",
+        "normal",
+        "faceIndex",
+        "materialIndex",
+        "triangle vertices"
+      ]
+    },
+    "ownership": {
+      "before": {
+        "geometries": 0,
+        "meshes": 0,
+        "references": 0,
+        "constructed": 0,
+        "disposed": 0
+      },
+      "constructed": {
+        "geometries": 1,
+        "meshes": 1,
+        "references": 1,
+        "constructed": 1,
+        "disposed": 0
+      },
+      "after": {
+        "geometries": 0,
+        "meshes": 0,
+        "references": 0,
+        "constructed": 1,
+        "disposed": 1
+      }
+    },
+    "formalPerformanceTargetVerified": false
+  },
+  "capability": {
+    "default": {
+      "measuredAt": "2026-10-03T14:57:34.182Z",
+      "scope": "Windows headless Chromium browser capability probe; not Tauri or macOS",
+      "navigatorGpu": true,
+      "adapter": false,
+      "info": null
+    },
+    "swiftshader": {
+      "measuredAt": "2026-10-03T14:58:08.267Z",
+      "scope": "Windows headless Chromium software WebGPU capability, not hardware/native Tauri/macOS",
+      "navigatorGpu": true,
+      "adapter": false,
+      "info": null
+    },
+    "vulkan": {
+      "measuredAt": "2026-10-03T14:58:53.093Z",
+      "scope": "Windows headless Chromium software Vulkan probe, not native Tauri/macOS",
+      "args": [
+        "--enable-webgl",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--enable-unsafe-webgpu",
+        "--enable-features=Vulkan",
+        "--use-vulkan=swiftshader",
+        "--use-webgpu-adapter=swiftshader",
+        "--disable-vulkan-surface"
+      ],
+      "adapter": false,
+      "info": null
+    },
+    "actualUnsupportedDeviceFallbackVerified": true,
+    "supportedWebGPUBackendAndPathTracing": "environment blocked: no adapter"
+  },
+  "samples": {
+    "manifest": "examples/rendering/manifest.json",
+    "fixedEvidence": "examples/rendering/validation.json",
+    "files": [
+      {
+        "path": "examples/rendering/pathtrace-environment.building",
+        "bytes": 2129,
+        "sha256": "890988b73d1e20108e052e86090f3fee5fd6d203d610fa117f99cb9077186c95"
+      },
+      {
+        "path": "examples/rendering/pathtrace-environment.glb",
+        "bytes": 29592,
+        "sha256": "5ae64f5f070a2f186d21429c78c12b441cb829df1548fa09f0595b562c308177"
+      },
+      {
+        "path": "examples/rendering/pathtrace-environment.png",
+        "bytes": 221130,
+        "sha256": "01e4b79bf4eba1c67d3b2dc413bc6c6af31362046811db97894e2a389ce6bc10"
+      },
+      {
+        "path": "examples/rendering/validation.json",
+        "bytes": 35735,
+        "sha256": "e8ff1e746d10e40ec062269e2173d3365c920b5f5837457b2630b088e582ed75"
+      }
+    ],
+    "source": "Matching successful tracing case in preserved rendering-final run; final randomized PNG has independent evidence"
+  },
+  "release": {
+    "measuredAt": "2026-10-03T15:47:49.8764466Z",
+    "command": "CARGO_BUILD_JOBS=2 npm run tauri -- build --bundles nsis",
+    "log": "test-results/rendering-release-build.log",
+    "build": "Windows x64 Tauri optimized release and NSIS; final rendering extension including dialog resize fix",
+    "installation": "not executed",
+    "releaseDesktopLaunch": "not executed",
+    "nativeRenderingAcceptance": "not executed",
+    "executable": {
+      "path": "D:\\Code\\builder\\apps\\desktop\\src-tauri\\target\\release\\builder.exe",
+      "bytes": 6497280,
+      "sha256": "C6DBCF30EEA1DF844F62BD057DAB60C83DA2FFD18AD868CBFDE918F936094270"
+    },
+    "installer": {
+      "path": "D:\\Code\\builder\\apps\\desktop\\src-tauri\\target\\release\\bundle\\nsis\\Building Editor_0.1.0_x64-setup.exe",
+      "bytes": 2448689,
+      "sha256": "04C304D4F6C872CB5DC995BD88D5B69CEE1A2202E11FB681A00EC13B857C332E",
+      "signature": "NotSigned"
+    },
+    "previousArtifactArchive": ".test-artifacts/rendering-before-release"
+  },
+  "originalPRD": {
+    "sha256": "548cf937d1042681bf0887b6a71d1e0d9b9e428ecc515cd09b75215dd6b618ed",
+    "attachedSha256": "548cf937d1042681bf0887b6a71d1e0d9b9e428ecc515cd09b75215dd6b618ed",
+    "originalConditionsUnchanged": true,
+    "count": 42,
+    "acceptanceStatuses": {
+      "验证通过": 33,
+      "已实现未验证": 5,
+      "环境阻塞": 4
+    },
+    "newRequirements": "docs/RENDERING.md R01-R09; original rows unchanged"
+  },
+  "preservedFailures": {
+    "firstFullRun": "test-results/rendering-final-e2e.json",
+    "reason": "23 passed; remaining16 ERR_CONNECTION_REFUSED after reused external Vite exited; identical39 with owned server passed",
+    "earlyRendering": "test-results/rendering-first through rendering-fifth",
+    "earlySettings": "test-results/rendering-ui-first through rendering-ui-third",
+    "retriesEnabled": false,
+    "assertionsLowered": false
+  },
+  "limitations": [
+    "New native Windows renderer/PNG dialogs/titlebar close not exercised",
+    "NSIS built unsigned, not installed or launched",
+    "No physical supported WebGPU or real GPU device-loss test",
+    "macOS has no execution environment",
+    "Software WebGL/CPU timings do not prove Q5 FPS/latency targets",
+    "16-sample viewport PNG has visible noise, no denoising or offline high-resolution quality claim"
+  ]
+}

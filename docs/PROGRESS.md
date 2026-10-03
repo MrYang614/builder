@@ -1,0 +1,95 @@
+# 实施记录与恢复入口
+
+## 双主题直接切换、1600×900与提交前核验（2026-10-04）
+
+用户最新要求仅保留亮色／暗色，Header点击或Enter／Space直接切换，移除主题菜单和系统跟随；旧system／缺失／异常偏好固定迁移亮色，有效语言与渲染器保留。原生main默认尺寸改为1600×900，最小900×600保持。H09／H10覆盖声明已在HEADER-LAYOUT与ACCEPTANCE追加，原PRD及A01–A42历史条件保留。
+
+前次任务中断时实现、31项主题专项、12项窗口布局及Windows优化程序／NSIS构建已经通过，但汇总文档未完成。本次提交前核对原始报告并补齐theme-toggle-validation.json、README和当前架构／已知限制说明，独立产物副本及SHA256在test-results/theme-toggle/release。最新check、四套严格TS、164项／17文件单元集成、Rust20项和生产构建通过；独立生产浏览器4组检查通过，实际GLB零错误／零警告并包含四个独立门动画片段。
+
+提交前另发现默认autocrlf使暂存Impeccable从CRLF转LF，哈希与固定清单不符；默认Windows检出也会改变另外两项Skills及生成CSS。新增.gitattributes固定维护源码LF并保留Skills／原需求／历史证据原字节，重新暂存后独立检出的架构、token、生成CSS及三项Skills哈希检查通过，未改清单或Skill原文。
+
+提交前完整浏览器53／53通过，455.019秒；实际NVIDIA WebGPU4／4通过，28.352秒，均无失败／跳过／flaky。默认及PNG／JPEG均实际16采样，正常路径GPU错误0；三次退出geometry4／textures4稳定，预期故障注入11条错误后停止、重试与正式编辑恢复通过。大型工程50循环／5导出及生产4组检查通过。独立证据在test-results/commit-preflight/browser-20261004，汇总追加theme-toggle-validation.json；测试副本只改产物与相对导入路径，原断言和测试SHA256保持。
+
+本次没有修改产品源码、启动新原生GUI或执行系统安装；浏览器布局与模拟IPC不补填Windows／macOS的实际尺寸、移动、DPI、关闭或重启验收，已有失败及历史产物保持。
+
+## Header 全区域拖动与纯展示工程名（2026-10-04）
+
+用户最新要求：Header所有非交互控件区域都能按下移动，工程名无交互／指针变化／Tooltip。HeaderWindow改为整条header，背景首次mousedown请求原生拖动，dblclick最大化／还原；排除真实按钮、SVG后代、禁用包裹、选择器及DOM外Portal。工程名普通span、默认光标、无tabIndex／Tooltip；工程名继续真居中，保存状态继续在撤销、重做右侧。单处窗口背景指针事件lint例外保留banner地标而非伪装按钮，记录在CODE-QUALITY.md。
+
+最新format／lint／check、四套严格TS、156项／17文件单元及生产构建通过。相关15项浏览器与模拟IPC通过，五处背景实际按下逐次一次drag、双击一次drag加一次最大化，交互控件零drag；“-”数字草稿不失焦或提交，工程快照和Renderer保持；24个浏览器布局的名称中心偏差0px，名称无Tooltip／焦点且悬浮样式不变。证据test-results/header-drag-layout、header-drag-validation.json；H08输入路由已验证，实际原生移动仍未验证。未继续原生GUI，没有Rust源码／capability变更，不以此次浏览器结果补填Windows／macOS验收。
+
+最终Windows优化程序及NSIS已在全区域拖动修订后重新构建，独立产物保存在test-results/header-drag-layout-release，SHA256及字节长度记录在header-drag-validation.json。没有安装或启动新宿主；运行旧二进制的客户端需使用新产物并重启。
+
+## Header 工程标题与状态位置调整（2026-10-04）
+
+按用户后续要求删除 Header 可视“建筑编辑器”，工程名单独按整窗居中；已保存／未保存修改放在撤销、重做右侧，原 status.isDirty 文案、颜色、保存与关闭保护保持。左右等宽网格、独立右侧窗口容器、窄窗口32px图标保证双语／双主题900和1440宽布局；长工程名可截断并悬浮／聚焦读完整路径。
+
+最新质量、四套严格TS、156项／17文件单元和生产构建通过；Header／模拟IPC窗口相关11项复测通过，标题中心实测偏差0px。首轮9通过／2透明拖动区旧尺寸断言失败保留；修改辅助断言仅限制可见图标按钮，实际拖动／双击／键盘与关闭保护继续验证。H07与范围见 ACCEPTANCE.md、HEADER-LAYOUT.md、header-title-validation.json，最新证据在 test-results/header-title-layout/status-left-final。未继续原生GUI，不填补Windows／macOS实际窗口验收。
+
+## Header 布局交付增量（2026-10-04）
+
+按用户要求将主题、语言、实际渲染引擎移至 Header；新建、打开、保存、另存为、撤销、重做依次置左，Header 与建模工具改为 SVG 图标及双语悬浮／焦点说明。设置保留光追、采样和环境贴图。原生 main 关闭装饰栏，Header 提供最小化、最大化／还原、关闭及空白拖动区域，关闭仍等待偏好写入与未保存工程决定。共享组件在 ui 包，Header 仅订阅 backend／switching，不订阅采样帧。
+
+质量、四套严格类型、153项／17文件单元与集成、Rust18项、完整浏览器52项和生产smoke4项通过。最后按真实Chromium事件差异将窗口拖动改用首次mousedown，新增双击断言后5项模拟IPC窗口专项全部通过；完整52项基线在这次局部修订之前，范围及两次失败记录保留。Windows优化程序和NSIS在该修订后重新构建，独立副本及SHA256见 `docs/header-layout-validation.json` 和 `test-results/header-layout-release`。
+
+Impeccable独立双语／双主题900×600截图审查、机械检查与修复记录见 `UI-REVIEW.md`。H01–H06矩阵追加在 `ACCEPTANCE.md` 和 `HEADER-LAYOUT.md`，原A01–A42条件／状态不改。没有安装或启动原生GUI，实际Windows／macOS窗口装饰、拖动、DPI及关闭保持未验证；运行中的旧客户端须使用新产物并重启。当前WebGPU源码及历史证据均保留，本轮浏览器结果不填补原生或macOS验收。
+
+更新：2026-10-04。开始前完整读取 PRD v0.3；现有 Tauri/React 初始模板无 Git 元数据、AGENTS 或锁文件。保留原资产与图标，将应用与宿主迁入 apps/desktop。现有 Bun launcher 无法运行（不是有效 Windows 程序），采用可用 npm 12.2.0 工作区，固定 package-lock.json 与 Cargo.lock。本机 Node26.1.0、Rust/Cargo1.92.0，Windows11 x64。
+
+## 渲染扩展交付增量（2026-10-03–04）
+
+### WebGPU sampler 修复增量（2026-10-04）
+
+用户报告的第一条 WGSL 错误已定位到默认环境 DataTexture 的双 Nearest 过滤：Three 不生成 sampler，但发布版光追库的环境函数强制使用 textureSampleLevel。独立真实 NodeBuilder 回归复现该遗漏；产品默认／派生环境统一线性 RGBA HalfFloat、双 Linear，PNG/JPEG 实际像素转换保留正式图片资源。GPU onError 生命周期接入恢复实时编辑、保留首条错误和清理陈旧回调，包含 in-flight 采样拒绝的生产方法回归。
+
+采用完整 Chromium 无界面模式后，NVIDIA Lovelace 真实 WebGPU 的4项回归全部通过：默认环境与PNG／JPEG实际像素、16采样、暂停继续、真实着色器错误后停止／重试／继续编辑、WebGL↔WebGPU切换。最终默认光追PNG为970×718、849种RGB，正常路径GPU验证错误0。三周期首次暴露每轮3张派生纹理泄漏，补齐会话LUT、quad材质及未绑定的空图集所有者后，每次退出geometry4／textures4完全相同；某一dispose抛错也不阻止其余清理和GPU首因显示。失败报告保留，不以GPU计数代替VRAM字节测量。最新156项／17文件单元与集成、4套严格TS通过；普通浏览器回归及最终构建记录见webgpu-fix-validation.json。
+
+实际用户确认另一任务正在调整UI；保留它的源码，用独立缓存、关闭HMR／watch的1421测试服务器，未停止1420开发服务器。工具提示遮挡选择项的真实失败已保留，共享Tooltip增加pointer-events-none后真实鼠标切换通过。默认headless-shell的DXIL Error87是独立测试环境问题，8项设备探测证据保留。不得将浏览器硬件实测补作Tauri原生／macOS验收；用户确认没有未保存工程，已允许源码刷新，未继续原生GUI。根因、复现步骤与范围见WEBGPU-FIX.md。
+
+用户请求实际WebGL／WebGPU切换、three-mesh-bvh、three-gpu-pathtracer和环境贴图。已确认环境贴图随工程保存；按已说明的推荐方案增加当前视口PNG输出。BVH实例拾取、双backend路径封装、环境数据／便携资源链、设置与viewport已集成；R01–R09矩阵见RENDERING.md。核对并精确锁定BVH0.9.15／pathtracer0.0.26，使用发布包真实两backend入口。
+
+实际通过123项／15文件单元与集成、四套严格TS、格式／零警告lint／架构／token／Skills检查、Rust18项及删HDR／EXR原图后跨目录TS↔Rust便携文件链。最终完整39项真实浏览器回归335.541秒、0跳过／失败／flaky：含实际16采样光追、暂停继续、PNG像素、三次资源退出、环境保存重开、50大型工程循环和5GLB。生产资源4组检查通过，Windows优化release／NSIS已重新构建，最终哈希见rendering-release-artifacts.json；未安装／启动release宿主。匹配可编辑工程、门动画GLB和PNG在examples/rendering，固定报告与SHA清单随附。
+
+上一轮软件GPU三种探测均没有adapter；本轮完整Chromium已在真实NVIDIA设备验证成功切换与光追。真实device-loss、新Windows原生GUI与macOS仍未运行，用户物理Escape停止仍受尊重。偏好写入／关闭失败重试9项模拟宿主集成不冒充原生标题栏操作。最初23通过／16服务器连接失败、旧光追背景texture泄漏、HMR中断、三轮UI失败保留；最终复测由Playwright自身拥有Vite，未降低断言。
+
+## 工具增量：oxfmt／oxlint（2026-10-03）
+
+应用户要求接入 oxfmt 0.71.0、oxlint 1.86.0，采用 Google TypeScript 开源规范的项目适配版，精确依赖、共享编辑器设置、零警告质量入口和 Windows CI 已落地。直接 Prettier 依赖及配置已移除。规范及有理由的局部例外在 CODE-QUALITY.md；工具版本、执行结果与范围在 code-quality-validation.json。原始 PRD、固定 Skills、生成 token CSS和历史证据保留，不为排版改变校验内容。
+
+格式及安全修复统一花括号／类型导入；React 引用更新移入 layout effect，runtime 注册／按实例清理在服务层完成，状态栏改用 output。保持 React refs、immutability 和依赖规则启用。严格类型检查发现自动修复改变 TypedArray.map 语义后，已恢复明确 Array.from，几何断言不变。
+
+本次 check、四套严格类型检查、71项单元／集成、生产构建通过；14项相关浏览器回归及4组实际生产资源检查通过，实际 GLB Validator零错误零警告。首次浏览器执行被沙箱 spawn EPERM 阻塞，获准执行后原测试通过，失败记录保留。没有执行原生 GUI、Rust新测试或重新打包 NSIS；下文33项全套与安装包是此前交付证据，不代表工具接入后的全套／桌面回归。验收42行与原有状态不变，CI尚未在远端运行。
+
+## 分阶段交付
+
+下表为原PRD的阶段交付基线；上述渲染扩展和最新验证补充它，原A01–A42的33通过／5未完整验证／4环境阻塞状态不变。
+
+| 阶段             | 当前实现与运行证据                                                                                                                                                              | 剩余验收                                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| 1 工程基础       | 五包工作区与公开边界、三项官方固定版本 Skills 实装与实际读取、shadcn 共享组件、双语及三态主题、单原生 Three Canvas；严格类型／边界／token／生成一致性检查通过                   | macOS 初始化与系统主题实际切换未执行                                                                                   |
+| 2 首条完整功能链 | 真实鼠标两段 L 墙、门放置移动、实体洞口、A/B 独立图片、非整周期连续 UV、尺寸改动及撤销、独立快照 GLB 和每门 Open/Close；独立加载及 Validator 通过                               | 最终运行时修订的原生整链回归未执行                                                                                     |
+| 3 建筑编辑       | 墙端点、厚矩形楼板及角点、门窗、楼层、显式封板、表面／连续组材质、数值草稿、吸附／输入路由／预览事务及撤销重做已实施                                                            | 窗拖动相机矩阵缺陷已修复；墙端点属性／鼠标对比、板上下材质和跨层命中全部通过最终浏览器回归。原生完整路径待补验         |
+| 4 工程与导出     | Rust 二进制 IPC、便携资源 ZIP 容器、严格版本校验、原子保存／打开／另存为、设置分离；Rust14项、TS↔Rust互通、原生中文路径文件流程及门动画产物通过；两套可编辑示例和 GLB 已生成    | 真实磁盘满、部分原生失败弹层与 macOS 迁移尚未验证                                                                      |
+| 5 审查与交付     | Impeccable实际context／detect与组合审查、生产样式／双语／双主题、71项单元／集成、33项最终端到端、20次GPU循环、50次大型工程循环及5导出已执行；最终Windows优化release与NSIS已构建 | 33项验收通过、5项已实现未完整验证、4项环境阻塞。安装／release宿主启动、原生关闭／系统主题、macOS、外部初心者测试未验证 |
+
+阶段划分未限制开发范围；没有空面板、假数据按钮或固定模型替代编辑能力。完整状态逐行见 ACCEPTANCE.md；命令、原始测量和失败记录见 TEST-RESULTS.md、各 validation JSON 与 test-results。
+
+## 已确认与实现决定
+
+Q2 用户确认：允许指定收口，保持纹理实际尺寸。UI 显示收口与 T 形实际可见边界走向，不宣称非整周期闭环处处无条件无缝。Q5 最低系统／CPU架构／参考设备仍待用户确定；软件 WebGL 的性能实测不是正式达标结果。
+
+普通实现决定：米、Y 向上、稳定 A/B 表面身份；版本1 ZIP .building，PNG/JPEG资源内嵌和SHA256去重；公开输出 GLB；命令与局部变更集；纯 TypeScript 几何，基准未证明加速必要性前不用 Worker/WASM。JSON glTF 生成器单独校验但不增加多文件菜单。
+
+## 已修复的真实缺陷
+
+核心错误码漏译和 shadcn 默认阴影颜色已修复并完整回归。L 形墙加门在2.7m改长时的 EPS 微小切片会产生退化三角形，已修复并保留几何回归。连续材质初次组操作、重复收口组、删除／撤销后的楼层会话、门并发动画、显示 clones 生命周期、图片 CPU 缓存删除与同ID替换已修复，各有对应真实操作或资源断言。
+
+首次Rust release构建发生Windows文件共享错误，降低Cargo并发到2后完成，未关闭类型检查或删测试。原生驱动保留4次失败及原因，最终19个case通过；这些采自最终运行时修订前。浏览器整组曾14通过／1窗拖动失败，保留截图／trace，定位为相机矩阵未及时同步，旧代码确定复现1524px偏差；产品修复后同路径连续5次及当时21项整组均通过。保存期间继续编辑的真实UI竞态也已修复，旧保存不会放行New/Open/Close丢弃新数据。
+
+最后UI审查将原生title替换为可双主题核验的共享Tooltip；真实关闭Settings发现受控Dialog焦点丢失，已在共享组件中修复并回归。新增连接实体／多视角截图、完整门编辑恢复、图片晚到／主题实际渲染、损坏文件实际打开和5项双语双主题UI状态。最终33项／16文件全部通过，耗时250.26秒，0跳过／失败／flaky；原21项报告单独保存，没有覆盖旧失败记录。最终NSIS也包含Tooltip及焦点修复，文件哈希已重新计算。
+
+## 继续工作约束
+
+从本文件、ACCEPTANCE.md、RENDERING.md、KNOWN-ISSUES.md恢复。用户物理Escape已停止原生Computer Use，本轮不继续原生GUI。CLI、源码和浏览器验证可以继续；浏览器结果不填补原生或macOS缺口。WebGPU修复最新完整证据以webgpu-fix-validation.json和webgpu-fix-release-artifacts.json为准；上一轮123／39／Rust18及包含Dialog resize修复的NSIS为历史证据。剩余工作见矩阵和KNOWN-ISSUES，源码改变后应重跑对应验证并重建产物。其他71／33／14报告与此前release哈希继续保留。
+
+自动审批拒绝临时上游 .agents/impeccable-source 目录的递归清理，返回原因是策略阻止。目录保留并由 .gitignore 忽略；不绕过拒绝，不影响软件运行。Skills 实际安装文件和许可证完整保留。

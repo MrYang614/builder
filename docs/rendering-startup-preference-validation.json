@@ -1,0 +1,13 @@
+{
+  "measuredAt": "2026-10-03T15:55:14.314Z",
+  "capability": {
+    "gpuAPI": true,
+    "adapter": false
+  },
+  "branch": "Actual unsupported WebGPU startup falls back to WebGL; user explicitly saves the current working backend.",
+  "startupActualBackend": "webgl",
+  "savedPreference": "webgl",
+  "restartActualBackend": "webgl",
+  "settingsReopenedAndRestored": true,
+  "limitation": "WebGPU rendering on a physical supported adapter remains unverified; this test validates the actual unsupported-device fallback."
+}

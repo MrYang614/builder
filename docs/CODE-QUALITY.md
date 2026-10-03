@@ -1,0 +1,72 @@
+# 代码规范与质量工具
+
+2026-10-03。本项目采用 [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) 的可适用部分，结合 Oxc 原生规则和本项目的架构、token、国际化检查。Google 的开源规范来自企业内部实践，文档采用 [CC BY 3.0](https://github.com/google/styleguide)；这里是明确记录差异的项目适配，不声称等同 Google 内部工具链或完整 Google 合规。
+
+## 工具与范围
+
+| 工具       | 锁定版本    | 职责                                                            |
+| ---------- | ----------- | --------------------------------------------------------------- |
+| oxfmt      | 0.71.0，MIT | JS/TS/TSX、JSON、CSS、HTML、YAML及维护文档排版                  |
+| oxlint     | 1.86.0，MIT | 正确性、TypeScript类型导入、React Hooks、可访问性及模块导入检查 |
+| TypeScript | 保持6.0.3   | 严格类型检查，包括纯核心／几何与Node构建配置                    |
+
+Oxc两项工具的Node兼容范围均为 `^20.19.0 || >=22.12.0`，本机Node26.1.0实际执行通过。依赖以精确版本写入package.json和package-lock.json，使用npm工作区。直接Prettier依赖和两份旧配置已移除，不维护第二套格式规范；上游生成工具若仍间接引用Prettier，不参与项目格式检查。
+
+配置及API依据 [Oxfmt配置](https://oxc.rs/docs/guide/usage/formatter/config)、[Oxlint配置](https://oxc.rs/docs/guide/usage/linter/config.html) 与安装包内的JSON Schema复核。格式配置 `.oxfmtrc.json`、lint配置 `.oxlintrc.json` 均显式用于CLI，编辑器使用相同本地工具及配置。
+
+## 自动实施的规范
+
+- UTF-8、LF、两空格缩进、分号、单引号；JSX属性使用双引号，多行尾逗号。
+- 100列宽沿用已有项目设置，作为对Google格式细节的显式适配；不引入其内部格式化器。
+- 控制流统一花括号，优先const，禁止var、debugger、eval、隐式eval。
+- 严格比较；`value == null`只作为同时判断null和undefined的明确例外。
+- 类型专用导入明确使用type；允许 `import('module').Type` 类型查询，保留浏览器测试的独立类型注解。
+- 正式源码禁止显式any、TS忽略注释；测试仍须通过同样严格tsc，探针的运行时外部边界可使用已有any。产品源码console只允许warn/error，脚本可输出测试与构建结果。
+- 检查Hooks调用与依赖、JSX key、外链、ARIA属性、标签关联、键盘交互、重复／自引用导入。Oxc正确性类别中的TypeScript、Unicorn、Oxc、React、jsx-a11y、import规则一起启用。
+- 所有诊断阻止合并或构建，警告也返回非零；未使用的局部禁用注释会被报告。这里只使用安全 `--fix`，不使用 `--fix-suggestions` 或 `--fix-dangerously`。
+
+Google规范中仍需代码审查的内容包括API命名、文档、模块职责与复杂度；不会用“lint通过”替代这些判断。项目的稳定领域ID、纯计算、命令边界和语义token要求继续由原有检查及测试落实，不被通用lint替代。
+
+当前保留TypeScript6，未开启 [Oxlint type-aware模式](https://oxc.rs/docs/guide/usage/linter/type-aware.html)：当前官方兼容要求为TypeScript7及额外oxlint-tsgolint依赖。这次工具接入不顺带升级编译器；`typecheck`保留官方tsc的四套严格检查，不声称它能替代未启用的no-floating-promises等类型感知lint规则。
+
+## 有理由的局部例外
+
+这些例外写在实际代码旁，只关闭对应位置的一条规则；禁止对整包关闭检查来制造通过。
+
+| 位置／规则                                          | 保留原因                                                                                                                               |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| EditorCore／SessionStore／门动画的no-useless-spread | 订阅者或动画Map可在回调提交命令时变化，复制集合固定一次派发范围，不能直接迭代会被修改的活集合                                          |
+| 文件名清洗的no-control-regex                        | 明确去除Windows文件名中的ASCII控制字符；保留真实文件规则                                                                               |
+| 图片异步测试探针的no-this-alias                     | 捕获原生HTMLImageElement接收者，延迟真实事件后仍以同一对象调用监听器                                                                   |
+| shadcn Field的prefer-tag-over-role                  | 公开API是通用div属性和组合容器，role=group合法，不强行改fieldset导致公共类型和浏览器默认布局改变                                       |
+| 原生Header的no-noninteractive-element-interactions  | 原生标题栏背景需要鼠标拖动／双击；保留banner地标而不伪装按钮或增加焦点，最小化／最大化／关闭由实际按钮提供键盘操作，仅豁免该Header标签 |
+
+React refs／immutability／exhaustive-deps均保持启用。渲染期间写ref已改为layout effect；服务层通过attachRuntime及按实例detach清理桥接，主题／语言切换不重建Renderer。状态栏使用语义output。
+
+## 格式化排除
+
+第三方Skills有固定SHA256，token CSS与生成器逐字比较，原始PRD和验收表的42行条件精确校验。故排除 `.agents`、生成CSS、原文两份Markdown、历史JSON证据、测试／构建产物、Tauri生成schema、示例source JSON及锁文件；源token JSON、实际源码和测试仍在检查中。导入、Tailwind类与package.json不自动排序，保留副作用导入及数据键顺序。完整列表在 `.oxfmtrc.json` 和 `.oxlintrc.json`。
+
+## 日常命令与CI
+
+`.gitattributes`将维护源码与生成文本的检出换行固定为LF，避免Windows默认autocrlf破坏格式及生成CSS检查。固定Skills、原PRD／验收文件、历史JSON、示例source JSON与tests/artifacts保持原始字节，不通过Git换行转换改变其哈希或证据。提交前还核对暂存Skills的SHA256与清单一致；工作区检查通过不能代替检出内容核验。
+
+```powershell
+npm run format          # 写入格式
+npm run format:check    # 只检查
+npm run lint            # 零警告检查
+npm run lint:fix        # 仅安全自动修复，剩余问题仍失败
+npm run typecheck       # workspace、node、无DOM core及geometry
+npm run check           # 格式 + lint + 既有架构/token/Skills检查
+npm run verify          # check + typecheck + 单元测试 + 生产构建
+```
+
+`npm run build`已有check前置，Tauri构建继续复用此入口。VS Code／兼容编辑器推荐 [官方Oxc扩展](https://oxc.rs/docs/guide/usage/formatter/editors.html)，仅源代码语言启用保存格式化；不更改用户全局设置，不声称已经安装编辑器扩展。
+
+`.github/workflows/quality.yml`提供Windows代码质量流程：push／PR／手动触发，最小contents:read权限，checkout v6和setup-node v7锁定实际官方标签提交，Node26.1.0／npm12.2.0、npm ci、npm run verify。当前工作区无Git仓库／远端，此工作流未在GitHub运行；配置存在不等于远程CI通过，也不代表Tauri／macOS验收。
+
+## 本次验证记录
+
+最终结果记录于 `docs/code-quality-validation.json`，原始迁移诊断与源文件基线保留在 `test-results/code-quality`。首轮589条主要是缺少花括号及类型导入；没有删除失败测试或降低严格类型检查。安全自动修复曾将TypedArray的嵌套数组转换错误地化简为TypedArray.map，严格tsc捕获后改成明确Array.from，几何测试继续检查原体积／洞口／UV。
+
+原生WebDriver脚本只移除未使用css辅助声明；287个保留的字符串／模板片段cooked值逐项不变，语法通过，未重新执行原生GUI。浏览器回归与生产检查另列真实结果；历史NSIS和旧全套测试产物保留，不伪称本次已重新打包桌面或执行macOS。

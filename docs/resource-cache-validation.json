@@ -1,0 +1,637 @@
+{
+  "platform": "Windows Chromium SwiftShader isolated material-pool integration; actual PNG decoding/GPU drawing, not native Tauri/file chooser acceptance",
+  "cycles": 20,
+  "removalPrunesCpuCache": true,
+  "sameIdReplacementPrunesCpuCache": true,
+  "oldGpuLeaseSurvivesUntilRelease": true,
+  "newImageDisplayed": true,
+  "report": {
+    "baseline": 1,
+    "before": [
+      247,
+      247,
+      247,
+      255
+    ],
+    "cycles": [
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      },
+      {
+        "active": {
+          "cached": 1,
+          "materials": 2,
+          "textures": 1,
+          "references": 2,
+          "gpu": 2
+        },
+        "coloured": [
+          217,
+          31,
+          15,
+          255
+        ],
+        "cleared": [
+          247,
+          247,
+          247,
+          255
+        ],
+        "cached": 0,
+        "resources": 0,
+        "pool": {
+          "materials": 1,
+          "textures": 0,
+          "references": 1
+        },
+        "gpu": 1
+      }
+    ],
+    "oldPixel": [
+      217,
+      31,
+      15,
+      255
+    ],
+    "newPixel": [
+      15,
+      77,
+      217,
+      255
+    ],
+    "replacementPruned": 0,
+    "versionsDistinct": true,
+    "overlapStats": {
+      "materials": 3,
+      "textures": 2,
+      "references": 3
+    },
+    "releaseOldStats": {
+      "materials": 2,
+      "textures": 1,
+      "references": 2
+    },
+    "oldTextureDisposeCount": 1,
+    "final": {
+      "cached": 0,
+      "materials": 1,
+      "textures": 0,
+      "references": 1,
+      "gpu": 1
+    },
+    "disposed": {
+      "cached": 0,
+      "materials": 0,
+      "textures": 0,
+      "references": 0
+    }
+  }
+}

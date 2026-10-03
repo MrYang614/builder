@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-04",
+  "acceptance": "H08",
+  "status": "已实现未验证",
+  "requirements": [
+    "Every noninteractive Header area requests native window dragging on mouse down",
+    "Interactive buttons, disabled wrappers, selectors and portal options keep their input",
+    "Project name is plain display text without Tooltip, focus or hover style changes",
+    "Project name remains centered; saved status remains after Undo and Redo"
+  ],
+  "quality": {
+    "format": "passed",
+    "lintFix": "passed",
+    "check": "passed",
+    "strictTypecheckTargets": 4,
+    "unitTests": 156,
+    "unitTestFiles": 17,
+    "productionBuild": "passed",
+    "command": "npm run verify",
+    "log": "test-results/header-drag-layout/verify.log"
+  },
+  "browser": {
+    "scope": "Chromium real frontend and simulated Tauri IPC, not native Windows or macOS acceptance",
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "durationMs": 46073.717,
+    "testGroups": {
+      "header": 6,
+      "uiStates": 4,
+      "simulatedWindow": 5
+    },
+    "report": "test-results/header-drag-layout/e2e-results.json",
+    "log": "test-results/header-drag-layout/playwright.log",
+    "screenshotsAndAttachments": "test-results/header-drag-layout/artifacts",
+    "locales": [
+      "zh-CN",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "viewports": [
+      "900x600",
+      "1440x900"
+    ],
+    "projectLayoutMeasurements": 24,
+    "measuredCenterErrorPx": 0,
+    "backgroundMouseTargetsPerLocale": [
+      "Header padding",
+      "Left file action gap",
+      "Saved status",
+      "Project name",
+      "Right preference gap"
+    ],
+    "dragRequestsPerBackgroundPress": 1,
+    "dragRequestsPerDoubleClick": 1,
+    "maximizeRequestsPerDoubleClick": 1,
+    "interactiveDragRequests": 0,
+    "numericDraftFocusValueAndDocumentPreserved": true,
+    "projectTooltipAndFocusRemoved": true,
+    "projectCursor": "default",
+    "projectHoverStyleUnchanged": true,
+    "closeGuardAndRendererPreserved": true
+  },
+  "review": {
+    "record": "docs/UI-REVIEW.md",
+    "newNativeGuiRun": false,
+    "macOSRun": false,
+    "rustSourceChanged": false,
+    "previousTitleAndFullBrowserEvidencePreserved": true,
+    "limitation": "Actual system window movement, DPI, multi-display and platform acceptance remain unverified"
+  },
+  "release": {
+    "windowsBuild": "passed",
+    "bundles": [
+      "nsis"
+    ],
+    "log": "test-results/header-drag-layout/release-build.log",
+    "installed": false,
+    "guiLaunched": false,
+    "artifacts": [
+      {
+        "path": "D:/Code/builder/test-results/header-drag-layout-release/builder.exe",
+        "bytes": 6501376,
+        "sha256": "435686f191a3b9ba6b2f755a2bdc9860143dfffabe6ee0925989d4b330fdc6cf"
+      },
+      {
+        "path": "D:/Code/builder/test-results/header-drag-layout-release/Building Editor_0.1.0_x64-setup.exe",
+        "bytes": 2451463,
+        "sha256": "4d5e27da84a59405b926f2c88b40501488b380494b08f9632a6382bcc51e87e2"
+      }
+    ]
+  }
+}

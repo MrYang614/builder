@@ -1,0 +1,160 @@
+{
+  "continuity": [],
+  "id": "project_murws1dt_1",
+  "levels": [
+    {
+      "elevation": 0,
+      "height": 3,
+      "id": "level_1",
+      "name": "1"
+    }
+  ],
+  "name": "Untitled",
+  "openings": [
+    {
+      "angle": 45,
+      "closedAngle": 0,
+      "direction": 1,
+      "duration": 1,
+      "height": 2.1,
+      "hinge": "left",
+      "id": "door_murx81gw_4",
+      "kind": "door",
+      "levelId": "level_1",
+      "materials": {
+        "A": {
+          "color": "#b28a5e",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "B": {
+          "color": "#b28a5e",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "edge": {
+          "color": "#8a6a49",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        }
+      },
+      "offset": 1.8,
+      "openAngle": 90,
+      "sill": 0,
+      "wallId": "wall_murws22h_4",
+      "width": 0.9
+    }
+  ],
+  "resources": [
+    {
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABm0lEQVR4nO3dMUoDQRiA0VnxMCksUthaeQMrbxAIBHKUQCCQwtLGS3gBBQsLj2Mh7A2Sz4X3qql2h/n4ux12+nx/G3Ruwnczxrj9O4WPw2Fxx3G/38/r5e7fBMQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQm3wd3TIBMQFiAsSml6eHCz16vdvN66/jcSzN+ir7NwExAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxNwPiJmAmAAxAf7H/wO+T6exNHfb7bxe7v5NQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAx9wNiJiAmQEyA2PT6/HihR682m3n9cz6PpVldZf8mICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICY+wExEzBavyyIJnjE4eviAAAAAElFTkSuQmCC",
+      "id": "builtin_brick",
+      "mime": "image/png",
+      "name": "brick"
+    },
+    {
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAACE0lEQVR4nO2bMU4DQRAEhfv/j+MFZLyiAusQEsI53sZdGziocK53VZoZv31+vOfrAA+/wvx9QW4WmqPJuz6A2efcvb9ZfY6+uo83wAuR5xbk1w2w+nl6HH9ugNXPicfg+wZY/Rx6itXQqKEsi4AaGjWUqkiqoTleFDU0hZVSQyksnxr676HdUNTQLEO7oaihqYqkGsrxoqih7EC7oVFDWYZ2Q6OGsgwdykcNpSqSamiOF0UNHYJ2Q1FDswzthqKGZhm6G8rZT+Ju6HXUUEoeBDWUNWg3NGooy9BuaNRQqiKphmYKOpSPGkpVJNXQTEG7oaihWYZ2Q1FDuyKphjIFHcqjhqYqkmooU9BuaNRQlqFD+euoocxCNRQ1NFWRVEM5XhQ1lB1oN5Szn0QNvY4aSsmDoIayBt0NjRpKVSTV0BwvihqawkqpobwkdDc0aihVkVRDMwXdDUUNTVUk1VCOF0UNpbBSauhrQofyqKGpiqQayhR0NzRqKFWRVEMzBe2GRg1lGTqUjxpKVSTV0ExBd0NRQ7siqYYyBe2GooZmGTqURw1NVSTVUKagf1G6jhrKLFRDUUNTFUk1lCnoUD5qKFWRVEMzBR3KRw1lGTqUjxpKVSTV0ExBh/KooV2RVEOZgnZDUUOzDB3Ko4amKpJqKFPQofx11FBmoRqKGpqqSKqhTEGH8lFDqYqkGpop6FA+Zz/JHd0YTH8WqabFAAAAAElFTkSuQmCC",
+      "id": "builtin_plaster",
+      "mime": "image/png",
+      "name": "plaster"
+    }
+  ],
+  "revision": 10,
+  "schemaVersion": 1,
+  "slabs": [],
+  "walls": [
+    {
+      "end": {
+        "x": 2.2,
+        "z": 0
+      },
+      "height": 2.8,
+      "id": "wall_murws22h_4",
+      "levelId": "level_1",
+      "materials": {
+        "A": {
+          "color": "#ded8cd",
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick",
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "B": {
+          "color": "#ded8cd",
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster",
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        }
+      },
+      "start": {
+        "x": -2,
+        "z": 0
+      },
+      "surfaceOrientation": 1,
+      "thickness": 0.2
+    },
+    {
+      "end": {
+        "x": 2,
+        "z": 2
+      },
+      "height": 2.8,
+      "id": "wall_murws24f_6",
+      "levelId": "level_1",
+      "materials": {
+        "A": {
+          "color": "#ded8cd",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "B": {
+          "color": "#eee9df",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0,
+          "tileHeight": 0.5,
+          "tileWidth": 0.5
+        }
+      },
+      "start": {
+        "x": 2,
+        "z": 0
+      },
+      "surfaceOrientation": 1,
+      "thickness": 0.2
+    }
+  ]
+}

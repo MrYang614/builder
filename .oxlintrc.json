@@ -1,0 +1,79 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "rules": {
+    "eslint/curly": ["error", "all"],
+    "eslint/eqeqeq": [
+      "error",
+      "always",
+      {
+        "null": "ignore"
+      }
+    ],
+    "eslint/no-var": "error",
+    "eslint/prefer-const": "error",
+    "eslint/no-debugger": "error",
+    "eslint/no-eval": "error",
+    "eslint/no-implied-eval": "error",
+    "eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "typescript/ban-ts-comment": "error",
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": false
+      }
+    ],
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "error",
+    "react/jsx-key": "error",
+    "react/jsx-no-target-blank": "error",
+    "jsx-a11y/alt-text": "error",
+    "jsx-a11y/aria-props": "error",
+    "jsx-a11y/aria-proptypes": "error",
+    "jsx-a11y/label-has-associated-control": "error",
+    "jsx-a11y/click-events-have-key-events": "error",
+    "jsx-a11y/no-static-element-interactions": "error",
+    "import/no-duplicates": "error",
+    "import/no-self-import": "error"
+  },
+  "overrides": [
+    {
+      "files": ["apps/desktop/src/**/*.{ts,tsx}", "packages/*/src/**/*.{ts,tsx}"],
+      "rules": {
+        "typescript/no-explicit-any": "error",
+        "eslint/no-console": [
+          "error",
+          {
+            "allow": ["warn", "error"]
+          }
+        ]
+      }
+    }
+  ],
+  "ignorePatterns": [
+    ".agents/**",
+    ".codex/**",
+    "node_modules/**",
+    "**/target/**",
+    "**/dist/**",
+    "dist-ssr/**",
+    "coverage/**",
+    ".test-artifacts/**",
+    "test-results/**",
+    "playwright-report/**",
+    "tests/artifacts/**",
+    "apps/desktop/src-tauri/gen/**",
+    "apps/desktop/src-tauri/.webdriver/**"
+  ]
+}

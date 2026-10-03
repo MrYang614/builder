@@ -1,0 +1,110 @@
+{
+  "measuredAt": "2026-10-03T15:58:21.744Z",
+  "status": "passed",
+  "scope": "Windows Chromium SwiftShader browser E2E; not Tauri native desktop acceptance",
+  "operations": "Real mouse creates L walls and places a door; UI assigns A/B images, edits length, undoes, drags endpoint, cancels and downloads actual GLBs. Diagnostic reads never inject commands.",
+  "baseline": {
+    "wallIds": [
+      "wall_musktict_5",
+      "wall_musktieh_8"
+    ],
+    "doorId": "door_musktiir_b",
+    "axisLength": 2.4,
+    "history": {
+      "canUndo": true,
+      "canRedo": false,
+      "undoCount": 8,
+      "redoCount": 0
+    },
+    "camera": {
+      "position": [
+        5.718644357080407,
+        7.464354060921024,
+        7.935805440390045
+      ],
+      "target": [
+        -0.75,
+        1.399999976158142,
+        -0.15000000596046445
+      ]
+    }
+  },
+  "preview": {
+    "documentUnchanged": true,
+    "historyUnchanged": true,
+    "valid": true,
+    "dragging": true
+  },
+  "propertyLength": 3.2,
+  "mouseLength": 3.2,
+  "oneHistoryRecordPerEdit": true,
+  "undoRestoredConnectionDoorMaterialsAndUv": true,
+  "cancelDocumentAndHistoryUnchanged": true,
+  "exports": [
+    {
+      "file": "D:\\Code\\builder\\test-results\\rendering-owned-server\\wall-roundtrip.browser-A27-40888--door-and-continuous-A-B-UV\\before-property-and-drag.glb",
+      "bytes": 29068,
+      "validatorErrors": 0,
+      "validatorWarnings": 0,
+      "fingerprint": "d7d6ee9ecd51b425eecac7bb960c96cc2f67c3726b91addc3cde97a6917c1412",
+      "inner": [
+        4.599999904632568,
+        4.599999904632568
+      ],
+      "outer": [
+        5,
+        5
+      ],
+      "holeHits": 0
+    },
+    {
+      "file": "D:\\Code\\builder\\test-results\\rendering-owned-server\\wall-roundtrip.browser-A27-40888--door-and-continuous-A-B-UV\\property-length-3.2.glb",
+      "bytes": 29112,
+      "validatorErrors": 0,
+      "validatorWarnings": 0,
+      "fingerprint": "8d01e680a0f5c47b7039f36c86a4b93d7735816809c60b9d1127cc4ab5ee69d0",
+      "inner": [
+        6.199999809265137,
+        6.199999809265137
+      ],
+      "outer": [
+        6.599999904632568,
+        6.599999904632568
+      ],
+      "holeHits": 0
+    },
+    {
+      "file": "D:\\Code\\builder\\test-results\\rendering-owned-server\\wall-roundtrip.browser-A27-40888--door-and-continuous-A-B-UV\\mouse-endpoint-length-3.2.glb",
+      "bytes": 29112,
+      "validatorErrors": 0,
+      "validatorWarnings": 0,
+      "fingerprint": "8d01e680a0f5c47b7039f36c86a4b93d7735816809c60b9d1127cc4ab5ee69d0",
+      "inner": [
+        6.199999809265137,
+        6.199999809265137
+      ],
+      "outer": [
+        6.599999904632568,
+        6.599999904632568
+      ],
+      "holeHits": 0
+    },
+    {
+      "file": "D:\\Code\\builder\\test-results\\rendering-owned-server\\wall-roundtrip.browser-A27-40888--door-and-continuous-A-B-UV\\undo-and-cancel-restored.glb",
+      "bytes": 29068,
+      "validatorErrors": 0,
+      "validatorWarnings": 0,
+      "fingerprint": "d7d6ee9ecd51b425eecac7bb960c96cc2f67c3726b91addc3cde97a6917c1412",
+      "inner": [
+        4.599999904632568,
+        4.599999904632568
+      ],
+      "outer": [
+        5,
+        5
+      ],
+      "holeHits": 0
+    }
+  ],
+  "pageErrors": []
+}

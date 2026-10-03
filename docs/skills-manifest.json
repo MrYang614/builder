@@ -1,0 +1,30 @@
+{
+  "installedAt": "2026-10-03",
+  "reader": "Codex exec_command/Get-Content -Raw",
+  "skills": [
+    {
+      "name": "frontend-design",
+      "source": "https://github.com/anthropics/skills",
+      "revision": "8a1541c4a3ffa5a20a5a91de0dcf3f0bab1d1ef4",
+      "version": "commit-pinned",
+      "path": ".agents/skills/frontend-design/SKILL.md",
+      "sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3"
+    },
+    {
+      "name": "vercel-composition-patterns",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "revision": "063bee94c3f4df8453406c830b0a7df0f2860278",
+      "version": "1.0.0",
+      "path": ".agents/skills/vercel-composition-patterns/SKILL.md",
+      "sha256": "e38e0eaa609316b10423a9a138ed95e35099accd3f735585295c8a8f165c28a3"
+    },
+    {
+      "name": "impeccable",
+      "source": "https://github.com/pbakaus/impeccable",
+      "revision": "e103efe779e2dd01274dabae83531fef00bf2563",
+      "version": "plugin4.5.0/engine0.1.11",
+      "path": ".agents/skills/impeccable/SKILL.md",
+      "sha256": "8db3982ac3e44f500f7533c571752474f4995e68e46eb1f44b93bb7c3af6a4bd"
+    }
+  ]
+}

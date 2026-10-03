@@ -1,0 +1,254 @@
+{
+  "measuredAt": "2026-10-03T17:21:26.495Z",
+  "scope": "WebGPU sampler/environment/error recovery/resource release fix; Windows CLI and real NVIDIA GPU in headless full Chromium. Parallel user Header work preserved.",
+  "dependencyVersions": {
+    "three": "0.186.1",
+    "pathtracer": "0.0.26",
+    "bvh": "0.9.15"
+  },
+  "sourceHashes": {
+    "packages/three-runtime/src/environment.ts": "19531f922b87287a1378cd6132dcfbc6fe0b2dd25370dc23cba72853c1539719",
+    "packages/three-runtime/src/pathtracing.ts": "6e40604d142046afe6d8baa1a5f032b791e312f54d18ae7db870dc8e1e22554e",
+    "packages/three-runtime/src/runtime.ts": "271df8f46cc4a496e4dd70c0a9c0e828c348d5cd63444883a879930e5409852e",
+    "packages/ui/src/components/tooltip.tsx": "f057e8e2e08c3d08ffcbc46235fbb09eb0d76a1e2e1b5862500cfa959b0a3875",
+    "playwright.webgpu.config.ts": "12a142bdb6b0dee6928e1824c92e8dc9b0bcd60233ceb2d910a8ea2cdd8c7b40",
+    "playwright.regression.config.ts": "3474d7a309ceae39baf8ffad291efd766c49815ea4f6c9b098c283751c3699a8",
+    "apps/desktop/vite.config.ts": "774c99a45d11b67aa899d3e0147b3a7cfb430d6804236af3b9384b56207ebbf0"
+  },
+  "quality": {
+    "checks": [
+      "formatting",
+      "oxlint zero-warning",
+      "dependency/public-export boundaries",
+      "UI colors",
+      "dual-theme keys",
+      "generated styles",
+      "pinned Skills"
+    ],
+    "command": "npm run check",
+    "passed": true,
+    "log": "test-results/webgpu-sampler/check-release-verified.log",
+    "typecheck": {
+      "command": "npm run typecheck",
+      "passed": true,
+      "configurations": 4,
+      "log": "test-results/webgpu-sampler/typecheck-release-verified.log"
+    }
+  },
+  "unit": {
+    "command": "npm test",
+    "tests": 156,
+    "failed": 0,
+    "files": 17,
+    "report": "test-results/webgpu-sampler/unit-release-verified.json"
+  },
+  "rust": {
+    "command": "npm run test:rust",
+    "passed": 18,
+    "failed": 0,
+    "ignored": 0,
+    "log": "test-results/webgpu-sampler/rust.log",
+    "scope": "Actual Rust host tests; no desktop GUI"
+  },
+  "hardware": {
+    "command": "npm run test:webgpu -- --output test-results/webgpu-sampler/hardware-release-verified",
+    "startTime": "2026-10-03T17:16:22.635Z",
+    "duration": 30470.465,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "browser": "Playwright bundled full Chromium, headless, real WebGPU required",
+    "gpu": "NVIDIA GeForce RTX 4070 SUPER, Lovelace",
+    "driver": "32.0.15.9186",
+    "actualBackend": "webgpu",
+    "minSamples": 16,
+    "normalPathGPUValidationErrors": 0,
+    "pixels": {
+      "width": 970,
+      "height": 718,
+      "colors": 849
+    },
+    "releasedCycles": [
+      {
+        "geometries": 4,
+        "textures": 4,
+        "pendingFrame": false,
+        "activeSession": 0
+      },
+      {
+        "geometries": 4,
+        "textures": 4,
+        "pendingFrame": false,
+        "activeSession": 0
+      },
+      {
+        "geometries": 4,
+        "textures": 4,
+        "pendingFrame": false,
+        "activeSession": 0
+      }
+    ],
+    "PNGAndJPEG": "Real file inputs and decoded borrowed image identity checks, 16 samples, project unchanged, both passed",
+    "realGPUFaultRecovery": {
+      "status": "passed",
+      "deliberatelyInjectedFault": true,
+      "firstVisibleError": "无法启动光追，仍可实时编辑。Error while parsing WGSL: :794:52 error: unresolved value 'intentionallyMissingEnvironmentSampler' let color = textureSampleLevel( nodeUniform16, intentionallyMissingEnvironmentSampler, uv, 0 ).rgb; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - While calling [Device].CreateShaderModule([ShaderModuleDescriptor \"\"compute\"\"]).",
+      "noAdditionalSamplingAfterError": true,
+      "documentUnchangedByFailureAndRetry": true,
+      "formalEditingAfterRecovery": {
+        "schemaVersion": 1,
+        "id": "project_musnm3c7_1",
+        "name": "未命名工程",
+        "revision": 3,
+        "levels": [
+          {
+            "id": "level_1",
+            "name": "1",
+            "elevation": 0,
+            "height": 3
+          }
+        ],
+        "walls": [
+          {
+            "id": "wall_musnm3pl_5",
+            "levelId": "level_1",
+            "start": {
+              "x": -2,
+              "z": -1
+            },
+            "end": {
+              "x": 2.4000000000000004,
+              "z": -1
+            },
+            "height": 2.8,
+            "thickness": 0.2,
+            "surfaceOrientation": 1,
+            "materials": {
+              "A": {
+                "color": "#ded8cd",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "B": {
+                "color": "#eee9df",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "edge": {
+                "color": "#d3cbbc",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              }
+            }
+          },
+          {
+            "id": "wall_musnm3qm_8",
+            "levelId": "level_1",
+            "start": {
+              "x": 2.4000000000000004,
+              "z": -1
+            },
+            "end": {
+              "x": 2.4000000000000004,
+              "z": 1
+            },
+            "height": 2.8,
+            "thickness": 0.2,
+            "surfaceOrientation": 1,
+            "materials": {
+              "A": {
+                "color": "#ded8cd",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "B": {
+                "color": "#eee9df",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              },
+              "edge": {
+                "color": "#d3cbbc",
+                "tileWidth": 0.5,
+                "tileHeight": 0.5,
+                "rotation": 0,
+                "offsetX": 0,
+                "offsetY": 0
+              }
+            }
+          }
+        ],
+        "slabs": [],
+        "openings": [],
+        "resources": [],
+        "continuity": []
+      },
+      "nativeGPUErrorsExpected": 9,
+      "report": "test-results/webgpu-sampler/hardware-release-verified/webgpu-error.hardware.ts-a-1a04f-error-and-recovers-on-retry/webgpu-error-recovery.json"
+    },
+    "report": "test-results/webgpu-sampler/hardware-results.json",
+    "log": "test-results/webgpu-sampler/hardware-release-verified.log",
+    "sampledProof": "test-results/webgpu-sampler/hardware-release-verified/webgpu.hardware.ts-actual--8eb2e-NG-without-missing-samplers/validated-samples.json",
+    "rawGPUProof": "test-results/webgpu-sampler/hardware-release-verified/webgpu.hardware.ts-actual--8eb2e-NG-without-missing-samplers/gpu-validation.json"
+  },
+  "browserRegression": {
+    "startTime": "2026-10-03T17:16:53.866Z",
+    "duration": 258639.009,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "command": "npm run test:regression -- tests/rendering.browser.spec.ts tests/rendering-ui.browser.spec.ts tests/environment-pathtrace.browser.spec.ts tests/header.browser.spec.ts --output test-results/webgpu-sampler/regression-release-verified",
+    "scope": "14 affected real mouse/file/download/GLB paths after the final runtime cleanup exception fix; software WebGL, not desktop.",
+    "report": "test-results/regression-e2e-results.json",
+    "log": "test-results/webgpu-sampler/regression-release-verified.log"
+  },
+  "production": {
+    "passed": 4,
+    "command": "node .test-artifacts/webgpu-production-smoke.mjs",
+    "report": "test-results/webgpu-sampler/production/production-smoke.json",
+    "scope": "Actual Vite production assets in Chromium software WebGL browser; not release Tauri or installed application validation"
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true,
+    "log": "test-results/webgpu-sampler/build-release-verified.log",
+    "chunkSizeWarningPreserved": true
+  },
+  "installer": {
+    "report": "docs/webgpu-fix-release-artifacts.json",
+    "installation": "not executed",
+    "releaseDesktopLaunch": "not executed"
+  },
+  "retainedFailures": [
+    "hardware-cycles",
+    "hardware-owned-fix",
+    "hardware-texture-probe",
+    "hardware-stable-server",
+    "hardware-final",
+    "hardware-final-isolated",
+    "device-probes"
+  ],
+  "limitations": [
+    "No new native GUI, Tauri WebView2 acceptance or macOS run",
+    "No actual device-loss test",
+    "Q5 reference hardware and performance budgets pending",
+    "No VRAM byte peak measurement",
+    "Original A01-A42 conditions and platform statuses unchanged"
+  ]
+}

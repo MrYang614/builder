@@ -1,0 +1,116 @@
+{
+  "measuredAt": "2026-10-03T15:20:55.216Z",
+  "command": "npm run bench:bvh",
+  "scope": "Node CPU-only actual editable wall geometry and Three Raycaster; no DOM, Canvas, GPU FPS, native Tauri or input-latency claim",
+  "resultSummary": "在含 96 个真实窗洞、9692 个三角面的墙体上，BVH 构建耗时 9.21 ms；每批 96 条射线，原生拾取均值 36.14 ms、BVH 均值 0.165 ms。96 组最近命中结果及面编号、UV、法线一致，原索引和材质分组不变，构建与释放各一次且活引用归零。这只是该高洞口 CPU fixture 的观察值，不代表普通墙体、整机帧率、原生桌面表现或性能验收通过；Windows 的短批次 CPU 计数分辨率不足，持续时间采用 performance.now。",
+  "environment": {
+    "node": "v26.1.0",
+    "os": "win32",
+    "release": "10.0.26200",
+    "arch": "x64",
+    "cpu": "AMD Ryzen 7 7800X3D 8-Core Processor           ",
+    "logicalCpus": 16
+  },
+  "libraries": {
+    "three": "0.186.1",
+    "threeMeshBvh": "0.9.15"
+  },
+  "fixture": {
+    "walls": 1,
+    "realWindowHoles": 96,
+    "wallLengthMetres": 154.10000000000002,
+    "wallHeightMetres": 5,
+    "triangles": 9692,
+    "materialGroups": 6,
+    "raysPerIteration": 96,
+    "hitRays": 72,
+    "missRays": 24
+  },
+  "setup": {
+    "sceneBuildMs": 37.58260000000001,
+    "bvhBuildMs": 9.206500000000005,
+    "indirect": true
+  },
+  "measurement": {
+    "warmupIterationsPerMethod": 10,
+    "measuredIterationsPerMethod": 100,
+    "raysPerMethod": 9600,
+    "measurementOrder": "alternating native→BVH then BVH→native",
+    "native": {
+      "iterations": 100,
+      "totalMs": 3614.1065000000026,
+      "meanMs": 36.141065000000026,
+      "p50Ms": 36.10539999999992,
+      "p95Ms": 39.71759999999995,
+      "minMs": 31.26359999999977,
+      "maxMs": 42.804600000000164
+    },
+    "bvh": {
+      "iterations": 100,
+      "totalMs": 16.484899999999698,
+      "meanMs": 0.16484899999999697,
+      "p50Ms": 0.1372999999998683,
+      "p95Ms": 0.2842000000000553,
+      "minMs": 0.10760000000027503,
+      "maxMs": 0.34730000000001837
+    },
+    "processCpuMicroseconds": {
+      "native": {
+        "user": 3547000,
+        "system": 47000
+      },
+      "bvh": {
+        "user": 0,
+        "system": 0
+      }
+    },
+    "observedMeanRatioNativeToBvh": 219.23739300815103,
+    "checksum": 22651.20127458615
+  },
+  "correctness": {
+    "equivalentNearestHits": 96,
+    "originalIndexAndGroupsUnchanged": true,
+    "nativeClosestSelection": "Three native Mesh.raycast plus Raycaster distance sorting",
+    "bvhClosestSelection": "instance-only acceleratedRaycast with firstHitOnly true",
+    "compared": [
+      "presence",
+      "distance",
+      "world point",
+      "UV",
+      "normal",
+      "faceIndex",
+      "materialIndex",
+      "triangle vertices"
+    ]
+  },
+  "ownership": {
+    "before": {
+      "geometries": 0,
+      "meshes": 0,
+      "references": 0,
+      "constructed": 0,
+      "disposed": 0
+    },
+    "constructed": {
+      "geometries": 1,
+      "meshes": 1,
+      "references": 1,
+      "constructed": 1,
+      "disposed": 0
+    },
+    "after": {
+      "geometries": 0,
+      "meshes": 0,
+      "references": 0,
+      "constructed": 1,
+      "disposed": 1
+    }
+  },
+  "limitations": [
+    "This deliberately stresses one wall with many real openings; it does not measure multi-object broad-phase traversal or ordinary low-triangle walls.",
+    "Construction cost is reported separately, rather than hidden inside a speedup claim.",
+    "Per-batch durations use performance.now. Separate process CPU counters can be coarse, particularly on Windows, and include process-wide activity.",
+    "This is an observed CPU measurement, not a formal performance pass; no minimum target or reference hardware has been approved.",
+    "Mesh.raycast is switched only on the benchmark-owned instance. No Three prototype or global raycaster is modified."
+  ]
+}

@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "id": "example_two_storeys",
+  "name": "Two storeys with independent animated doors",
+  "revision": 1,
+  "levels": [
+    {
+      "id": "level_1",
+      "name": "1",
+      "elevation": 0,
+      "height": 3
+    },
+    {
+      "id": "level_2",
+      "name": "2",
+      "elevation": 3,
+      "height": 3
+    }
+  ],
+  "walls": [
+    {
+      "id": "example_wall_1_1",
+      "levelId": "level_1",
+      "start": {
+        "x": -3,
+        "z": -2
+      },
+      "end": {
+        "x": 3,
+        "z": -2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_1_2",
+      "levelId": "level_1",
+      "start": {
+        "x": 3,
+        "z": -2
+      },
+      "end": {
+        "x": 3,
+        "z": 2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_1_3",
+      "levelId": "level_1",
+      "start": {
+        "x": 3,
+        "z": 2
+      },
+      "end": {
+        "x": -3,
+        "z": 2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_1_4",
+      "levelId": "level_1",
+      "start": {
+        "x": -3,
+        "z": 2
+      },
+      "end": {
+        "x": -3,
+        "z": -2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_2_1",
+      "levelId": "level_2",
+      "start": {
+        "x": -3,
+        "z": -2
+      },
+      "end": {
+        "x": 3,
+        "z": -2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_2_2",
+      "levelId": "level_2",
+      "start": {
+        "x": 3,
+        "z": -2
+      },
+      "end": {
+        "x": 3,
+        "z": 2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_2_3",
+      "levelId": "level_2",
+      "start": {
+        "x": 3,
+        "z": 2
+      },
+      "end": {
+        "x": -3,
+        "z": 2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_wall_2_4",
+      "levelId": "level_2",
+      "start": {
+        "x": -3,
+        "z": 2
+      },
+      "end": {
+        "x": -3,
+        "z": -2
+      },
+      "height": 2.8,
+      "thickness": 0.2,
+      "surfaceOrientation": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_brick"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#d3cbbc",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    }
+  ],
+  "slabs": [
+    {
+      "id": "example_floor_1",
+      "levelId": "level_1",
+      "polygon": [
+        {
+          "x": -3,
+          "z": -2
+        },
+        {
+          "x": 3,
+          "z": -2
+        },
+        {
+          "x": 3,
+          "z": 2
+        },
+        {
+          "x": -3,
+          "z": 2
+        }
+      ],
+      "elevation": 0,
+      "thickness": 0.2,
+      "purpose": "floor",
+      "materials": {
+        "top": {
+          "color": "#ffffff",
+          "tileWidth": 0.8,
+          "tileHeight": 0.8,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_wood"
+        },
+        "bottom": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#a89981",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_floor_2",
+      "levelId": "level_2",
+      "polygon": [
+        {
+          "x": -3,
+          "z": -2
+        },
+        {
+          "x": 3,
+          "z": -2
+        },
+        {
+          "x": 3,
+          "z": 2
+        },
+        {
+          "x": -3,
+          "z": 2
+        }
+      ],
+      "elevation": 3,
+      "thickness": 0.2,
+      "purpose": "floor",
+      "materials": {
+        "top": {
+          "color": "#ffffff",
+          "tileWidth": 0.8,
+          "tileHeight": 0.8,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_wood"
+        },
+        "bottom": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#a89981",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    }
+  ],
+  "openings": [
+    {
+      "id": "example_door_level_1",
+      "levelId": "level_1",
+      "wallId": "example_wall_1_1",
+      "kind": "door",
+      "offset": 1.2,
+      "width": 0.9,
+      "height": 2.1,
+      "sill": 0,
+      "hinge": "left",
+      "direction": 1,
+      "angle": 0,
+      "closedAngle": 0,
+      "openAngle": 90,
+      "duration": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_wood"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#8a6a49",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_window_level_1",
+      "levelId": "level_1",
+      "wallId": "example_wall_1_2",
+      "kind": "window",
+      "offset": 1.2,
+      "width": 1.2,
+      "height": 1.1,
+      "sill": 0.9,
+      "hinge": "left",
+      "direction": 1,
+      "angle": 0,
+      "closedAngle": 0,
+      "openAngle": 90,
+      "duration": 1,
+      "materials": {
+        "A": {
+          "color": "#b28a5e",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "B": {
+          "color": "#b28a5e",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "edge": {
+          "color": "#8a6a49",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_door_level_2",
+      "levelId": "level_2",
+      "wallId": "example_wall_2_1",
+      "kind": "door",
+      "offset": 1.2,
+      "width": 0.9,
+      "height": 2.1,
+      "sill": 0,
+      "hinge": "right",
+      "direction": -1,
+      "angle": 45,
+      "closedAngle": 0,
+      "openAngle": 90,
+      "duration": 1,
+      "materials": {
+        "A": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_wood"
+        },
+        "B": {
+          "color": "#ffffff",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0,
+          "resourceId": "builtin_plaster"
+        },
+        "edge": {
+          "color": "#8a6a49",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    },
+    {
+      "id": "example_window_level_2",
+      "levelId": "level_2",
+      "wallId": "example_wall_2_2",
+      "kind": "window",
+      "offset": 1.2,
+      "width": 1.2,
+      "height": 1.1,
+      "sill": 0.9,
+      "hinge": "left",
+      "direction": 1,
+      "angle": 0,
+      "closedAngle": 0,
+      "openAngle": 90,
+      "duration": 1,
+      "materials": {
+        "A": {
+          "color": "#b28a5e",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "B": {
+          "color": "#b28a5e",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        },
+        "edge": {
+          "color": "#8a6a49",
+          "tileWidth": 0.5,
+          "tileHeight": 0.5,
+          "rotation": 0,
+          "offsetX": 0,
+          "offsetY": 0
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "builtin_brick",
+      "name": "brick",
+      "mime": "image/png",
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABm0lEQVR4nO3dMUoDQRiA0VnxMCksUthaeQMrbxAIBHKUQCCQwtLGS3gBBQsLj2Mh7A2Sz4X3qql2h/n4ux12+nx/G3Ruwnczxrj9O4WPw2Fxx3G/38/r5e7fBMQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQm3wd3TIBMQFiAsSml6eHCz16vdvN66/jcSzN+ir7NwExAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxNwPiJmAmAAxAf7H/wO+T6exNHfb7bxe7v5NQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAx9wNiJiAmQEyA2PT6/HihR682m3n9cz6PpVldZf8mICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICY+wExEzBavyyIJnjE4eviAAAAAElFTkSuQmCC"
+    },
+    {
+      "id": "builtin_plaster",
+      "name": "plaster",
+      "mime": "image/png",
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAACE0lEQVR4nO2bMU4DQRAEhfv/j+MFZLyiAusQEsI53sZdGziocK53VZoZv31+vOfrAA+/wvx9QW4WmqPJuz6A2efcvb9ZfY6+uo83wAuR5xbk1w2w+nl6HH9ugNXPicfg+wZY/Rx6itXQqKEsi4AaGjWUqkiqoTleFDU0hZVSQyksnxr676HdUNTQLEO7oaihqYqkGsrxoqih7EC7oVFDWYZ2Q6OGsgwdykcNpSqSamiOF0UNHYJ2Q1FDswzthqKGZhm6G8rZT+Ju6HXUUEoeBDWUNWg3NGooy9BuaNRQqiKphmYKOpSPGkpVJNXQTEG7oaihWYZ2Q1FDuyKphjIFHcqjhqYqkmooU9BuaNRQlqFD+euoocxCNRQ1NFWRVEM5XhQ1lB1oN5Szn0QNvY4aSsmDoIayBt0NjRpKVSTV0BwvihqawkqpobwkdDc0aihVkVRDMwXdDUUNTVUk1VCOF0UNpbBSauhrQofyqKGpiqQayhR0NzRqKFWRVEMzBe2GRg1lGTqUjxpKVSTV0ExBd0NRQ7siqYYyBe2GooZmGTqURw1NVSTVUKagf1G6jhrKLFRDUUNTFUk1lCnoUD5qKFWRVEMzBR3KRw1lGTqUjxpKVSTV0ExBh/KooV2RVEOZgnZDUUOzDB3Ko4amKpJqKFPQofx11FBmoRqKGpqqSKqhTEGH8lFDqYqkGpop6FA+Zz/JHd0YTH8WqabFAAAAAElFTkSuQmCC"
+    },
+    {
+      "id": "builtin_wood",
+      "name": "wood",
+      "mime": "image/png",
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABbklEQVR4nO3csW1CMRRAUUOLvEN2QGmzQzZhxvTskB0serroNyECRVyKc8pn6RW+cuvd6fN9jPFxfBsba13mPGwndw23vs7f9o/f7W+c8QQCxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICXDDDnYa3Lw8M/2f/DC4gJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAV41gC/+b/uv+/ECYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgNG6ArZ8d4cBnYyqAAAAAElFTkSuQmCC"
+    },
+    {
+      "id": "builtin_tile",
+      "name": "tile",
+      "mime": "image/png",
+      "dataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAIAAABMXPacAAABWklEQVR4nO3VsQ2DQAAEwbdFKQj6L8YBmGIcOKEBe5GYyYh4/erg8Treg84zfDdjjOl7C9uxu44/W+fFAi6zgHMTfu38vfEPiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFiAsQEiAkQEyAmQEyAmAAxAWICxASICRATICZATICYADEBYgLEBIgJEBMgJkBMgJgAMQFi0/lhO/buJDdlAddYwDov9UluygJG6wOoOAyUqV9CRAAAAABJRU5ErkJggg=="
+    }
+  ],
+  "continuity": [
+    {
+      "id": "example_route_level_1_A",
+      "members": [
+        {
+          "wallId": "example_wall_1_1",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_2",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_3",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_4",
+          "side": "A",
+          "direction": 1
+        }
+      ],
+      "anchor": {
+        "wallId": "example_wall_1_1",
+        "side": "A",
+        "endpoint": "start"
+      },
+      "seam": {
+        "wallId": "example_wall_1_1",
+        "side": "A",
+        "endpoint": "start"
+      },
+      "verticalOrigin": 0
+    },
+    {
+      "id": "example_route_level_1_B",
+      "members": [
+        {
+          "wallId": "example_wall_1_1",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_2",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_3",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_1_4",
+          "side": "B",
+          "direction": 1
+        }
+      ],
+      "anchor": {
+        "wallId": "example_wall_1_1",
+        "side": "B",
+        "endpoint": "start"
+      },
+      "seam": {
+        "wallId": "example_wall_1_1",
+        "side": "B",
+        "endpoint": "start"
+      },
+      "verticalOrigin": 0
+    },
+    {
+      "id": "example_route_level_2_A",
+      "members": [
+        {
+          "wallId": "example_wall_2_1",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_2",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_3",
+          "side": "A",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_4",
+          "side": "A",
+          "direction": 1
+        }
+      ],
+      "anchor": {
+        "wallId": "example_wall_2_1",
+        "side": "A",
+        "endpoint": "start"
+      },
+      "seam": {
+        "wallId": "example_wall_2_1",
+        "side": "A",
+        "endpoint": "start"
+      },
+      "verticalOrigin": 0
+    },
+    {
+      "id": "example_route_level_2_B",
+      "members": [
+        {
+          "wallId": "example_wall_2_1",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_2",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_3",
+          "side": "B",
+          "direction": 1
+        },
+        {
+          "wallId": "example_wall_2_4",
+          "side": "B",
+          "direction": 1
+        }
+      ],
+      "anchor": {
+        "wallId": "example_wall_2_1",
+        "side": "B",
+        "endpoint": "start"
+      },
+      "seam": {
+        "wallId": "example_wall_2_1",
+        "side": "B",
+        "endpoint": "start"
+      },
+      "verticalOrigin": 0
+    }
+  ]
+}

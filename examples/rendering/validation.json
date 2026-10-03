@@ -1,0 +1,1195 @@
+{
+  "platform": "Windows Chromium SwiftShader WebGL browser; software GPU results are not native or hardware performance certification",
+  "path": "Actual mouse building → actual UI target16/start/pause/resume → real shader samples → actual PNG download and decoded pixel inspection → three return/start resource cycles",
+  "initial": {
+    "frameCount": 21,
+    "objects": 4,
+    "geometries": 19,
+    "textures": 4,
+    "pendingFrame": false,
+    "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+    "lifecycle": {
+      "created": 2,
+      "disposed": 1,
+      "active": 1
+    },
+    "eventListeners": 8,
+    "resources": {
+      "materials": 7,
+      "textures": 0,
+      "references": 18
+    },
+    "rebuiltIds": [],
+    "handles": 0,
+    "surfaceHighlights": 1,
+    "hingeMarkers": 2,
+    "preview": {
+      "visible": false,
+      "valid": true,
+      "error": "",
+      "dragging": false,
+      "state": {
+        "kind": "idle",
+        "tool": "select"
+      }
+    },
+    "animations": [],
+    "render": {
+      "backend": "webgl",
+      "switching": false,
+      "mode": "raster",
+      "pathStatus": "idle",
+      "samples": 0,
+      "targetSamples": 128,
+      "environmentLoading": false
+    },
+    "actualBackend": "webgl",
+    "pathTracing": {
+      "stats": null,
+      "cleanBuildingChildren": 0,
+      "cleanBuilding": false,
+      "resources": null,
+      "cleanGeometryObjects": 0,
+      "auxiliaryObjects": 0,
+      "meshes": 0,
+      "displayMaterialOverrides": 0,
+      "sceneId": null,
+      "activeSession": 0
+    },
+    "environment": {
+      "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+      "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+      "textureName": "environment-panorama.hdr",
+      "width": 32,
+      "height": 16,
+      "intensity": 1.3,
+      "rotation": 0.6108652381980153,
+      "background": false
+    },
+    "bvh": {
+      "geometries": 7,
+      "meshes": 7,
+      "references": 7,
+      "constructed": 10,
+      "disposed": 3
+    },
+    "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+    "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+    "camera": {
+      "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+      "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+    }
+  },
+  "cycles": [
+    {
+      "start": {
+        "frameCount": 25,
+        "objects": 4,
+        "geometries": 19,
+        "textures": 12,
+        "pendingFrame": true,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "rendering",
+          "samples": 0,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0,
+            "minSamples": 0,
+            "maxSamples": 0,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "cc3fbb58-7b4e-4f85-ae32-5f138952accf",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "paused": {
+        "frameCount": 29,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "paused",
+          "samples": 0.2222222222222222,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0.2222222222222222,
+            "minSamples": 0,
+            "maxSamples": 1,
+            "targetSamples": 16,
+            "paused": true,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "cc3fbb58-7b4e-4f85-ae32-5f138952accf",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "complete": {
+        "frameCount": 171,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "complete",
+          "samples": 16,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 16,
+            "minSamples": 16,
+            "maxSamples": 16,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": true,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "cc3fbb58-7b4e-4f85-ae32-5f138952accf",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "released": {
+        "frameCount": 172,
+        "objects": 4,
+        "geometries": 19,
+        "textures": 4,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "raster",
+          "pathStatus": "idle",
+          "samples": 0,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": null,
+          "cleanBuildingChildren": 0,
+          "cleanBuilding": false,
+          "resources": null,
+          "cleanGeometryObjects": 0,
+          "auxiliaryObjects": 0,
+          "meshes": 0,
+          "displayMaterialOverrides": 0,
+          "sceneId": null,
+          "activeSession": 0
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "elapsedMs": 42879
+    },
+    {
+      "start": {
+        "frameCount": 177,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": true,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "rendering",
+          "samples": 0,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0.3333333333333333,
+            "minSamples": 0,
+            "maxSamples": 1,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "afd83654-c6c0-4c60-b77c-74b5fc1fc277",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "paused": {
+        "frameCount": 180,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "paused",
+          "samples": 0.5555555555555556,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0.5555555555555556,
+            "minSamples": 0,
+            "maxSamples": 1,
+            "targetSamples": 16,
+            "paused": true,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "afd83654-c6c0-4c60-b77c-74b5fc1fc277",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "complete": {
+        "frameCount": 319,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "complete",
+          "samples": 16,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 16,
+            "minSamples": 16,
+            "maxSamples": 16,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": true,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "afd83654-c6c0-4c60-b77c-74b5fc1fc277",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "released": {
+        "frameCount": 320,
+        "objects": 4,
+        "geometries": 19,
+        "textures": 4,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "raster",
+          "pathStatus": "idle",
+          "samples": 0,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": null,
+          "cleanBuildingChildren": 0,
+          "cleanBuilding": false,
+          "resources": null,
+          "cleanGeometryObjects": 0,
+          "auxiliaryObjects": 0,
+          "meshes": 0,
+          "displayMaterialOverrides": 0,
+          "sceneId": null,
+          "activeSession": 0
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "elapsedMs": 38760
+    },
+    {
+      "start": {
+        "frameCount": 327,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": true,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "rendering",
+          "samples": 0.3333333333333333,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0.4444444444444444,
+            "minSamples": 0,
+            "maxSamples": 1,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "8316ecd2-7a9d-48fa-9a39-64e97d4fb02c",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "paused": {
+        "frameCount": 330,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "paused",
+          "samples": 0.6666666666666667,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 0.6666666666666667,
+            "minSamples": 0,
+            "maxSamples": 1,
+            "targetSamples": 16,
+            "paused": true,
+            "complete": false,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "8316ecd2-7a9d-48fa-9a39-64e97d4fb02c",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "complete": {
+        "frameCount": 468,
+        "objects": 4,
+        "geometries": 20,
+        "textures": 26,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "pathtrace",
+          "pathStatus": "complete",
+          "samples": 16,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": {
+            "backend": "webgl",
+            "samples": 16,
+            "minSamples": 16,
+            "maxSamples": 16,
+            "targetSamples": 16,
+            "paused": false,
+            "complete": true,
+            "ready": true
+          },
+          "cleanBuildingChildren": 1,
+          "cleanBuilding": true,
+          "resources": {
+            "materials": 7,
+            "textures": 0,
+            "references": 18
+          },
+          "cleanGeometryObjects": 4,
+          "auxiliaryObjects": 0,
+          "meshes": 7,
+          "displayMaterialOverrides": 0,
+          "sceneId": "8316ecd2-7a9d-48fa-9a39-64e97d4fb02c",
+          "activeSession": 1
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "released": {
+        "frameCount": 469,
+        "objects": 4,
+        "geometries": 19,
+        "textures": 4,
+        "pendingFrame": false,
+        "rendererId": "a7e1764e-72e2-4d01-a055-a8c783775e0a",
+        "lifecycle": {
+          "created": 2,
+          "disposed": 1,
+          "active": 1
+        },
+        "eventListeners": 8,
+        "resources": {
+          "materials": 7,
+          "textures": 0,
+          "references": 18
+        },
+        "rebuiltIds": [],
+        "handles": 0,
+        "surfaceHighlights": 1,
+        "hingeMarkers": 2,
+        "preview": {
+          "visible": false,
+          "valid": true,
+          "error": "",
+          "dragging": false,
+          "state": {
+            "kind": "idle",
+            "tool": "select"
+          }
+        },
+        "animations": [],
+        "render": {
+          "backend": "webgl",
+          "switching": false,
+          "mode": "raster",
+          "pathStatus": "idle",
+          "samples": 0,
+          "targetSamples": 16,
+          "environmentLoading": false
+        },
+        "actualBackend": "webgl",
+        "pathTracing": {
+          "stats": null,
+          "cleanBuildingChildren": 0,
+          "cleanBuilding": false,
+          "resources": null,
+          "cleanGeometryObjects": 0,
+          "auxiliaryObjects": 0,
+          "meshes": 0,
+          "displayMaterialOverrides": 0,
+          "sceneId": null,
+          "activeSession": 0
+        },
+        "environment": {
+          "resourceId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+          "textureId": "507d7dbd-98e3-4e54-926e-4cee0c99e1e5",
+          "textureName": "environment-panorama.hdr",
+          "width": 32,
+          "height": 16,
+          "intensity": 1.3,
+          "rotation": 0.6108652381980153,
+          "background": false
+        },
+        "bvh": {
+          "geometries": 7,
+          "meshes": 7,
+          "references": 7,
+          "constructed": 10,
+          "disposed": 3
+        },
+        "sceneId": "08b964c4-11bd-47ea-b4d0-2cacd39b3648",
+        "cameraId": "9e4186f1-77b8-4713-a5be-be714a619fa2",
+        "camera": {
+          "position": [6.5186443093966915, 7.364354059430908, 8.03580543442958],
+          "target": [0.04999995231628419, 1.299999974668026, -0.050000011920928955]
+        }
+      },
+      "elapsedMs": 39545
+    }
+  ],
+  "png": {
+    "width": 970,
+    "height": 722,
+    "uniqueColors": 26819,
+    "min": 92.66666666666667,
+    "max": 248.33333333333334,
+    "sha256": "01e4b79bf4eba1c67d3b2dc413bc6c6af31362046811db97894e2a389ce6bc10"
+  },
+  "editableArtifacts": {
+    "project": {
+      "path": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\pathtrace-environment.building",
+      "sha256": "890988b73d1e20108e052e86090f3fee5fd6d203d610fa117f99cb9077186c95"
+    },
+    "glb": {
+      "path": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\pathtrace-environment.glb",
+      "sha256": "5ae64f5f070a2f186d21429c78c12b441cb829df1548fa09f0595b562c308177",
+      "validatorErrors": 0,
+      "validatorWarnings": 0
+    },
+    "png": {
+      "path": "D:\\Code\\builder\\test-results\\rendering-final\\rendering.browser-real-Web-18d01-G-and-releases-three-cycles\\actual-16-sample-pathtrace.png",
+      "sha256": "01e4b79bf4eba1c67d3b2dc413bc6c6af31362046811db97894e2a389ce6bc10"
+    },
+    "embeddedPanoramaMatchesOriginalBytes": true,
+    "originalProceduralPanoramaLicense": "CC0-1.0"
+  },
+  "environmentFixture": {
+    "width": 32,
+    "height": 16,
+    "decodedLinearRange": [0.11764705926179886, 4.266666889190674],
+    "sha256": "4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca",
+    "environmentId": "environment_4d77ea780fd2bd7091d69bdeb5bf92a1457066f684ee3a1eb57c2e004b90a8ca"
+  },
+  "formalDocumentUnchanged": true,
+  "auxiliaryAbsenceEvidence": "Runtime traverses the actual independent path-tracing scene; grid/outline/preview/snap and display override counts are zero.",
+  "shaderCompilationTimeoutMs": 120000
+}
