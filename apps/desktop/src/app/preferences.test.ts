@@ -211,7 +211,12 @@ describe('serialized local preference writes', () => {
       },
       onError,
     });
-    const firstClose = guardPreferenceClose(writer.retryAndFlush, projectGuard, closeFailure);
+    const firstClose = guardPreferenceClose(
+      writer.retryAndFlush,
+      projectGuard,
+      closeFailure,
+      writer.flush,
+    );
     await starts[0]!.promise;
     expect(projectGuard).not.toHaveBeenCalled();
     releases[0]!.resolve();
@@ -220,7 +225,12 @@ describe('serialized local preference writes', () => {
     expect(onError).toHaveBeenCalledExactlyOnceWith(error);
     // Only external IO availability changes; the user's preference values stay unchanged.
     available = true;
-    const secondClose = guardPreferenceClose(writer.retryAndFlush, projectGuard, closeFailure);
+    const secondClose = guardPreferenceClose(
+      writer.retryAndFlush,
+      projectGuard,
+      closeFailure,
+      writer.flush,
+    );
     await starts[1]!.promise;
     expect(projectGuard).not.toHaveBeenCalled();
     releases[1]!.resolve();
@@ -228,5 +238,85 @@ describe('serialized local preference writes', () => {
     expect(projectGuard).toHaveBeenCalledOnce();
     expect(snapshot).toHaveBeenCalledTimes(2);
     expect(stored).toEqual([settings, settings]);
+  });
+  it('waits for preferences changed while the unsaved-project decision is pending', async () => {
+    const decision = deferred(),
+      writeStarted = deferred(),
+      writeFinished = deferred();
+    const writer = createPreferenceWriter({
+      snapshot: () => 'webgpu',
+      write: async () => {
+        writeStarted.resolve();
+        await writeFinished.promise;
+      },
+      onError: vi.fn(),
+    });
+    let closed = false;
+    const close = guardPreferenceClose(
+      writer.flush,
+      async () => {
+        await decision.promise;
+        return true;
+      },
+      vi.fn(),
+    ).then((allowed) => {
+      closed = allowed;
+    });
+    await Promise.resolve();
+    void writer.persist();
+    await writeStarted.promise;
+    decision.resolve();
+    await decision.promise;
+    expect(closed).toBe(false);
+    writeFinished.resolve();
+    await close;
+    expect(closed).toBe(true);
+  });
+  it('keeps the window open when a preference changed during project confirmation fails to save', async () => {
+    const error = new Error('disk full'),
+      onFailure = vi.fn();
+    const writer = createPreferenceWriter({
+      snapshot: () => 'webgpu',
+      write: async () => {
+        throw error;
+      },
+      onError: vi.fn(),
+    });
+    const close = guardPreferenceClose(
+      writer.flush,
+      async () => {
+        void writer.persist();
+        return true;
+      },
+      onFailure,
+    );
+    expect(await close).toBe(false);
+    expect(onFailure).toHaveBeenCalledExactlyOnceWith(error);
+  });
+  it('lets a newer successful preference supersede a failed close retry', async () => {
+    const release = deferred(),
+      started = deferred(),
+      error = new Error('temporary write failure');
+    let value = 1;
+    const written: number[] = [];
+    const writer = createPreferenceWriter({
+      snapshot: () => value,
+      write: async (setting) => {
+        if (setting === 1) {
+          started.resolve();
+          await release.promise;
+          throw error;
+        }
+        written.push(setting);
+      },
+      onError: vi.fn(),
+    });
+    const flush = writer.retryAndFlush();
+    await started.promise;
+    value = 2;
+    const successor = writer.persist();
+    release.resolve();
+    await Promise.all([flush, successor]);
+    expect(written).toEqual([2]);
   });
 });

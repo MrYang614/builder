@@ -10,6 +10,7 @@ import {
   SelectGroup,
   SelectItem,
 } from '@building/ui';
+/** Keeps exact formal precision; focus and blur without edits never create a command. */
 export function Numeric({
   label,
   value,
@@ -22,24 +23,35 @@ export function Numeric({
   const id = useId(),
     ref = useRef<HTMLInputElement>(null),
     [draft, setDraft] = useState(String(value)),
-    [invalid, setInvalid] = useState(false);
+    [invalid, setInvalid] = useState(false),
+    [edited, setEdited] = useState(false);
   useEffect(() => {
     if (document.activeElement !== ref.current) {
-      setDraft(String(Number(value.toFixed(4))));
+      setDraft(String(value));
       setInvalid(false);
+      setEdited(false);
     }
   }, [value]);
   const commit = () => {
+    if (!edited) {
+      setDraft(String(value));
+      setInvalid(false);
+      return;
+    }
     if (draft.trim() === '' || !Number.isFinite(Number(draft))) {
       setInvalid(true);
       return;
     }
     if (Number(draft) === value) {
       setInvalid(false);
+      setEdited(false);
       return;
     }
     const ok = onCommit(Number(draft));
     setInvalid(ok === false);
+    if (ok !== false) {
+      setEdited(false);
+    }
   };
   return (
     <Field data-invalid={invalid}>
@@ -53,6 +65,7 @@ export function Numeric({
         aria-invalid={invalid}
         onChange={(e) => {
           setDraft(e.target.value);
+          setEdited(true);
           setInvalid(false);
         }}
         onBlur={commit}
@@ -63,8 +76,74 @@ export function Numeric({
           }
           if (e.key === 'Escape') {
             setDraft(String(value));
+            setEdited(false);
             setInvalid(false);
             e.stopPropagation();
+          }
+        }}
+      />
+    </Field>
+  );
+}
+
+/** Reconciles committed text with undo while retaining active or rejected input drafts. */
+export function TextField({
+  label,
+  value,
+  onCommit,
+}: {
+  label: string;
+  value: string;
+  onCommit: (value: string) => boolean | void;
+}) {
+  const id = useId(),
+    ref = useRef<HTMLInputElement>(null),
+    [draft, setDraft] = useState(value),
+    [invalid, setInvalid] = useState(false),
+    [edited, setEdited] = useState(false);
+  useEffect(() => {
+    if (document.activeElement !== ref.current) {
+      setDraft(value);
+      setInvalid(false);
+      setEdited(false);
+    }
+  }, [value]);
+  const commit = () => {
+    if (!edited) {
+      setDraft(value);
+      setInvalid(false);
+      return;
+    }
+    const rejected = draft !== value && onCommit(draft) === false;
+    setInvalid(rejected);
+    if (!rejected) {
+      setEdited(false);
+    }
+  };
+  return (
+    <Field data-invalid={invalid}>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <Input
+        ref={ref}
+        id={id}
+        value={draft}
+        aria-invalid={invalid}
+        data-escape-handled="true"
+        onChange={(event) => {
+          setDraft(event.target.value);
+          setEdited(true);
+          setInvalid(false);
+        }}
+        onBlur={commit}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            commit();
+          } else if (event.key === 'Escape') {
+            setDraft(value);
+            setEdited(false);
+            setInvalid(false);
+            event.stopPropagation();
           }
         }}
       />

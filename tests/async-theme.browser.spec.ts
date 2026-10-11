@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { choose } from './browser-controls';
 import { test, expect, type Page } from '@playwright/test';
 import { resolve } from 'node:path';
@@ -223,13 +224,13 @@ test('real decoded image completion arriving after UI project replacement cannot
         pool.after.references === 0,
     ),
   ).toBe(true);
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/late-image-validation.json',
+    evidencePath('theme-toggle/evidence/late-image-validation.json'),
     JSON.stringify(
       {
         acceptance: 'A28',
-        platform: 'Windows Chromium SwiftShader browser; no native desktop inference',
+        platform: 'Windows Chromium WebGL browser; no native desktop inference',
         path: 'Actual UI example → hold delivery of three genuinely decoded 128×128 PNG load events → actual UI New → release old completions',
         delayed,
         oldObjectIds: oldIds,
@@ -289,6 +290,11 @@ test('actual rendered scene keeps lights exposure and displayed building materia
       ...rest: unknown[]
     ) {
       original.call(this, renderer, scene, camera, ...rest);
+      // GTAO renders the same scene with a temporary normal material and clear color.
+      // Record the actual color pass so the background token assertion stays meaningful.
+      if (scene.overrideMaterial) {
+        return;
+      }
       const lights: Record<string, unknown>[] = [],
         models: Record<string, unknown>[] = [],
         auxColors: Record<string, string[]> = {},
@@ -448,7 +454,9 @@ test('actual rendered scene keeps lights exposure and displayed building materia
   expect(dark.outputColorSpace).toBe(light.outputColorSpace);
   expect(dark.models).toEqual(light.models);
   expect(light.models.length).toBeGreaterThan(0);
-  expect(light.lights).toHaveLength(2);
+  expect(light.lights).toHaveLength(3);
+  expect(light.lights.filter((value) => value.type === 'DirectionalLight')).toHaveLength(2);
+  expect(light.lights.filter((value) => value.type === 'HemisphereLight')).toHaveLength(1);
   expect(await snapshot(page)).toEqual(originalDocument);
   for (const record of [light, dark]) {
     expect(record.background).toBe(record.expected.background.slice(1));
@@ -472,15 +480,15 @@ test('actual rendered scene keeps lights exposure and displayed building materia
   expect(dark.grid).not.toEqual(light.grid);
   expect(dark.auxColors['hinge-marker']).not.toEqual(light.auxColors['hinge-marker']);
   expect(dark.auxColors['selected-face']).not.toEqual(light.auxColors['selected-face']);
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/scene-theme-validation.json',
+    evidencePath('theme-toggle/evidence/scene-theme-validation.json'),
     JSON.stringify(
       {
         acceptance: 'A38',
-        platform: 'Windows Chromium SwiftShader browser; no native desktop inference',
+        platform: 'Windows Chromium WebGL browser; no native desktop inference',
         measurement:
-          'Actual Scene.onBeforeRender receives the current renderer, scene and camera; all tokens imported dynamically from packages/ui public API',
+          'Actual color Scene.onBeforeRender receives the current renderer, scene and camera; override-material prepasses are excluded; all tokens imported dynamically from packages/ui public API',
         exportEvidence:
           'tests/export.browser.spec.ts and test-results/theme-toggle/evidence/export-validation.json independently cover clean export/theme equality',
         lightsAndExposureUnchanged: true,

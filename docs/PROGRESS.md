@@ -1,5 +1,33 @@
 # 实施记录与恢复入口
 
+## 全仓代码审查与直接修复（2026-10-11）
+
+四路审查覆盖 desktop UI／服务／平台、Core、geometry、three-runtime、ui、Rust／容器及配置／质量脚本，随后跨模块二审。确认并修复35项具体 BUG，包括非法预览误提交、80窗几何栈溢出、资源校验缓存、revision溢出、raw吸附精度、GPU异常回滚、关闭／打开／保存异步竞态、资源展开预算，以及字段草稿／撤销／图片晚到等 UI 问题。逐项条件与回归在 REPOSITORY-REVIEW.md；没有回滚原有暂存工作或改固定Skills／生成token／原PRD验收条件。
+
+Core／validation／geometry／Rust storage／Inspector五项超限职责拆分后，所有生产 TS／TSX／Rust 统一500行门禁，已删除全部旧ceiling。几何复用solids、空依赖跳过全墙扫描；纯Node冷基准单列，不作桌面性能结论。UI审计与新所有权边界见 UI-REVIEW／ARCHITECTURE／CODE-QUALITY。
+
+最终验证与源码SHA256记录在 repository-review-validation.json。新增测试覆盖基线262项遗漏边界；浏览器使用独立1421、隔离证据，不覆盖历史失败。此前设置alert重复失败在本轮已修复。原生GUI停止边界保持，未补填macOS、安装、触控板、真实磁盘满／设备丢失或Q5验收。
+
+最终345单元／36文件、Rust25、四套TS、check／build与Windows优化程序／NSIS构建通过。功能浏览器去重70／71，保留SwiftShader大型工程600秒超时；实际RTX4070 SUPER同一50轮／5导出及最终20轮资源断言2／2，WebGPU4／4和生产网页4组通过。确认harness的CJS import初次失败与修正后单独通过均保留；没有放宽断言／采样／限时或关闭后处理。资源owner二审25条新增故障注入通过，项目资源及补偿清单逐项尝试释放，主错误保留。
+
+## ThreeRuntime 职责拆分（2026-10-11）
+
+按用户要求将1806行runtime拆成协调入口与独立交互、预览、拾取、正式场景、选择辅助、门动画、装饰、渲染／后处理、环境、光追快照和RAF模块。512行pathtracing的backend适配独立为pathtrace-drivers，保留采样session。公开ThreeRuntime方法、Scene／Camera／Controls身份、诊断与Core命令边界保持。各模块持有自己的状态和资源，通过明确窄接口连接；两项逐文件超限例外已删除，整个three-runtime受500行上限约束。边界与先后顺序见ARCHITECTURE.md。
+
+协调入口最终335行，pathtracing会话283行，包内最大文件为476行。独立审查补齐selection幂等清理、自建灯光与阴影释放及销毁后迟到sample异常反馈。测试已去除AST剥除ThreeRuntime构造器的做法，直接执行真实owner并保留私有故障注入探针；增加actual dispose、输入capture、场景局部重建／ghost、选择GPU与动画快照回归。最终check／四套TS／262项27文件单元／Rust20项／build通过。20轮真实GPU资源专项通过：工程资源归零，renderer自有15张纹理UUID全集、9个runtime监听及renderer身份稳定，BVH构造／释放均为1071，控制台／页面错误0。
+
+浏览器功能回归完整证据见runtime-refactor-validation.json及 `.test-artifacts/runtime-refactor/`：首轮29通过／2失败；最终源码5项复测4通过／1旧探针失败；修正探针后主题专项1通过；20轮资源专项另1通过。按最新结果去重共32条路径，31通过、1项既有UI失败，无跳过／flaky。首轮旧主题断言预期2灯，但拆分前已有半球灯和两盏方向灯；测试改为验证完整3灯类型／身份。复测又定位旧探针最后记录GTAO法线预处理的临时7777ff清屏色，改为只记录非override的真实颜色渲染，保持后处理和背景token精确断言，以及主题材质／曝光不变断言，实际主题复测通过。另有设置错误提示案例在全页alert计数处失败：原App和RenderingSettings同时显示同一notice.error，两个分支在HEAD均已存在；非法环境强度在Core发布前已拒绝，未触发runtime.sync。本轮保留无关UI及原测试断言，记录这项既有失败，不声称所有浏览器测试通过。该案例早停后的旋转、损坏HDR及英文断言未在本轮执行。原生停止边界、未验macOS／真实设备及Q5限制继续保持；本轮没有性能提升结论。
+
+## 可配置几何吸附（2026-10-11）
+
+主界面视口操作组新增“吸附”，默认综合模式开启；设置可选点／线／网格模式、公差及网格间距，Alt/Option临时绕过。配置只有SessionStore一份状态，经现有bridge进入runtime，不写工程、历史或本机偏好。纯Core模块定义候选和确定排序，纯geometry共享实际墙连接周界；runtime按正式对象／当前楼层缓存、过滤ghost／隐藏／预览／自对象，坐标、标记、预览和提交共用求解结果。新增模块均低于500行，原runtime例外上限从1812降至1806。
+
+实际鼠标已验证第二墙端点与第一墙完全相等、有限边线、端点及整墙到楼板顶点、预览文档不变、单条提交历史、Escape／pointercancel、关闭原始输入、连续开关、相机与resize、双语双主题900×600、配置错误恢复及光追清理。技术／用户视角两轮修复包括稳定元数据、无效ChangeSet／墙高／洞口宿主缓存、正式抓取锚点与小数精度、手柄沿编辑平面而非整墙偏移、正交约束后吸附、真实L周界、门窗表面拾取、有限段反馈可见性及静止预览TAA调度。详细要求和两轮发现分别记录在ACCEPTANCE、RENDERING、UI-REVIEW；最新验证及真实性能数据以snapping-validation.json为准。
+
+此前原生GUI停止边界保持，未启动新Tauri窗口。241项／24文件单元集成、四套严格TS、Rust20项、架构／语义token／固定Skills检查及生产构建已通过。浏览器原始失败保留在 `.test-artifacts/snapping/consolidated-first` 与 `consolidated-second`；新吸附7项在两组通过。加强资源探针发现共享阴影材质重新上传已释放砖纹理，已通过原生Three公开onBeforeShadow借用材质策略修复。最终17项功能／既有编辑回归通过，20轮资源专项另行通过：工程对象和资源归零，renderer自有15张纹理的完整UUID逐轮稳定，事件监听9个保持，BVH创建／释放各1071次，控制台错误0。完整原始证据分别保存在 `.test-artifacts/snapping/final-regression` 与 `resource-final`。900×600、DPR1、两墙软件GPU固定40点轨迹的帧数和耗时不作为FPS或Q5基准；Tauri／macOS／Option实机／触控板／屏幕阅读器／DPI多屏及Q5硬件仍待验或确认，不以浏览器结果补填。
+
+最终独占鼠标场景另行通过，合计19条浏览器路径由17+1+1三次命令验证，全部无失败／跳过／flaky。Chromium153 SwiftShader、两楼层两墙、900×600 viewport／485×338 canvas／DPR1，开启吸附40点总耗时2801.10ms／59帧／40次查询累计2.10ms，关闭3148.30ms／47帧／零查询；两组候选及边界重建均为0。总耗时含自动化dispatch和等待空闲，不作FPS或速度提升结论。世界／屏幕轨迹、控制台零错误、最终源码SHA256和三组报告均记录在 `snapping-validation.json`，失败历史与实际截图完整保留。
+
 ## 双主题直接切换、1600×900与提交前核验（2026-10-04）
 
 用户最新要求仅保留亮色／暗色，Header点击或Enter／Space直接切换，移除主题菜单和系统跟随；旧system／缺失／异常偏好固定迁移亮色，有效语言与渲染器保留。原生main默认尺寸改为1600×900，最小900×600保持。H09／H10覆盖声明已在HEADER-LAYOUT与ACCEPTANCE追加，原PRD及A01–A42历史条件保留。

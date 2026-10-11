@@ -2,6 +2,9 @@ mod commands;
 pub mod environment_assets;
 #[cfg(test)]
 mod environment_tests;
+mod image_assets;
+mod project_archive;
+mod project_schema;
 pub mod storage;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { choose } from './browser-controls';
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -27,9 +28,9 @@ async function start(page: Page) {
 }
 async function evidence(name: string, value: unknown, testInfo: TestInfo) {
   const json = `${JSON.stringify(value, null, 2)}\n`;
-  await mkdir(resolve('test-results/theme-toggle/evidence'), { recursive: true });
+  await mkdir(resolve(evidencePath('theme-toggle/evidence')), { recursive: true });
   await writeFile(testInfo.outputPath(`${name}.json`), json);
-  await writeFile(resolve('test-results/theme-toggle/evidence', `${name}.json`), json);
+  await writeFile(resolve(evidencePath('theme-toggle/evidence'), `${name}.json`), json);
 }
 async function focusCycle(page: Page, expectedLabels: string[]) {
   const dialog = page.getByRole('dialog');
@@ -155,7 +156,6 @@ test('render settings remain localized focusable and contained in four language 
         labels.rotation,
         labels.background,
         labels.import,
-        labels.start,
         labels.close,
       ]);
       // Focus the first remaining setting to scroll the modal's beginning into view.
@@ -164,6 +164,7 @@ test('render settings remain localized focusable and contained in four language 
       await page.screenshot({ path: resolve(screenshotDirectory, name) });
       variants.push({ language, theme, screenshot: resolve(screenshotDirectory, name), focus });
       await page.getByRole('button', { name: labels.close, exact: true }).click();
+      await expect(page.getByRole('button', { name: labels.start, exact: true })).toBeVisible();
       await idle(page);
       const current = await diagnostics(page);
       expect(current.sceneId).toBe(initial.sceneId);

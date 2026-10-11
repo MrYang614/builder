@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { choose } from './browser-controls';
 import { test, expect, type Page, type Locator } from '@playwright/test';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -67,8 +68,8 @@ const labels = {
 };
 
 function record(name: string, details: unknown) {
-  const path = 'test-results/theme-toggle/evidence/ui-states-validation.json';
-  mkdirSync('test-results/theme-toggle/evidence', { recursive: true });
+  const path = evidencePath('theme-toggle/evidence/ui-states-validation.json');
+  mkdirSync(evidencePath('theme-toggle/evidence'), { recursive: true });
   const previous = existsSync(path)
     ? JSON.parse(readFileSync(path, 'utf8'))
     : {

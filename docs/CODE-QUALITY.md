@@ -27,19 +27,31 @@ Oxc两项工具的Node兼容范围均为 `^20.19.0 || >=22.12.0`，本机Node26.
 
 Google规范中仍需代码审查的内容包括API命名、文档、模块职责与复杂度；不会用“lint通过”替代这些判断。项目的稳定领域ID、纯计算、命令边界和语义token要求继续由原有检查及测试落实，不被通用lint替代。
 
+## 文件大小与注释
+
+手写产品 TypeScript／Rust 源文件暂定上限为 500 行。`npm run check` 对 `apps/desktop/src`、`apps/desktop/src-tauri/src` 和 `packages` 中的 `.ts`、`.tsx`、`.rs` 文件逐个计数；不计生成文件、锁文件或第三方代码。测试文件可因大量独立场景、故障注入及运行时探针超过上限，但应按场景组织并复用清晰的测试辅助函数，不能用压缩断言或堆积到辅助文件的方式规避规则。
+
+迁移期间曾保存逐文件超限基线。2026-10-11 全仓审查将其余五项按完整职责拆分，`scripts/check.mjs` 已移除全部旧例外，统一执行 500 行上限。未来新增例外仍须在规则评审中说明职责边界、当前行数及拆分会破坏内聚的具体原因，不能只因为文件历史悠久而保留。
+
+`Inspector.tsx` 的完整面级材质、资源导入及连续性命令职责已提取到 `MaterialFields.tsx`，其余对象尺寸字段仍在 Inspector；二者各自订阅现有服务，选中对象 key 保持草稿生命周期。该 UI 大小例外已删除。Core、validation、geometry 和 Rust storage 的拆分及真实 BUG 回归见 REPOSITORY-REVIEW.md。
+
+`packages/three-runtime/src/runtime.ts` 已从1806行拆为不超过500行的协调入口：指针事务、预览、拾取、正式场景、选择辅助、动画、渲染器／后处理、环境、光追快照及RAF各由内聚模块持有状态与资源。模块通过明确的窄接口连接，不传入整个ThreeRuntime或共享可变context；异步请求版本与资源释放先后顺序仍由对应owner保证。`pathtracing.ts` 的backend驱动与释放适配进入 `pathtrace-drivers.ts`，会话只保留采样生命周期。两文件的逐文件大小例外已删除，整个three-runtime包都受默认500行门禁约束。
+
+公开业务函数、生命周期方法、异步状态转换和资源所有者应有简洁注释，说明用途及关键状态约束、副作用、资源释放责任或性能取舍。简单回调不需要注释。注释需随实现变化维护。当前规则由代码评审落实：自动检查注释存在与否会奖励重复函数名或无信息注释，无法可靠判断其是否准确解释了真实约束，因此不以注释数量或 AST 存在性冒充质量检查。
+
 当前保留TypeScript6，未开启 [Oxlint type-aware模式](https://oxc.rs/docs/guide/usage/linter/type-aware.html)：当前官方兼容要求为TypeScript7及额外oxlint-tsgolint依赖。这次工具接入不顺带升级编译器；`typecheck`保留官方tsc的四套严格检查，不声称它能替代未启用的no-floating-promises等类型感知lint规则。
 
 ## 有理由的局部例外
 
 这些例外写在实际代码旁，只关闭对应位置的一条规则；禁止对整包关闭检查来制造通过。
 
-| 位置／规则                                          | 保留原因                                                                                                                               |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| EditorCore／SessionStore／门动画的no-useless-spread | 订阅者或动画Map可在回调提交命令时变化，复制集合固定一次派发范围，不能直接迭代会被修改的活集合                                          |
-| 文件名清洗的no-control-regex                        | 明确去除Windows文件名中的ASCII控制字符；保留真实文件规则                                                                               |
-| 图片异步测试探针的no-this-alias                     | 捕获原生HTMLImageElement接收者，延迟真实事件后仍以同一对象调用监听器                                                                   |
-| shadcn Field的prefer-tag-over-role                  | 公开API是通用div属性和组合容器，role=group合法，不强行改fieldset导致公共类型和浏览器默认布局改变                                       |
-| 原生Header的no-noninteractive-element-interactions  | 原生标题栏背景需要鼠标拖动／双击；保留banner地标而不伪装按钮或增加焦点，最小化／最大化／关闭由实际按钮提供键盘操作，仅豁免该Header标签 |
+| 位置／规则                                                  | 保留原因                                                                                                                               |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| EditorCore／SessionStore／Signal／门动画的no-useless-spread | 订阅者或动画Map可在回调提交命令时变化，复制集合固定一次派发范围，不能直接迭代会被修改的活集合                                          |
+| 文件名清洗的no-control-regex                                | 明确去除Windows文件名中的ASCII控制字符；保留真实文件规则                                                                               |
+| 图片异步测试探针的no-this-alias                             | 捕获原生HTMLImageElement接收者，延迟真实事件后仍以同一对象调用监听器                                                                   |
+| shadcn Field的prefer-tag-over-role                          | 公开API是通用div属性和组合容器，role=group合法，不强行改fieldset导致公共类型和浏览器默认布局改变                                       |
+| 原生Header的no-noninteractive-element-interactions          | 原生标题栏背景需要鼠标拖动／双击；保留banner地标而不伪装按钮或增加焦点，最小化／最大化／关闭由实际按钮提供键盘操作，仅豁免该Header标签 |
 
 React refs／immutability／exhaustive-deps均保持启用。渲染期间写ref已改为layout effect；服务层通过attachRuntime及按实例detach清理桥接，主题／语言切换不重建Renderer。状态栏使用语义output。
 
@@ -57,7 +69,7 @@ npm run format:check    # 只检查
 npm run lint            # 零警告检查
 npm run lint:fix        # 仅安全自动修复，剩余问题仍失败
 npm run typecheck       # workspace、node、无DOM core及geometry
-npm run check           # 格式 + lint + 既有架构/token/Skills检查
+npm run check           # 格式 + lint + 架构/token/Skills/行数检查
 npm run verify          # check + typecheck + 单元测试 + 生产构建
 ```
 

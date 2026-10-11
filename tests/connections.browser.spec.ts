@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -99,7 +100,7 @@ for (const fixture of cases) {
     expect(doc.openings).toEqual([]);
     expect(doc.walls.every((wall) => wall.thickness === 0.2 && wall.height === 2.8)).toBe(true);
     await page.getByRole('button', { name: '查看整栋', exact: true }).click();
-    await mkdir('test-results/theme-toggle/evidence/screenshots', { recursive: true });
+    await mkdir(evidencePath('theme-toggle/evidence/screenshots'), { recursive: true });
     const screenshots: string[] = [],
       cameraPositions: number[][] = [];
     for (let angle = 0; angle < 3; angle++) {
@@ -120,7 +121,9 @@ for (const fixture of cases) {
       await page.waitForFunction(
         () => !(window as unknown as Instrumented).__editor.diagnostics().pendingFrame,
       );
-      const path = `test-results/theme-toggle/evidence/screenshots/connections-${fixture.name}-${angle}.png`;
+      const path = evidencePath(
+        `theme-toggle/evidence/screenshots/connections-${fixture.name}-${angle}.png`,
+      );
       await page.screenshot({ path });
       screenshots.push(path);
       cameraPositions.push(
@@ -357,9 +360,9 @@ for (const fixture of cases) {
       ray.expected.forEach((distance, index) => expect(ray.actual[index]).toBeCloseTo(distance, 5));
     }
     expect(await snapshot(page)).toEqual(doc);
-    await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+    await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
     await writeFile(
-      `test-results/theme-toggle/evidence/connections-${fixture.name}-validation.json`,
+      evidencePath(`theme-toggle/evidence/connections-${fixture.name}-validation.json`),
       JSON.stringify(
         {
           acceptance: 'A02',

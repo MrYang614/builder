@@ -24,9 +24,13 @@ export class Signal<T> {
       this.listeners.delete(fn);
     };
   };
+  /** Publishes to a fixed subscriber scope even when a callback changes subscriptions. */
   set(v: T) {
     this.value = v;
-    this.listeners.forEach((f) => f());
+    // oxlint-disable-next-line unicorn/no-useless-spread -- Subscription callbacks may add or remove listeners during dispatch.
+    for (const listener of [...this.listeners]) {
+      listener();
+    }
   }
 }
 export function makeServices(initialError?: string) {
@@ -114,6 +118,7 @@ export function makeServices(initialError?: string) {
       hiddenIds: s.hiddenIds,
       slabPurpose: s.slabPurpose,
       roofElevation: s.roofElevation ?? level.elevation + level.height,
+      snap: s.snap,
       cameraMode: camera.get(),
     };
   };

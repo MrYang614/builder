@@ -36,6 +36,7 @@ export function documentWarnings(document: ProjectDocument): DomainWarning[] {
   }
   return warnings;
 }
+/** Enumerates formal dependants so callers can describe one atomic deletion before submitting it. */
 export function deletionImpact(
   document: ProjectDocument,
   objectId: string,

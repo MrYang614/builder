@@ -1,5 +1,6 @@
-import { WebGLRenderer, SRGBColorSpace } from 'three';
+import { WebGLRenderer, PCFShadowMap, SRGBColorSpace } from 'three';
 import type { WebGPURenderer } from 'three/webgpu';
+import { cleanupAfterFailure } from './resource-cleanup';
 
 export type RendererBackend = 'webgl' | 'webgpu';
 export type SceneRenderer = WebGLRenderer | WebGPURenderer;
@@ -8,6 +9,7 @@ const renderErrors = new Set([
   'render.pathFailed',
   'render.environmentFailed',
   'render.cleanupFailed',
+  'render.postProcessingFailed',
 ]);
 export const isRenderErrorStatus = (key: string): boolean => renderErrors.has(key);
 export interface RenderState {
@@ -18,6 +20,12 @@ export interface RenderState {
   samples: number;
   targetSamples: number;
   environmentLoading: boolean;
+  postProcessing: {
+    gtao: boolean;
+    taa: boolean;
+    available: boolean;
+    history: 'invalid' | 'accumulating' | 'stable';
+  };
   error?: string;
 }
 export const initialRenderState = (): RenderState => ({
@@ -28,10 +36,25 @@ export const initialRenderState = (): RenderState => ({
   samples: 0,
   targetSamples: 128,
   environmentLoading: false,
+  postProcessing: {
+    gtao: true,
+    taa: true,
+    available: true,
+    history: 'invalid',
+  },
 });
 
 export function createWebGLRenderer(): WebGLRenderer {
-  return new WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
+  // TRAA owns temporal edge filtering; disabling MSAA avoids double filtering and keeps the
+  // WebGL and WebGPU real-time paths on the same anti-aliasing contract.
+  const renderer = new WebGLRenderer({
+    antialias: false,
+    alpha: false,
+    preserveDrawingBuffer: true,
+  });
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = PCFShadowMap;
+  return renderer;
 }
 
 /** An explicit WebGPU request must never be mislabeled after Three's automatic WebGL fallback. */
@@ -43,7 +66,7 @@ export async function createSceneRenderer(backend: RendererBackend): Promise<Sce
     throw new Error('render.webgpuUnsupported');
   }
   const { WebGPURenderer } = await import('three/webgpu');
-  const renderer = new WebGPURenderer({ antialias: true, alpha: false });
+  const renderer = new WebGPURenderer({ antialias: false, alpha: false });
   try {
     await renderer.init();
     if (!(renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend) {
@@ -52,13 +75,25 @@ export async function createSceneRenderer(backend: RendererBackend): Promise<Sce
     renderer.outputColorSpace = SRGBColorSpace;
     return renderer;
   } catch (error) {
-    await renderer.dispose();
+    try {
+      await disposeSceneRenderer(renderer);
+    } catch (cleanupError) {
+      console.warn('Renderer cleanup failed after initialization failure.', cleanupError);
+    }
     throw error;
   }
 }
 
+/** Releases native allocations and the WebGL context; disposal failure retains its original cause. */
 export async function disposeSceneRenderer(renderer: SceneRenderer): Promise<void> {
-  await renderer.dispose();
+  try {
+    await renderer.dispose();
+  } catch (error) {
+    if (renderer instanceof WebGLRenderer) {
+      cleanupAfterFailure(() => renderer.forceContextLoss());
+    }
+    throw error;
+  }
   if (renderer instanceof WebGLRenderer) {
     renderer.forceContextLoss();
   }

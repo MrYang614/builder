@@ -194,6 +194,7 @@ for (const format of [
     expect(resource.mime).toBe(format.mime);
     expect(Buffer.from(resource.dataUrl.split(',')[1]!, 'base64')).toEqual(bytes);
     await choose(page, '目标采样数', '16');
+    await page.getByRole('button', { name: '关闭', exact: true }).click();
     const started = Date.now();
     await page.getByRole('button', { name: '开始光追', exact: true }).click();
     await page.waitForFunction(

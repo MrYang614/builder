@@ -39,7 +39,10 @@ async function start() {
           <TooltipProvider>
             <EditorProvider initialError={initialError}>
               <ConfirmProvider>
-                <App flushPreferences={preferenceWrites.retryAndFlush} />
+                <App
+                  flushPreferences={preferenceWrites.retryAndFlush}
+                  settlePreferences={preferenceWrites.flush}
+                />
               </ConfirmProvider>
             </EditorProvider>
           </TooltipProvider>

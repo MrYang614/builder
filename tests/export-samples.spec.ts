@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -197,8 +198,8 @@ test('generate portable editable two-storey examples and independently verify al
     }
     return variants;
   }, workspace);
-  mkdirSync('test-results/theme-toggle/evidence/examples', { recursive: true });
-  mkdirSync('test-results/theme-toggle/evidence', { recursive: true });
+  mkdirSync(evidencePath('theme-toggle/evidence/examples'), { recursive: true });
+  mkdirSync(evidencePath('theme-toggle/evidence'), { recursive: true });
   const reports = [];
   for (const variant of result) {
     const glb = new Uint8Array(variant.glb),
@@ -207,12 +208,12 @@ test('generate portable editable two-storey examples and independently verify al
     expect(report.issues.numWarnings).toBe(0);
     expect(variant.summary.allImagesEmbedded).toBe(true);
     writeFileSync(
-      `test-results/theme-toggle/evidence/examples/${variant.name}.building`,
+      evidencePath(`theme-toggle/evidence/examples/${variant.name}.building`),
       new Uint8Array(variant.project),
     );
-    writeFileSync(`test-results/theme-toggle/evidence/examples/${variant.name}.glb`, glb);
+    writeFileSync(evidencePath(`theme-toggle/evidence/examples/${variant.name}.glb`), glb);
     writeFileSync(
-      `test-results/theme-toggle/evidence/examples/${variant.name}.source.json`,
+      evidencePath(`theme-toggle/evidence/examples/${variant.name}.source.json`),
       `${variant.source}\n`,
     );
     const information = report.issues.messages
@@ -222,7 +223,7 @@ test('generate portable editable two-storey examples and independently verify al
         return counts;
       }, {});
     reports.push({
-      file: `test-results/theme-toggle/evidence/examples/${variant.name}.glb`,
+      file: evidencePath(`theme-toggle/evidence/examples/${variant.name}.glb`),
       byteLength: glb.byteLength,
       projectByteLength: variant.project.length,
       validator: {
@@ -239,7 +240,7 @@ test('generate portable editable two-storey examples and independently verify al
     });
   }
   writeFileSync(
-    'test-results/theme-toggle/evidence/export-validation.json',
+    evidencePath('theme-toggle/evidence/export-validation.json'),
     `${JSON.stringify({ measuredAt: new Date().toISOString(), scope: 'Actual Chromium WebGL/browser export and independent GLTFLoader plus Khronos Validator. Browser results do not substitute for Tauri desktop or macOS acceptance.', reports }, null, 2)}\n`,
   );
 });

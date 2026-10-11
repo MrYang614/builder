@@ -1,0 +1,1274 @@
+{
+  "date": "2026-10-11",
+  "scope": "Configurable geometric snapping in existing horizontal editing planes; browser and code verification only",
+  "sourceState": {
+    "head": "3bc3fcb1a4692029b4fcd6304e34ab95a7426bc3",
+    "dirtyWorkspace": true,
+    "unrelatedRenderingChangesPreserved": true,
+    "sha256": {
+      "packages/editor-core/src/snap.ts": "3b9ea5b918bd5a170c8deb273c262d9da4c9a12a4ef7642896d3313896709c8f",
+      "packages/editor-core/src/snap-primitives.ts": "7cfeca7dda8ac134c1df755c1dad4294ba3e5d328d8df7acb24fbbd939749167",
+      "packages/editor-core/src/session.ts": "230b620982d164827cb368aa73a8e37464c9be023d31d270f47fb63596d954a0",
+      "packages/building-geometry/src/snap-boundaries.ts": "114fe25cf0a306e1d626b6a80af8e448f8761c75aae2de8c478a08e5b5cb9f23",
+      "packages/three-runtime/src/snap-index.ts": "a5d73dc4eac16f5a7046506e4e955820085a5db80297489fb4bac8fa763fad4e",
+      "packages/three-runtime/src/snapping.ts": "5a5283e12d75420918a701109a600fc9624ab133633fa562f3c54e20d91b2d38",
+      "packages/three-runtime/src/snap-feedback.ts": "89f9ac5d9f4854e2f7fb09cd74534f77f86c1eea29256da1a908ca3b896807a3",
+      "packages/three-runtime/src/drag-anchor.ts": "1590283a71f51d1fdf18355541a7af8aa4be949189fde1feb4a34f61836853f4",
+      "packages/three-runtime/src/drag-geometry.ts": "e740a9587da3959c981044313e8fe6255aaa28f793cb26401ef42f9aa4243daa",
+      "packages/three-runtime/src/shadow-materials.ts": "20399f6c1fc6a46372495304e7c28a49c82e12ff606511f7ff8e14e9eaaa0a9a",
+      "packages/three-runtime/src/scene.ts": "abc4cfe52c70a7fda0c33d3b14a7f1f4b2d49ffe5ac8bcdff83d8f5f0020a0a4",
+      "packages/three-runtime/src/runtime.ts": "4f517c9f5fc1b81f1b44bbe3cd102a12cd1d5c4a8c005243e898d22cd0d0500f",
+      "apps/desktop/src/ui/ToolOptions.tsx": "d86d890e06c8eeda6a934e2f9fdab098b015b57c47431e30ac72894fa5083027",
+      "apps/desktop/src/ui/SnappingSettings.tsx": "bc24a2963bcd5b635ebab06d512d8d1a49e651535adea8d007bfb5d7b0b35446",
+      "apps/desktop/src/integration/ViewportHost.tsx": "795cd4735837eeab9a291d96fc54c8e8a4262618b3f59c92f8f1d5117b3207c5",
+      "tests/snapping.browser.spec.ts": "7b172f5cf8113f71355e4ca4343d9e4d98548a2485073c7ce4c606ce24fdd4e0",
+      "tests/runtime.browser.spec.ts": "417b7775f6ca63f3cef80e0b1d280960f665a676221aa504082f05689636fd13"
+    }
+  },
+  "defaults": {
+    "enabled": true,
+    "mode": "all",
+    "toleranceMetres": 0.16,
+    "gridMetres": 0.1
+  },
+  "storage": "Single SessionStore.snap settings; absent from ProjectDocument, undo/redo and local preferences",
+  "bypass": "Alt/Option PointerEvent modifier; no candidate query while disabled or bypassed",
+  "priority": [
+    "intersection / wall-junction",
+    "wall-endpoint",
+    "valid geometry anchor / opening footprint corner",
+    "slab vertex",
+    "finite segment nearest point",
+    "grid within tolerance",
+    "raw input"
+  ],
+  "deterministicTieBreak": "rank, effective-anchor distance, full stable semantic key (level/object/index/kind/coordinates/segment/related owners)",
+  "verification": {
+    "check": {
+      "command": "npm run check",
+      "exitCode": 0
+    },
+    "typecheck": {
+      "command": "npm run typecheck",
+      "targets": 4,
+      "exitCode": 0
+    },
+    "unit": {
+      "command": "npm test -- --run",
+      "files": 24,
+      "passed": 241,
+      "exitCode": 0
+    },
+    "rust": {
+      "command": "npm run test:rust",
+      "passed": 20,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "warning": "Existing Vite chunks above 500 kB; warning retained"
+    },
+    "browser": {
+      "distinctFinalPaths": 19,
+      "platform": "Windows Chromium 153 SwiftShader browser; not Tauri or macOS acceptance",
+      "regression": {
+        "command": "npm run test:regression -- tests/snapping.browser.spec.ts tests/runtime.browser.spec.ts tests/connections.browser.spec.ts tests/wall-roundtrip.browser.spec.ts tests/door-edit.browser.spec.ts tests/slab-floor.browser.spec.ts --grep-invert \"20 real selection|separate wall strokes\" --output test-results/snapping-final-regression-17",
+        "stats": {
+          "startTime": "2026-10-11T04:07:15.690Z",
+          "duration": 491332.26399999997,
+          "expected": 17,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "cases": [
+          {
+            "file": "connections.browser.spec.ts",
+            "title": "actual mouse collinear joined walls export a closed exterior union and render from multiple rotated views",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 28233
+              }
+            ]
+          },
+          {
+            "file": "connections.browser.spec.ts",
+            "title": "actual mouse L joined walls export a closed exterior union and render from multiple rotated views",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 28275
+              }
+            ]
+          },
+          {
+            "file": "connections.browser.spec.ts",
+            "title": "actual mouse T joined walls export a closed exterior union and render from multiple rotated views",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 28121
+              }
+            ]
+          },
+          {
+            "file": "door-edit.browser.spec.ts",
+            "title": "A10: door width/height, real drag, direct deletion and one undo update actual exported wall holes",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 41707
+              }
+            ]
+          },
+          {
+            "file": "runtime.browser.spec.ts",
+            "title": "real slab corner resize has one history record; invalid opening previews share core validation and cancellation",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 31234
+              }
+            ]
+          },
+          {
+            "file": "runtime.browser.spec.ts",
+            "title": "right-button camera operation clears draft and snap preview; theme preserves camera and a fresh stroke commits",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 14849
+              }
+            ]
+          },
+          {
+            "file": "runtime.browser.spec.ts",
+            "title": "two actual UI door playbacks sample independently, finish as commands, keep pose on move and cancel on undo",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 39497
+              }
+            ]
+          },
+          {
+            "file": "runtime.browser.spec.ts",
+            "title": "real window placement, sill/size editing, pointer move and deletion/undo produce actual exported holes",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 33270
+              }
+            ]
+          },
+          {
+            "file": "slab-floor.browser.spec.ts",
+            "title": "A08 real thick slab UI assigns different top/bottom images and independently exports one closed solid",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 21904
+              }
+            ]
+          },
+          {
+            "file": "slab-floor.browser.spec.ts",
+            "title": "A11 actual cross-floor mouse selection, material, opening placement and snap ignore ghost objects",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 45286
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "real wall endpoint drag snaps to a slab vertex without changing the document until one commit; Escape and pointercancel restore it",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 12487
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "disabled and Alt input remain raw; repeated toggles preserve history and listeners; read-only and path tracing clear feedback",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 69164
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "a real body drag retains its grab offset while its formal anchor snaps to a slab vertex",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 7943
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "an off-axis endpoint is rejected before the wall preview and commit enforce the locked axis",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 5451
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "session snap policy controls point versus line targets, metre tolerance and grid spacing without document history",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 10439
+              }
+            ]
+          },
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "snap controls show localized state, keyboard focus, tooltip and disabled state in four 900x600 language/theme combinations",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 12403
+              }
+            ]
+          },
+          {
+            "file": "wall-roundtrip.browser.spec.ts",
+            "title": "A27: property length and real endpoint drag round-trip one L wall with door and continuous A/B UV",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 56627
+              }
+            ]
+          }
+        ],
+        "report": ".test-artifacts/snapping/final-regression/results17.json"
+      },
+      "pointerTrajectory": {
+        "command": "npm run test:regression -- tests/snapping.browser.spec.ts --grep \"separate wall strokes\" --output test-results/snapping-final-pointer",
+        "stats": {
+          "startTime": "2026-10-11T04:15:38.977Z",
+          "duration": 19200.512000000002,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "cases": [
+          {
+            "file": "snapping.browser.spec.ts",
+            "title": "separate wall strokes join exactly; finite lines, incremental scene edits, ghost floors and camera projection stay current",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 16856
+              }
+            ]
+          }
+        ],
+        "report": ".test-artifacts/snapping/final-regression/results-pointer.json",
+        "uncontendedBrowserRun": true
+      },
+      "resourceOwnership": {
+        "stats": {
+          "startTime": "2026-10-11T04:06:11.284Z",
+          "duration": 485930.021,
+          "expected": 1,
+          "skipped": 0,
+          "unexpected": 0,
+          "flaky": 0
+        },
+        "cases": [
+          {
+            "file": "runtime.browser.spec.ts",
+            "title": "20 real selection/theme/create/delete/replace cycles release GPU resources and preserve one renderer",
+            "ok": true,
+            "results": [
+              {
+                "status": "passed",
+                "durationMs": 481392
+              }
+            ]
+          }
+        ],
+        "cycles": 20,
+        "retained": [
+          {
+            "uuid": "3198b4fd-10f0-4be2-8ed6-08ce6a10aee2",
+            "name": "",
+            "isRenderTargetTexture": false,
+            "isDataTexture": false,
+            "isDepthTexture": true,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "depth-target"
+          },
+          {
+            "uuid": "34bc235d-a605-46cd-9e34-296ab2aa7e4d",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "3588aab4-86ee-40c1-8ca0-d171f404d0eb",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 1024,
+            "height": 1024,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "37593e1e-3ee8-48c9-9c6f-4609df8a521e",
+            "name": "",
+            "isRenderTargetTexture": false,
+            "isDataTexture": false,
+            "isDepthTexture": true,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "depth-target"
+          },
+          {
+            "uuid": "429766aa-8e48-4780-84e8-9635ade07cfc",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "5059da23-d27c-4c83-8616-d9b7b6e59f5a",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "6a1d245b-f8d5-490b-81cd-f7031f50cc03",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "8290f7d3-7b35-4200-aeda-23eadafdcda7",
+            "name": "",
+            "isRenderTargetTexture": false,
+            "isDataTexture": true,
+            "isDepthTexture": false,
+            "width": 64,
+            "height": 64,
+            "hasPixelData": true,
+            "imageSource": false,
+            "owner": "gtao-noise"
+          },
+          {
+            "uuid": "9e19ac69-2192-4a2e-8837-fed305bdaebc",
+            "name": "",
+            "isRenderTargetTexture": false,
+            "isDataTexture": true,
+            "isDepthTexture": false,
+            "width": 5,
+            "height": 5,
+            "hasPixelData": true,
+            "imageSource": false,
+            "owner": "gtao-noise"
+          },
+          {
+            "uuid": "a256fa79-2d96-4367-a773-c9baada2672c",
+            "name": ".shadowMap",
+            "isRenderTargetTexture": false,
+            "isDataTexture": false,
+            "isDepthTexture": true,
+            "width": 1024,
+            "height": 1024,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "depth-target"
+          },
+          {
+            "uuid": "aa1804da-93ad-47ed-b31e-4d69807f6745",
+            "name": "DFG_LUT",
+            "isRenderTargetTexture": false,
+            "isDataTexture": true,
+            "isDepthTexture": false,
+            "width": 16,
+            "height": 16,
+            "hasPixelData": true,
+            "imageSource": false,
+            "owner": "lighting-lookup"
+          },
+          {
+            "uuid": "c54bb6ab-e6e2-4a23-92bf-6b5df9e036be",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "d3671e42-c4b5-46f7-b0d9-4fdb7fddfec8",
+            "name": "EffectComposer.rt1",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "e772fdd7-d725-4311-ad63-7b1e0ba8b760",
+            "name": "EffectComposer.rt2",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          },
+          {
+            "uuid": "f23e89ef-f892-43ac-b378-9d3c049a780c",
+            "name": "",
+            "isRenderTargetTexture": true,
+            "isDataTexture": false,
+            "isDepthTexture": false,
+            "width": 970,
+            "height": 692,
+            "hasPixelData": false,
+            "imageSource": false,
+            "owner": "render-target"
+          }
+        ],
+        "report": ".test-artifacts/snapping/resource-final/results.json"
+      },
+      "console": "All seven snapping scenarios and all runtime scenarios assert zero pageerror and console/WebGL/TSL/WGSL/validation errors; dependency deprecation warnings are retained"
+    }
+  },
+  "reviewRound1": {
+    "fixed": [
+      "deterministic overlapping-candidate metadata and prepared-node idempotence",
+      "invalid ChangeSet metadata, opening host identity/visibility and wall-height boundary invalidation",
+      "self/related owner, hidden, ghost, preview and auxiliary filtering",
+      "formal body grab anchor, direct decimal target assignment and unbiased raised-handle coordinates",
+      "wall axis constraint applied before snap resolution",
+      "actual L corner/extended outer edge and trimmed inner boundary",
+      "opening placement uses the picked wall surface coordinates"
+    ],
+    "sourceCeiling": "runtime.ts reduced 1812 to 1806 lines; new modules below 500"
+  },
+  "reviewRound2": {
+    "fixed": [
+      "finite line feedback made visible through a reused narrow mesh strip",
+      "stationary preview no longer continuously invalidates and schedules TAA",
+      "ownership probe exposed a disposed project image reuploaded by shared shadow material; supported shadow material policy prevents stale sampler use"
+    ],
+    "actualActions": "two separate wall strokes; endpoint/whole-wall drag; line midpoint/blank/ghost; Escape/pointercancel; repeated toggles; camera/resize; zh/en and light/dark at 900x600; session policies; realtime/path-tracing cleanup",
+    "detector": {
+      "invocations": 1,
+      "findings": 0,
+      "limitation": "Static UI detector only, not usability proof"
+    }
+  },
+  "earlierFailuresPreserved": [
+    {
+      "report": ".test-artifacts/snapping/consolidated-first/results.json",
+      "stats": {
+        "startTime": "2026-10-11T03:46:53.658Z",
+        "duration": 358958.435,
+        "expected": 14,
+        "skipped": 0,
+        "unexpected": 5,
+        "flaky": 0
+      },
+      "reasons": "Outdated resource/camera/playback/ghost assumptions plus the actual perspective handle offset defect"
+    },
+    {
+      "report": ".test-artifacts/snapping/consolidated-second/results.json",
+      "stats": {
+        "startTime": "2026-10-11T03:54:19.100Z",
+        "duration": 392811.125,
+        "expected": 18,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "reasons": "Texture-only ownership probe missed RenderTarget-owned GPU buffers; subsequent stronger probe exposed genuine stale shadow sampler reupload"
+    },
+    {
+      "report": ".test-artifacts/snapping/retained-project-textures.json",
+      "reasons": "Recorded project texture upload, disposal and shadow reupload stacks before the product fix"
+    }
+  ],
+  "performance": {
+    "platform": "Chromium SwiftShader browser; no Tauri, native hardware, or FPS claim",
+    "scene": {
+      "levels": 2,
+      "walls": 2,
+      "slabs": 0,
+      "openings": 0
+    },
+    "environment": {
+      "viewport": {
+        "width": 900,
+        "height": 600
+      },
+      "canvas": {
+        "width": 485,
+        "height": 338
+      },
+      "dpr": 1,
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Safari/537.36"
+    },
+    "enabled": {
+      "enabled": true,
+      "world": [
+        {
+          "x": -2.6,
+          "z": -0.94
+        },
+        {
+          "x": -2.466666666666667,
+          "z": -0.72
+        },
+        {
+          "x": -2.3333333333333335,
+          "z": -0.94
+        },
+        {
+          "x": -2.2,
+          "z": -0.72
+        },
+        {
+          "x": -2.066666666666667,
+          "z": -0.94
+        },
+        {
+          "x": -1.9333333333333336,
+          "z": -0.72
+        },
+        {
+          "x": -1.8,
+          "z": -0.94
+        },
+        {
+          "x": -1.6666666666666667,
+          "z": -0.72
+        },
+        {
+          "x": -1.5333333333333334,
+          "z": -0.94
+        },
+        {
+          "x": -1.4,
+          "z": -0.72
+        },
+        {
+          "x": -1.2666666666666668,
+          "z": -0.94
+        },
+        {
+          "x": -1.1333333333333333,
+          "z": -0.72
+        },
+        {
+          "x": -1,
+          "z": -0.94
+        },
+        {
+          "x": -0.8666666666666665,
+          "z": -0.72
+        },
+        {
+          "x": -0.7333333333333334,
+          "z": -0.94
+        },
+        {
+          "x": -0.6000000000000001,
+          "z": -0.72
+        },
+        {
+          "x": -0.4666666666666668,
+          "z": -0.94
+        },
+        {
+          "x": -0.3333333333333335,
+          "z": -0.72
+        },
+        {
+          "x": -0.19999999999999973,
+          "z": -0.94
+        },
+        {
+          "x": -0.06666666666666687,
+          "z": -0.72
+        },
+        {
+          "x": 0.06666666666666643,
+          "z": -0.94
+        },
+        {
+          "x": 0.20000000000000018,
+          "z": -0.72
+        },
+        {
+          "x": 0.3333333333333335,
+          "z": -0.94
+        },
+        {
+          "x": 0.4666666666666668,
+          "z": -0.72
+        },
+        {
+          "x": 0.6000000000000001,
+          "z": -0.94
+        },
+        {
+          "x": 0.7333333333333334,
+          "z": -0.72
+        },
+        {
+          "x": 0.8666666666666671,
+          "z": -0.94
+        },
+        {
+          "x": 1,
+          "z": -0.72
+        },
+        {
+          "x": 1.1333333333333333,
+          "z": -0.94
+        },
+        {
+          "x": 1.266666666666667,
+          "z": -0.72
+        },
+        {
+          "x": 1.4,
+          "z": -0.94
+        },
+        {
+          "x": 1.5333333333333337,
+          "z": -0.72
+        },
+        {
+          "x": 1.6666666666666665,
+          "z": -0.94
+        },
+        {
+          "x": 1.7999999999999994,
+          "z": -0.72
+        },
+        {
+          "x": 1.9333333333333331,
+          "z": -0.94
+        },
+        {
+          "x": 2.066666666666667,
+          "z": -0.72
+        },
+        {
+          "x": 2.2000000000000006,
+          "z": -0.94
+        },
+        {
+          "x": 2.3333333333333335,
+          "z": -0.72
+        },
+        {
+          "x": 2.4666666666666663,
+          "z": -0.94
+        },
+        {
+          "x": 2.6,
+          "z": -0.72
+        }
+      ],
+      "pixels": [
+        {
+          "x": 311.5895928450851,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 315.64916701442667,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 319.7089925155001,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 323.76857779342663,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 327.82839218591505,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 331.8879885724266,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 335.94779185633,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 340.00739935142656,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 344.067191526745,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 348.1268101304265,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 352.18659119715994,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 356.2462209094265,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 360.3059908675749,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 364.36563168842645,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 368.42539053798987,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 372.4850424674264,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 376.5447902084048,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 380.6044532464264,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 384.6641898788198,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 388.72386402542634,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 392.7835895492347,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 396.8432748044263,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 400.90298921964967,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 404.96268558342626,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 409.02238889006463,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 413.0820963624262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 417.14178856047954,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 421.2015071414262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 425.2611882308945,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 429.3209179204262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 433.38058790130947,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 437.4403286994262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 441.49998757172443,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 445.55973947842614,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 449.61938724213934,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 453.6791502574261,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 457.73878691255436,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 461.79856103642607,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 465.85818658296927,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 469.91797181542603,
+          "y": 379.60353309369077
+        }
+      ],
+      "elapsedMs": 2801.100000023842,
+      "frameCount": 59,
+      "queries": 40,
+      "queryMs": 2.0999999046325684,
+      "rebuilds": 0,
+      "objectBuilds": 0,
+      "boundaryBuilds": 0,
+      "boundaryGroupBuilds": 0
+    },
+    "disabled": {
+      "enabled": false,
+      "world": [
+        {
+          "x": -2.6,
+          "z": -0.94
+        },
+        {
+          "x": -2.466666666666667,
+          "z": -0.72
+        },
+        {
+          "x": -2.3333333333333335,
+          "z": -0.94
+        },
+        {
+          "x": -2.2,
+          "z": -0.72
+        },
+        {
+          "x": -2.066666666666667,
+          "z": -0.94
+        },
+        {
+          "x": -1.9333333333333336,
+          "z": -0.72
+        },
+        {
+          "x": -1.8,
+          "z": -0.94
+        },
+        {
+          "x": -1.6666666666666667,
+          "z": -0.72
+        },
+        {
+          "x": -1.5333333333333334,
+          "z": -0.94
+        },
+        {
+          "x": -1.4,
+          "z": -0.72
+        },
+        {
+          "x": -1.2666666666666668,
+          "z": -0.94
+        },
+        {
+          "x": -1.1333333333333333,
+          "z": -0.72
+        },
+        {
+          "x": -1,
+          "z": -0.94
+        },
+        {
+          "x": -0.8666666666666665,
+          "z": -0.72
+        },
+        {
+          "x": -0.7333333333333334,
+          "z": -0.94
+        },
+        {
+          "x": -0.6000000000000001,
+          "z": -0.72
+        },
+        {
+          "x": -0.4666666666666668,
+          "z": -0.94
+        },
+        {
+          "x": -0.3333333333333335,
+          "z": -0.72
+        },
+        {
+          "x": -0.19999999999999973,
+          "z": -0.94
+        },
+        {
+          "x": -0.06666666666666687,
+          "z": -0.72
+        },
+        {
+          "x": 0.06666666666666643,
+          "z": -0.94
+        },
+        {
+          "x": 0.20000000000000018,
+          "z": -0.72
+        },
+        {
+          "x": 0.3333333333333335,
+          "z": -0.94
+        },
+        {
+          "x": 0.4666666666666668,
+          "z": -0.72
+        },
+        {
+          "x": 0.6000000000000001,
+          "z": -0.94
+        },
+        {
+          "x": 0.7333333333333334,
+          "z": -0.72
+        },
+        {
+          "x": 0.8666666666666671,
+          "z": -0.94
+        },
+        {
+          "x": 1,
+          "z": -0.72
+        },
+        {
+          "x": 1.1333333333333333,
+          "z": -0.94
+        },
+        {
+          "x": 1.266666666666667,
+          "z": -0.72
+        },
+        {
+          "x": 1.4,
+          "z": -0.94
+        },
+        {
+          "x": 1.5333333333333337,
+          "z": -0.72
+        },
+        {
+          "x": 1.6666666666666665,
+          "z": -0.94
+        },
+        {
+          "x": 1.7999999999999994,
+          "z": -0.72
+        },
+        {
+          "x": 1.9333333333333331,
+          "z": -0.94
+        },
+        {
+          "x": 2.066666666666667,
+          "z": -0.72
+        },
+        {
+          "x": 2.2000000000000006,
+          "z": -0.94
+        },
+        {
+          "x": 2.3333333333333335,
+          "z": -0.72
+        },
+        {
+          "x": 2.4666666666666663,
+          "z": -0.94
+        },
+        {
+          "x": 2.6,
+          "z": -0.72
+        }
+      ],
+      "pixels": [
+        {
+          "x": 311.5895928450851,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 315.64916701442667,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 319.7089925155001,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 323.76857779342663,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 327.82839218591505,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 331.8879885724266,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 335.94779185633,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 340.00739935142656,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 344.067191526745,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 348.1268101304265,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 352.18659119715994,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 356.2462209094265,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 360.3059908675749,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 364.36563168842645,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 368.42539053798987,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 372.4850424674264,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 376.5447902084048,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 380.6044532464264,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 384.6641898788198,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 388.72386402542634,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 392.7835895492347,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 396.8432748044263,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 400.90298921964967,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 404.96268558342626,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 409.02238889006463,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 413.0820963624262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 417.14178856047954,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 421.2015071414262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 425.2611882308945,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 429.3209179204262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 433.38058790130947,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 437.4403286994262,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 441.49998757172443,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 445.55973947842614,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 449.61938724213934,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 453.6791502574261,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 457.73878691255436,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 461.79856103642607,
+          "y": 379.60353309369077
+        },
+        {
+          "x": 465.85818658296927,
+          "y": 372.9050562943164
+        },
+        {
+          "x": 469.91797181542603,
+          "y": 379.60353309369077
+        }
+      ],
+      "elapsedMs": 3148.2999999523163,
+      "frameCount": 47,
+      "queries": 0,
+      "queryMs": 0,
+      "rebuilds": 0,
+      "objectBuilds": 0,
+      "boundaryBuilds": 0,
+      "boundaryGroupBuilds": 0
+    },
+    "errors": [],
+    "interpretation": "40 real mouse dispatches plus wait-for-idle; actual frame and cumulative query counters. No FPS, P50/P95 or speedup conclusion. Static geometry rebuild counters remain zero. This is not Q5 hardware acceptance."
+  },
+  "evidence": {
+    "screenshots": ".test-artifacts/snapping/final-regression/snapping",
+    "preview": "two-walls-finite-line.png",
+    "drag": "whole-wall-grab-offset-preview.png",
+    "runtimeOwnership": ".test-artifacts/snapping/resource-final/runtime-validation.json"
+  },
+  "unverified": [
+    "New snapping paths in actual Windows Tauri WebView; prior native GUI stop remains in effect",
+    "macOS and actual Option/trackpad behavior",
+    "New snapping paths on real WebGPU/device-loss and hardware high-density models",
+    "Screen-reader building workflow, DPI/multiple monitors and OS accessibility",
+    "Q5 target systems/reference hardware, FPS/P95 and CPU/GPU/VRAM peaks"
+  ]
+}

@@ -61,3 +61,27 @@ BVH实例级raycast，不改全局原型；indirect模式保持索引、group和
 选择16采样并开始光追，确认达到目标、暂停不继续计数、继续有效，实际保存PNG；移动相机及修改墙尺寸后确认从新版本重新累计，撤销恢复数据。重复WebGL／WebGPU切换及光追开始／退出20次，记录可见错误、资源计数和进程内存；主题、语言与面板切换应保持backend／相机／建筑光照。WebGPU采样结果、硬件收敛质量与真实设备丢失需独立保存证据，不用当前mock或软件WebGL报告补填。
 
 分别用实际系统文件对话框导入HDR／EXR、保存、另存为、删除原图、跨目录重开以及PNG输出；修改backend偏好后从标题栏关闭并重启，核对偏好恢复与失败保护。macOS增加Command、触控板、系统主题及Windows工程迁移。自动浏览器默认强制SwiftShader，补验硬件时须另用实际硬件环境，不直接把现有测试启动参数当成GPU性能配置。
+
+## 本轮实时后处理与光追入口（2026-10-11）
+
+Three.js 0.186.1 已提供 `GTAONode`、`SSAONode` 与 `TRAANode`。本项目采用 `GTAONode`：它需要独立 pre-pass 的深度与法线；`TRAANode` 需要 beauty/depth/velocity，因此 WebGPU 链路将这些输入放在独立 pre-pass 与 scene pass 中，避免 pass 自引用。WebGL 采用维护成本更低的 `GTAOPass` 与本项目的深度重投影 TAA。光追输出走独立 PathTraceSession，不把实时后处理冒充光追降噪。
+
+实时后处理默认 GTAO 与 TAA 开启，GTAO 使用低分辨率 AO 和保守强度，TAA 在相机、场景、环境、DPR、尺寸和效果切换时丢弃历史。WebGPU 的 `TRAANode` 历史由节点管理并在突变时重置；WebGL TAA 使用 8 个 Halton 抖动样本、深度不连续拒绝和 YCoCg 邻域裁剪。`OutputPass` 保持在 WebGL 链路末端，避免灰度 AO 纹理直接成为最终颜色。
+
+后处理入口位于视口主工具栏；设置面板只提供采样、效果开关和环境参数。真实浏览器证据见 `tests/postprocessing.browser.spec.ts` 及 `test-results/postprocessing/evidence.json`；支持 WebGPU 设备证据见 `tests/webgpu.hardware.ts`。本轮未以浏览器结果替代 Tauri 原生或 macOS 验收。
+
+后处理相对观察固定在同一“可编辑示例”场景：初始 1440×900、DPR 1，随后 1100×700、DPR 1；证据分别记录 GTAO/TAA 开关、相机操作、历史稳定状态和每次开关后的帧数／耗时。它用于复现开关成本与历史重建行为，不作为 Q5 目标硬件 FPS 或显存结论。
+
+## 几何吸附与瞬态反馈（2026-10-11）
+
+`RuntimeSnapping` 负责射线到当前编辑平面的投影、世界 XZ 候选索引和瞬态反馈。`RuntimeSnapIndex` 按当前楼层保留正式对象组，ChangeSet 更新几何签名；纯 geometry 的 `buildEffectiveWallSnapCandidates` 复用实际墙并集外露路径，几何变化时求解边界拓扑并复用未变化的 owner 组。材质变更不重建索引；相机、resize、主题、语言和工具变化只清除旧反馈，下一输入使用新矩阵投影。楼层／工程变化释放旧索引，ghost、隐藏对象、预览和辅助对象不成为目标。
+
+默认开启，公差 0.16m、网格间距 0.1m；主工具栏显示状态，设置提供点／线／网格／全部模式。Alt／Option 临时绕过，材质工具沿用原始拾取。墙绘制和端点编辑先限制有效轴，候选公差仍以约束前的有效指针锚点计算。整对象移动保留一个正式节点及抓取偏移；端点／角点手柄沿编辑平面取精确目标，不携带抬高手柄在透视投影下的偏移。该节点直接取 resolved point，避免小数相减造成提交漂移。结果的 `distance` 是有效锚点输入距离，`rawPoint`／`pointerDistance` 另外记录未经抓取偏移的指针 XZ 坐标及距离；楼层与编辑平面确定 Y，吸附沿现有平面编辑，不引入竖向编辑能力。
+
+点标记和有限线段网格条由 runtime 持有，只更新复用的位置缓冲；坐标读数局部写入 DOM，目标类型仅在转换时更新状态栏，没有逐帧 React 或 IPC。反馈不进入 ProjectDocument、GLB 或光追 snapshot。相机操作、离开视口、失焦、取消、模式切换和文档更新清除反馈；GPU 几何／材质与局部 DOM 在 dispose 中释放。静止编辑预览不持续驱动 TAA 采样，输入事件更新画面，提交／取消后恢复有限历史细化。
+
+资源回归另发现 Three 共享阴影深度材质在有贴图→无贴图的轮廓间保留旧sampler，再上传已经释放的工程图片。`shadow-materials.ts` 通过公开 `onBeforeShadow` 回调处理借用材质：当前不透明轮廓不采样无用diffuse map，masked／alpha-hashed轮廓保留图片，sampler有无变化才更新材质版本。WeakMap记录借用状态，不拥有／释放Three阴影材质，连续同策略绘制不反复更新版本。正式网格共用该回调，工程图片仍只由ResourcePool按lease释放，不访问renderer私有属性。
+
+## Runtime 所有权拆分（2026-10-11）
+
+`ThreeRuntime` 保留稳定Scene／Camera／Controls和公开命令入口，`RuntimeRendering` 持有renderer切换、后处理和渲染状态，`RuntimeScheduler` 串行合并按需帧，`RuntimeEnvironment` 管理解码版本与纹理，`RuntimePathTracing` 持有干净建筑快照、采样session及重建计时器。backend驱动独立在pathtrace-drivers，完整模块边界见ARCHITECTURE.md。输入、辅助和正式场景资源分别由自己的owner释放，销毁先停调度、释放借用者，再释放灯光阴影与renderer；迟到采样不恢复已销毁状态。公开diagnostics及导出边界保持，验证与源文件哈希见runtime-refactor-validation.json，不据组织拆分宣称渲染速度提升。

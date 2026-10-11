@@ -74,4 +74,56 @@ describe('portable project container', () => {
       code: 'corrupt_project',
     });
   });
+  it.each([null, [], 'project', 42])(
+    'rejects non-object project JSON %j with a platform error',
+    async (value) => {
+      await expect(
+        decodeProjectContainer(zipSync({ 'project.json': strToU8(JSON.stringify(value)) })),
+      ).rejects.toMatchObject({ code: 'corrupt_project' });
+    },
+  );
+  it.each([
+    ['project.json', 32 * 1024 * 1024 + 1],
+    ['resources/large.png', 32 * 1024 * 1024 + 1],
+    ['environment-resources/large.hdr', 64 * 1024 * 1024 + 1],
+  ] as const)('rejects declared oversized %s before decompression', async (name, size) => {
+    const archive = zipSync({ [name]: new Uint8Array([1]) });
+    const view = new DataView(archive.buffer);
+    // The central-directory size is untrusted even when the compressed payload is tiny.
+    for (let offset = 0; offset + 46 <= archive.length; offset++) {
+      if (view.getUint32(offset, true) === 0x02014b50) {
+        view.setUint32(offset + 24, size, true);
+        break;
+      }
+    }
+    await expect(decodeProjectContainer(archive)).rejects.toMatchObject({ code: 'file_too_large' });
+  });
+  it('bounds manifest alias expansion before any aliased image is decompressed', async () => {
+    const hash = '0'.repeat(64),
+      path = `resources/${hash}.png`;
+    const document = createEmptyProject();
+    const resources = Array.from({ length: 9 }, (_, index) => ({
+      id: `alias_${index}`,
+      name: 'alias.png',
+      mime: 'image/png',
+      path,
+      sha256: hash,
+    }));
+    const archive = zipSync({
+      'project.json': strToU8(JSON.stringify({ ...document, resources })),
+      [path]: new Uint8Array([1]),
+    });
+    const view = new DataView(archive.buffer);
+    for (let offset = 0; offset + 46 <= archive.length; offset++) {
+      if (view.getUint32(offset, true) !== 0x02014b50) {
+        continue;
+      }
+      const length = view.getUint16(offset + 28, true);
+      if (new TextDecoder().decode(archive.subarray(offset + 46, offset + 46 + length)) === path) {
+        view.setUint32(offset + 24, 32 * 1024 * 1024, true);
+        break;
+      }
+    }
+    await expect(decodeProjectContainer(archive)).rejects.toMatchObject({ code: 'file_too_large' });
+  });
 });

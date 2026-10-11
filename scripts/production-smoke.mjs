@@ -5,7 +5,10 @@ import { chromium, expect } from '@playwright/test';
 import { validateBytes } from 'gltf-validator';
 
 const root = resolve('apps/desktop/dist');
-const output = resolve('test-results/theme-toggle/production');
+const output = resolve(
+  process.env.BUILDING_EVIDENCE_ROOT ?? 'test-results',
+  'theme-toggle/production',
+);
 await mkdir(output, { recursive: true });
 const contentTypes = {
   '.html': 'text/html',

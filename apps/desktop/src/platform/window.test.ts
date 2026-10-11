@@ -1,5 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import configuration from '../../src-tauri/tauri.conf.json';
 import { createWindowControls, registerCloseGuard } from './index';
+
+it('keeps the single native main window at the documented default and minimum sizes', () => {
+  expect(configuration.app.windows).toHaveLength(1);
+  expect(configuration.app.windows[0]).toMatchObject({
+    label: 'main',
+    width: 1600,
+    height: 900,
+    minWidth: 900,
+    minHeight: 600,
+  });
+});
 
 const native = vi.hoisted(() => ({
   desktop: true,

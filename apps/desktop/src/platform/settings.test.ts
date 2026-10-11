@@ -96,4 +96,24 @@ describe('local theme and renderer preference migration and validation', () => {
       rendererBackend: 'webgpu',
     });
   });
+  it('retains successful native persistence when the optional browser cache is unavailable', async () => {
+    host.desktop = true;
+    vi.stubGlobal('localStorage', {
+      setItem: () => {
+        throw new Error('cache unavailable');
+      },
+    });
+    const settings: AppSettings = { themeMode: 'dark', language: 'en', rendererBackend: 'webgpu' };
+    await expect(saveSettings(settings)).resolves.toBeUndefined();
+    expect(host.invoke).toHaveBeenCalledWith('save_settings', { settings });
+  });
+  it('still reports native write failures instead of treating the optional cache as persistence', async () => {
+    host.desktop = true;
+    const error = new Error('disk full');
+    host.invoke.mockRejectedValue(error);
+    await expect(
+      saveSettings({ themeMode: 'dark', language: 'en', rendererBackend: 'webgpu' }),
+    ).rejects.toBe(error);
+    expect(values.has(SETTINGS_CACHE_KEY)).toBe(false);
+  });
 });

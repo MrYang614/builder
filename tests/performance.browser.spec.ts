@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -70,7 +71,7 @@ test('PRD workload: real file open, camera input, 50 resource cycles and 5 expor
     measuredAt: new Date().toISOString(),
     status: 'running',
     scope:
-      'Chromium browser development build with software WebGL; not Tauri desktop or hardware GPU acceptance',
+      'Chromium browser development build with WebGL; actual device recorded below; not Tauri desktop or Q5 acceptance',
     targetStatus:
       'Q5 reference hardware/OS decision pending; measured results do not establish the PRD FPS/latency target',
     environment: {
@@ -81,7 +82,7 @@ test('PRD workload: real file open, camera input, 50 resource cycles and 5 expor
       totalMemoryBytes: totalmem(),
       browserVersion: browser.version(),
       node: process.version,
-      launchFlags: ['--enable-webgl', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+      launchFlags: testInfo.project.use.launchOptions?.args ?? [],
     },
     methods: {
       load: 'From immediately before the real file chooser receives a .building ZIP until all objects and 20 textures are rendered; includes protocol file delivery and decoding/upload',
@@ -471,8 +472,8 @@ test('PRD workload: real file open, camera input, 50 resource cycles and 5 expor
         ? Math.max(...resourceSamples.map((sample) => sample.textures))
         : null,
     };
-    await mkdir(resolve('test-results/theme-toggle/evidence'), { recursive: true });
-    const path = resolve('test-results/theme-toggle/evidence/benchmark-browser.json');
+    await mkdir(resolve(evidencePath('theme-toggle/evidence')), { recursive: true });
+    const path = resolve(evidencePath('theme-toggle/evidence/benchmark-browser.json'));
     await writeFile(path, JSON.stringify(report, null, 2) + '\n');
     await testInfo.attach('browser-workload-measurements', {
       path,

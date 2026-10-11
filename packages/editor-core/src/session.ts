@@ -1,7 +1,6 @@
 import type { ProjectDocument, Vec2, Wall } from './model';
-import { DEFAULTS } from './model';
-import { freezeDocument } from './core';
-import { pointOnSegment } from './validation';
+import { freezeDocument } from './immutable';
+import { DEFAULT_SNAP_SETTINGS, snapDocumentPoint, type SnapSettings } from './snap';
 
 export type Tool = 'select' | 'wall' | 'slab' | 'door' | 'window' | 'material';
 export type SurfaceRole = 'A' | 'B' | 'edge' | 'top' | 'bottom' | 'opening';
@@ -14,10 +13,14 @@ export interface EditorSession {
   hiddenIds: string[];
   slabPurpose: 'floor' | 'roof';
   roofElevation?: number;
+  /** Session-only snapping preference; never serialized into ProjectDocument or history. */
+  snap: SnapSettings;
 }
+/** Owns transient selection, tools and snapping preferences outside project history and persistence. */
 export class SessionStore {
   private snapshot: EditorSession;
   private readonly listeners = new Set<() => void>();
+  /** Initializes a cached immutable editing session for the caller's active floor. */
   constructor(currentLevelId: string) {
     this.snapshot = freezeDocument({
       currentLevelId,
@@ -25,15 +28,18 @@ export class SessionStore {
       wholeBuildingPreview: false,
       hiddenIds: [],
       slabPurpose: 'floor',
+      snap: { ...DEFAULT_SNAP_SETTINGS },
     });
   }
   getSnapshot = (): EditorSession => this.snapshot;
+  /** Registers session delivery and supplies deterministic listener cleanup. */
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
     };
   };
+  /** Publishes changed transient fields without touching formal data or notifying for a no-op. */
   set(patch: Partial<EditorSession>): void {
     if (
       Object.entries(patch).every(
@@ -48,6 +54,7 @@ export class SessionStore {
       listener();
     }
   }
+  /** Repairs the active floor and selection after deletion, undo or project replacement. */
   reconcile(document: ProjectDocument): void {
     const patch: Partial<EditorSession> = {};
     if (!document.levels.some((l) => l.id === this.snapshot.currentLevelId)) {
@@ -67,7 +74,8 @@ export class SessionStore {
   }
 }
 
-export interface SnapResult {
+/** Legacy result shape retained for existing tool callers during the snapping migration. */
+export interface LegacySnapResult {
   point: Vec2;
   kind: 'endpoint' | 'edge' | 'grid';
   objectId?: string;
@@ -83,70 +91,37 @@ export function snapPoint(
     excludeId?: string;
     orthogonalFrom?: Vec2;
   } = {},
-): SnapResult {
-  const grid = options.grid ?? DEFAULTS.grid;
-  const tolerance = options.tolerance ?? 0.16;
-  const candidates: { point: Vec2; kind: 'endpoint' | 'edge'; objectId: string }[] = [];
-  const walls = document.walls.filter((w) => w.levelId === levelId && w.id !== options.excludeId);
-  for (const wall of walls) {
-    candidates.push(
-      { point: wall.start, kind: 'endpoint', objectId: wall.id },
-      { point: wall.end, kind: 'endpoint', objectId: wall.id },
-    );
-    const p = projectPointToWall(point, wall);
-    if (pointOnSegment(p, wall)) {
-      candidates.push({ point: p, kind: 'edge', objectId: wall.id });
-    }
-  }
-  for (const slab of document.slabs.filter(
-    (s) => s.levelId === levelId && s.id !== options.excludeId,
-  )) {
-    for (const p of slab.polygon) {
-      candidates.push({ point: p, kind: 'endpoint', objectId: slab.id });
-    }
-    for (let i = 0; i < slab.polygon.length; i += 1) {
-      const edge = { start: slab.polygon[i]!, end: slab.polygon[(i + 1) % slab.polygon.length]! };
-      const p = projectPointToWall(point, edge);
-      if (pointOnSegment(p, edge)) {
-        candidates.push({ point: p, kind: 'edge', objectId: slab.id });
-      }
-    }
-  }
-  const endpoint = candidates
-    .filter((c) => c.kind === 'endpoint')
-    .sort((a, b) => distance(point, a.point) - distance(point, b.point))[0];
-  const edge = candidates
-    .filter((c) => c.kind === 'edge')
-    .sort((a, b) => distance(point, a.point) - distance(point, b.point))[0];
-  const candidate =
-    endpoint && distance(point, endpoint.point) <= tolerance
-      ? endpoint
-      : edge && distance(point, edge.point) <= tolerance
-        ? edge
-        : undefined;
-  let result: SnapResult = candidate
-    ? { ...candidate, point: { ...candidate.point } }
-    : {
-        point: { x: Math.round(point.x / grid) * grid, z: Math.round(point.z / grid) * grid },
-        kind: 'grid',
-      };
+): LegacySnapResult {
+  const result = snapDocumentPoint(
+    point,
+    document,
+    {
+      ...DEFAULT_SNAP_SETTINGS,
+      tolerance: options.tolerance ?? DEFAULT_SNAP_SETTINGS.tolerance,
+      gridSize: options.grid ?? DEFAULT_SNAP_SETTINGS.gridSize,
+    },
+    { levelId, excludeId: options.excludeId },
+  );
+  let legacy: LegacySnapResult = {
+    point: { ...result.point },
+    kind: result.kind === 'point' ? 'endpoint' : result.kind === 'line' ? 'edge' : 'grid',
+    ...(result.objectId ? { objectId: result.objectId } : {}),
+  };
   if (options.orthogonalFrom) {
     const start = options.orthogonalFrom;
-    const dx = result.point.x - start.x,
-      dz = result.point.z - start.z;
-    result = {
-      ...result,
+    const dx = legacy.point.x - start.x,
+      dz = legacy.point.z - start.z;
+    legacy = {
+      ...legacy,
       point:
         Math.abs(dx) >= Math.abs(dz)
-          ? { x: result.point.x, z: start.z }
-          : { x: start.x, z: result.point.z },
+          ? { x: legacy.point.x, z: start.z }
+          : { x: start.x, z: legacy.point.z },
     };
   }
-  return result;
+  return legacy;
 }
-function distance(a: Vec2, b: Vec2): number {
-  return Math.hypot(a.x - b.x, a.z - b.z);
-}
+/** Projects onto the host axis; placement bounds remain a separate domain validation step. */
 export function projectPointToWall(point: Vec2, wall: Pick<Wall, 'start' | 'end'>): Vec2 {
   const dx = wall.end.x - wall.start.x,
     dz = wall.end.z - wall.start.z;
@@ -154,6 +129,7 @@ export function projectPointToWall(point: Vec2, wall: Pick<Wall, 'start' | 'end'
   const t = squared ? ((point.x - wall.start.x) * dx + (point.z - wall.start.z) * dz) / squared : 0;
   return { x: wall.start.x + dx * t, z: wall.start.z + dz * t };
 }
+/** Measures signed physical distance from the host's stable reference endpoint. */
 export function wallOffset(point: Vec2, wall: Pick<Wall, 'start' | 'end'>): number {
   const dx = wall.end.x - wall.start.x,
     dz = wall.end.z - wall.start.z;
@@ -166,12 +142,14 @@ export interface InputScope {
   composing: boolean;
   activeDrag: boolean;
 }
+/** Gives modal, text and composing input ownership before any scene gesture can consume it. */
 export function routeInput(scope: InputScope): 'ui' | 'drag' | 'tool' {
   if (scope.modal || scope.text || scope.composing) {
     return 'ui';
   }
   return scope.activeDrag ? 'drag' : 'tool';
 }
+/** Resolves cross-platform editor shortcuts only when the UI does not own keyboard input. */
 export function keyboardIntent(
   key: string,
   modifiers: { control?: boolean; meta?: boolean; shift?: boolean },

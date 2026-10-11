@@ -16,9 +16,9 @@
         "title": "Building Editor",
         "decorations": false,
         "width": 1600,
-        "height": 1080,
+        "height": 900,
         "minWidth": 900,
-        "minHeight": 650
+        "minHeight": 600
       }
     ],
     "security": {

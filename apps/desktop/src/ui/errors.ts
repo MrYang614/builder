@@ -37,6 +37,8 @@ const en: Record<string, string> = {
   file_not_found: 'The selected file no longer exists.',
   disk_full: 'The disk is full. Free space and retry; the previous save is intact.',
   read_failed: 'Unable to read the selected file. Your current project is intact.',
+  openChanged:
+    'The current project changed while opening the file. Your edits were kept. Open the file again to replace them.',
   io_error: 'A local file operation failed. Check file access and available disk space.',
   settingsFailure: 'Preferences could not be read or saved. The startup cache remains available.',
   untitled: 'Untitled project',
@@ -88,6 +90,7 @@ const zh: Record<string, string> = {
   file_not_found: '选中的文件已不存在。',
   disk_full: '磁盘空间不足，请清理后重试。上次保存已保留。',
   read_failed: '所选文件无法读取，当前工程已保留。',
+  openChanged: '打开文件期间当前工程已改变，新修改已保留。请重新打开文件以替换当前工程。',
   io_error: '本地文件操作失败，请检查权限与可用空间。',
   settingsFailure: '偏好无法读取或保存，仍可使用启动缓存。',
   untitled: '未命名工程',

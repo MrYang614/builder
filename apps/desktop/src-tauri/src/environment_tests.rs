@@ -125,4 +125,13 @@ mod tests {
             "invalid_path"
         );
     }
+    #[test]
+    fn environment_import_rejects_relative_paths_before_reading_local_files() {
+        assert_eq!(
+            read_environment_bytes(std::path::Path::new("relative.hdr"))
+                .unwrap_err()
+                .code,
+            "invalid_path"
+        );
+    }
 }

@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { choose } from './browser-controls';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -7,6 +8,21 @@ import { validateBytes } from 'gltf-validator';
 import type { ProjectDocument } from '@building/editor-core';
 import type { ThreeRuntime } from '@building/three-runtime';
 type RuntimeDiagnostics = ReturnType<ThreeRuntime['diagnostics']>;
+type TextureIdentity = {
+  uuid: string;
+  name: string;
+  isRenderTargetTexture: boolean;
+  isDataTexture: boolean;
+  isDepthTexture: boolean;
+  width: number;
+  height: number;
+  hasPixelData: boolean;
+  imageSource: boolean;
+};
+type RendererTextureIdentity = TextureIdentity & {
+  owner: 'render-target' | 'depth-target' | 'lighting-lookup' | 'gtao-noise' | 'unclassified';
+};
+const browserErrors = new WeakMap<Page, string[]>();
 type Instrumented = {
   __editor: {
     document: () => ProjectDocument;
@@ -42,47 +58,175 @@ async function discardNew(page: Page) {
   await page.getByRole('dialog').getByRole('button', { name: '放弃', exact: true }).click();
   await expect.poll(async () => (await documentOf(page)).walls.length).toBe(0);
 }
+/** Identifies renderer buffers and upstream procedural textures separately from project images. */
+function rendererTexture(texture: TextureIdentity): RendererTextureIdentity {
+  let owner: RendererTextureIdentity['owner'] = 'unclassified';
+  if (texture.isRenderTargetTexture) {
+    owner = 'render-target';
+  } else if (texture.isDepthTexture) {
+    owner = 'depth-target';
+  } else if (texture.isDataTexture && texture.name === 'DFG_LUT' && texture.hasPixelData) {
+    owner = 'lighting-lookup';
+  } else if (
+    texture.isDataTexture &&
+    texture.name === '' &&
+    texture.hasPixelData &&
+    texture.width === texture.height &&
+    // GTAOPass owns a 5×5 magic-square noise texture and a 64×64 denoise noise texture.
+    (texture.width === 5 || texture.width === 64)
+  ) {
+    owner = 'gtao-noise';
+  }
+  return { ...texture, owner };
+}
 test.beforeEach(async ({ page }) => {
+  const errors: string[] = [];
+  browserErrors.set(page, errors);
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('console', (message) => {
+    if (
+      message.type() === 'error' ||
+      /(?:WebGL|TSL|ValidationError|WGSL).*(?:error|failed)/i.test(message.text())
+    ) {
+      errors.push(message.text());
+    }
+  });
   await page.goto('/');
   await page.waitForFunction(() => !!(window as unknown as Instrumented).__editor);
   await expect(page.locator('canvas')).toHaveCount(1);
 });
+test.afterEach(async ({ page }) => {
+  expect(browserErrors.get(page)).toEqual([]);
+});
 
 test('20 real selection/theme/create/delete/replace cycles release GPU resources and preserve one renderer', async ({
   page,
-}) => {
-  test.setTimeout(150000);
-  const errors: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  // Audit texture disposal identities as well as counts. Three 0.186.1 owns one shared
-  // DFG_LUT for standard-material lighting; every project image must be released.
-  await page.evaluate(async () => {
-    const url = performance
+}, testInfo) => {
+  // Post-processing remains enabled throughout all 20 ownership cycles on either backend device.
+  test.setTimeout(600000);
+  const moduleUrl = await page.evaluate(() =>
+    performance
       .getEntriesByType('resource')
       .map((entry) => entry.name)
-      .find((name) => /\/three\.js(?:\?|$)/.test(name));
+      .find((name) => /\/three\.js(?:\?|$)/.test(name)),
+  );
+  expect(moduleUrl).toBeTruthy();
+  // Import the exact already-resolved module before the reloaded app constructs its
+  // renderer. Render targets register disposal on their owner rather than Texture.
+  await page.addInitScript(async (url) => {
     const THREE = await import(url!);
-    const live = new Map<string, string>(),
+    type ObservedTexture = {
+      uuid: string;
+      name: string;
+      isRenderTargetTexture?: boolean;
+      isDataTexture?: boolean;
+      isDepthTexture?: boolean;
+      image?: {
+        width?: number;
+        height?: number;
+        data?: unknown;
+        src?: string;
+        currentSrc?: string;
+      };
+    };
+    const live = new Map<string, ObservedTexture>(),
+      imageEvents: { uuid: string; name: string; phase: string; at: number; stack?: string }[] = [],
       add = THREE.Texture.prototype.addEventListener,
-      dispose = THREE.Texture.prototype.dispose;
+      targetAdd = THREE.RenderTarget.prototype.addEventListener,
+      observed = new WeakSet<ObservedTexture>();
     THREE.Texture.prototype.addEventListener = function (
-      this: { uuid: string; name: string },
+      this: ObservedTexture,
       type: string,
       listener: unknown,
     ) {
       if (type === 'dispose') {
-        live.set(this.uuid, this.name);
+        live.set(this.uuid, this);
+        if (this.image?.src || this.image?.currentSrc) {
+          imageEvents.push({
+            uuid: this.uuid,
+            name: this.name,
+            phase: 'gpu-listener',
+            at: performance.now(),
+            stack: new Error().stack,
+          });
+        }
+        if (!observed.has(this)) {
+          observed.add(this);
+          add.call(this, 'dispose', () => {
+            live.delete(this.uuid);
+            if (this.image?.src || this.image?.currentSrc) {
+              imageEvents.push({
+                uuid: this.uuid,
+                name: this.name,
+                phase: 'disposed',
+                at: performance.now(),
+                stack: new Error().stack,
+              });
+            }
+          });
+        }
       }
       return add.call(this, type, listener);
     };
-    THREE.Texture.prototype.dispose = function (this: { uuid: string }) {
-      live.delete(this.uuid);
-      return dispose.call(this);
+    THREE.RenderTarget.prototype.addEventListener = function (
+      this: { textures: ObservedTexture[]; depthTexture?: ObservedTexture },
+      type: string,
+      listener: unknown,
+    ) {
+      if (type === 'dispose') {
+        for (const texture of this.textures) {
+          live.set(texture.uuid, texture);
+        }
+        if (this.depthTexture) {
+          live.set(this.depthTexture.uuid, this.depthTexture);
+        }
+        targetAdd.call(this, 'dispose', () => {
+          for (const texture of this.textures) {
+            live.delete(texture.uuid);
+          }
+          if (this.depthTexture) {
+            live.delete(this.depthTexture.uuid);
+          }
+        });
+      }
+      return targetAdd.call(this, type, listener);
     };
-    Object.assign(window, { __liveTextures: () => [...live.values()] });
+    Object.assign(window, {
+      __textureImageEvents: () => imageEvents,
+      __liveTextures: (): TextureIdentity[] =>
+        [...live.values()]
+          .map((texture) => ({
+            uuid: texture.uuid,
+            name: texture.name,
+            isRenderTargetTexture: !!texture.isRenderTargetTexture,
+            isDataTexture: !!texture.isDataTexture,
+            isDepthTexture: !!texture.isDepthTexture,
+            width: texture.image?.width ?? 0,
+            height: texture.image?.height ?? 0,
+            hasPixelData: !!texture.image?.data,
+            imageSource: !!(texture.image?.currentSrc || texture.image?.src),
+          }))
+          .sort((a, b) => a.uuid.localeCompare(b.uuid)),
+    });
+  }, moduleUrl);
+  // Hold only the app entry until the probe is ready; this removes module-load timing
+  // from ownership validation without changing renderer or frame scheduling behavior.
+  await page.route('**/src/main.tsx', async (route) => {
+    await page.waitForFunction(
+      () =>
+        typeof (window as unknown as { __liveTextures?: unknown }).__liveTextures === 'function',
+    );
+    await route.continue();
   });
+  await page.reload();
+  await page.unroute('**/src/main.tsx');
+  await page.waitForFunction(
+    () => typeof (window as unknown as { __liveTextures?: unknown }).__liveTextures === 'function',
+  );
+  await idle(page);
   const runtimeId = (await diagnostics(page)).rendererId;
   const records: RuntimeDiagnostics[] = [];
+  const retainedRecords: RendererTextureIdentity[][] = [];
   async function cycle(index: number) {
     await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
     await page.getByRole('button', { name: '墙体 1', exact: true }).click();
@@ -116,35 +260,80 @@ test('20 real selection/theme/create/delete/replace cycles release GPU resources
     expect(value.surfaceHighlights).toBe(0);
     expect(value.hingeMarkers).toBe(0);
     expect(value.resources).toEqual({ materials: 0, textures: 0, references: 0 });
-    expect(value.textures).toBe(1);
-    expect(
+    const retained = (
       await page.evaluate(() =>
-        (window as unknown as { __liveTextures(): string[] }).__liveTextures(),
-      ),
-    ).toEqual(['DFG_LUT']);
+        (window as unknown as { __liveTextures(): TextureIdentity[] }).__liveTextures(),
+      )
+    ).map(rendererTexture);
+    if (retained.some((texture) => texture.imageSource)) {
+      mkdirSync(evidencePath('snapping'), { recursive: true });
+      writeFileSync(
+        evidencePath('snapping/retained-project-textures.json'),
+        JSON.stringify(
+          {
+            index,
+            diagnostics: value,
+            retained,
+            imageEvents: await page.evaluate(() =>
+              (
+                window as unknown as {
+                  __textureImageEvents(): {
+                    uuid: string;
+                    name: string;
+                    phase: string;
+                    at: number;
+                    stack?: string;
+                  }[];
+                }
+              ).__textureImageEvents(),
+            ),
+          },
+          null,
+          2,
+        ),
+      );
+    }
+    expect(retained).not.toHaveLength(0);
+    expect(value.textures).toBe(retained.length);
+    expect(retained.filter((texture) => texture.owner === 'unclassified')).toEqual([]);
+    expect(retained.filter((texture) => texture.imageSource)).toEqual([]);
+    expect(retained.some((texture) => texture.owner === 'lighting-lookup')).toBe(true);
+    expect(retained.some((texture) => texture.owner === 'render-target')).toBe(true);
     expect(value.objects).toBe(0);
-    return value;
+    return { value, retained };
   }
-  const baseline = await cycle(-1);
+  const firstEmptyCycle = await cycle(-1),
+    baseline = firstEmptyCycle.value;
   for (let index = 0; index < 20; index++) {
-    const value = await cycle(index);
+    const { value, retained } = await cycle(index);
     expect(value.geometries).toBe(baseline.geometries);
+    expect(value.textures).toBe(baseline.textures);
     expect(value.eventListeners).toBe(baseline.eventListeners);
+    // UUID equality catches buffer churn and unbounded retention even if counts match.
+    expect(retained).toEqual(firstEmptyCycle.retained);
     records.push(value);
+    retainedRecords.push(retained);
   }
-  expect(errors).toEqual([]);
+  expect(browserErrors.get(page)).toEqual([]);
   expect(baseline.lifecycle.created).toBeGreaterThanOrEqual(2);
   expect(baseline.lifecycle.disposed).toBeGreaterThanOrEqual(1);
-  mkdirSync('test-results/theme-toggle/evidence', { recursive: true });
+  const webglRenderer = await page.locator('canvas').evaluate((canvas) => {
+    const gl = (canvas as HTMLCanvasElement).getContext('webgl2')!;
+    const extension = gl.getExtension('WEBGL_debug_renderer_info');
+    return String(gl.getParameter(extension ? extension.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+  });
+  mkdirSync(evidencePath('theme-toggle/evidence'), { recursive: true });
   writeFileSync(
-    'test-results/theme-toggle/evidence/runtime-validation.json',
+    evidencePath('theme-toggle/evidence/runtime-validation.json'),
     JSON.stringify(
       {
-        platform: 'Windows Chromium SwiftShader browser; not Tauri desktop acceptance',
+        platform: 'Windows Chromium WebGL browser; not Tauri desktop acceptance',
+        webglRenderer,
+        launchFlags: testInfo.project.use.launchOptions?.args ?? [],
         cycles: records.length,
         rendererStable: true,
-        retainedTexture:
-          'Three.js 0.186.1 internal DFG_LUT (16×16); live texture identity audited, zero retained project images',
+        retainedTextures:
+          'Renderer-owned render/depth targets, GTAO procedural noise and DFG lighting lookup; exact UUID identities remain stable across 20 empty cycles, zero project resources or image textures',
         strictMode: {
           created: baseline.lifecycle.created,
           disposed: baseline.lifecycle.disposed,
@@ -154,9 +343,11 @@ test('20 real selection/theme/create/delete/replace cycles release GPU resources
           geometries: baseline.geometries,
           textures: baseline.textures,
           eventListeners: baseline.eventListeners,
+          retained: firstEmptyCycle.retained,
         },
         final: records.at(-1),
-        pageErrors: errors,
+        retainedRecords,
+        consoleAndPageErrors: browserErrors.get(page),
       },
       null,
       2,
@@ -232,7 +423,7 @@ test('real slab corner resize has one history record; invalid opening previews s
   expect(await documentOf(page)).toEqual(saved);
 });
 
-test('right-button camera suspension keeps tool preview; theme leaves camera and draft state intact', async ({
+test('right-button camera operation preserves the drawing anchor; theme preserves camera and the resumed stroke commits once', async ({
   page,
 }) => {
   await page.getByRole('radio', { name: '墙体', exact: true }).click();
@@ -240,6 +431,10 @@ test('right-button camera suspension keeps tool preview; theme leaves camera and
   const end = await project(page, 1, -1);
   await page.mouse.move(end.x, end.y);
   const before = await diagnostics(page);
+  const formal = await documentOf(page),
+    history = await page.evaluate(
+      () => (window as unknown as Instrumented).__editor.history().undoCount,
+    );
   expect(before.preview.state.kind).toBe('preview');
   expect(before.preview.visible).toBe(true);
   await page.mouse.down({ button: 'right' });
@@ -247,32 +442,98 @@ test('right-button camera suspension keeps tool preview; theme leaves camera and
   await page.mouse.up({ button: 'right' });
   const camera = await diagnostics(page);
   expect(camera.preview.state).toEqual(before.preview.state);
+  expect(camera.preview.visible).toBe(true);
+  expect(camera.preview.dragging).toBe(false);
+  expect(camera.snap.markerVisible).toBe(false);
+  expect(camera.snap.result).toBeNull();
   expect(camera.camera.position).not.toEqual(before.camera.position);
-  expect((await documentOf(page)).walls).toHaveLength(0);
+  expect(await documentOf(page)).toEqual(formal);
+  expect(
+    await page.evaluate(() => (window as unknown as Instrumented).__editor.snapshot()),
+  ).toEqual(formal);
   await choose(page, '外观', '暗色');
   const themed = await diagnostics(page);
   expect(themed.rendererId).toBe(before.rendererId);
   expect(themed.camera).toEqual(camera.camera);
-  expect(themed.preview.state).toEqual(before.preview.state);
-  expect(themed.preview.visible).toBe(true);
+  expect(themed.preview.state).toEqual(camera.preview.state);
+  expect(themed.preview.visible).toBe(false);
+  expect(themed.preview.dragging).toBe(false);
+  expect(themed.snap.markerVisible).toBe(false);
+  expect((await documentOf(page)).walls).toHaveLength(0);
   await clickWorld(page, 1, -1);
   expect((await documentOf(page)).walls).toHaveLength(1);
+  expect((await documentOf(page)).walls[0]).toMatchObject({
+    start: { x: -2, z: -1 },
+    end: { x: 1, z: -1 },
+  });
+  expect(
+    await page.evaluate(() => (window as unknown as Instrumented).__editor.history().undoCount),
+  ).toBe(history + 1);
   await page.keyboard.press('Escape');
 });
+
+for (const { name, tool, bypass, halfWidth } of [
+  { name: '门', tool: 'door', bypass: 'disabled', halfWidth: 0.45 },
+  { name: '窗', tool: 'window', bypass: 'alt', halfWidth: 0.6 },
+] as const) {
+  test(`${tool} placement with ${bypass} snapping preserves the raw preview offset in one command`, async ({
+    page,
+  }) => {
+    await page.getByRole('radio', { name: '墙体', exact: true }).click();
+    await clickWorld(page, -2, -1);
+    await clickWorld(page, 2, -1);
+    await page.keyboard.press('Escape');
+    if (bypass === 'disabled') {
+      await page.getByRole('button', { name: '吸附', exact: true }).click();
+    }
+    await page.getByRole('radio', { name, exact: true }).click();
+    if (bypass === 'alt') {
+      await page.keyboard.down('Alt');
+    }
+    const pointer = await project(page, -0.76543211, -0.9, 1);
+    await page.mouse.move(pointer.x, pointer.y);
+    const state = await diagnostics(page);
+    expect(state.snap.result?.kind).toBe('raw');
+    expect(state.preview.state.kind).toBe('host-preview');
+    const raw = state.snap.result!.point;
+    const formal = await documentOf(page);
+    const expected = raw.x - formal.walls[0].start.x - halfWidth;
+    expect(Math.abs(expected - Math.round(expected * 10) / 10)).toBeGreaterThan(0.001);
+    expect(state.preview.state).toMatchObject({ offset: expected, valid: true });
+    await page.mouse.click(pointer.x, pointer.y);
+    if (bypass === 'alt') {
+      await page.keyboard.up('Alt');
+    }
+    const created = await documentOf(page);
+    expect(created.openings).toHaveLength(1);
+    expect(created.openings[0].offset).toBeCloseTo(expected, 12);
+    expect(created.openings[0].kind).toBe(tool);
+    expect(
+      await page.evaluate(() => (window as unknown as Instrumented).__editor.history().undoCount),
+    ).toBe(2);
+  });
+}
 
 test('two actual UI door playbacks sample independently, finish as commands, keep pose on move and cancel on undo', async ({
   page,
 }) => {
   await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
-  await number(page, '动画单程时长（s）', '2');
-  await page.getByRole('button', { name: '打开门', exact: true }).click();
+  await number(page, '动画单程时长（s）', '8');
   await page.locator('.floor-item').nth(1).click();
   await page.getByRole('button', { name: '门 7', exact: true }).click();
-  await number(page, '动画单程时长（s）', '2');
+  await number(page, '动画单程时长（s）', '8');
   const history = await page.evaluate(
     () => (window as unknown as Instrumented).__editor.history().undoCount,
   );
+  const beforePlayback = await documentOf(page);
+  // Configure both doors before playback, then start each through its actual UI.
+  // Eight seconds leaves a genuine overlap window on software-rendered CI browsers.
+  await page.locator('.floor-item').nth(0).click();
+  await page.getByRole('button', { name: '门 6', exact: true }).click();
+  await page.getByRole('button', { name: '打开门', exact: true }).click();
+  await page.locator('.floor-item').nth(1).click();
+  await page.getByRole('button', { name: '门 7', exact: true }).click();
   await page.getByRole('button', { name: '关闭门', exact: true }).click();
   const active = await diagnostics(page);
   expect(active.animations).toHaveLength(2);
@@ -284,8 +545,14 @@ test('two actual UI door playbacks sample independently, finish as commands, kee
   expect(doors[0]!.angle).toBeGreaterThan(0);
   expect(doors[0]!.angle).toBeLessThan(90);
   expect(doors[1]!.angle).toBeLessThan(45);
+  expect(formal).toEqual(beforePlayback);
   expect(formal.openings.filter((o) => o.kind === 'door').map((o) => o.angle)).toEqual([0, 45]);
-  await expect.poll(async () => (await diagnostics(page)).animations.length).toBe(0);
+  expect(
+    await page.evaluate(() => (window as unknown as Instrumented).__editor.history().undoCount),
+  ).toBe(history);
+  await expect
+    .poll(async () => (await diagnostics(page)).animations.length, { timeout: 20000 })
+    .toBe(0);
   let doc = await documentOf(page);
   expect(doc.openings.filter((o) => o.kind === 'door').map((o) => o.angle)).toEqual([90, 0]);
   expect(

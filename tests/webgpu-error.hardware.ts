@@ -148,6 +148,7 @@ test('a real invalid WebGPU environment shader stops sampling, preserves its fir
     await page.getByRole('button', { name: '设置', exact: true }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     await choose(page, '目标采样数', '16');
+    await page.getByRole('button', { name: '关闭', exact: true }).click();
     await page.getByRole('button', { name: '开始光追', exact: true }).click();
     await page.waitForFunction(
       () => {
@@ -244,8 +245,6 @@ test('a real invalid WebGPU environment shader stops sampling, preserves its fir
     await expect.poll(async () => (await diagnostics(page)).pathTracing.activeSession).toBe(0);
     expect((await diagnostics(page)).render.mode).toBe('raster');
     expect(await snapshot(page)).toEqual(document);
-    await page.getByRole('button', { name: '关闭', exact: true }).click();
-    await expect(page.getByRole('dialog')).toHaveCount(0);
     await page.getByRole('button', { name: '墙体 1', exact: true }).click();
     const lengthInput = page.getByLabel('轴线长度（m）', { exact: true });
     await lengthInput.fill('4.4');

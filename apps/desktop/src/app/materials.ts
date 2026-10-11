@@ -9,3 +9,11 @@ export const builtInResources: Resource[] = [
   ['wood', wood],
   ['tile', tile],
 ].map(([name, dataUrl]) => ({ id: `builtin_${name}`, name, mime: 'image/png', dataUrl }));
+
+/** Resolves a project or built-in material without taking ownership of its data URL. */
+export function findMaterialResource(resources: Resource[], resourceId?: string) {
+  return resourceId
+    ? (resources.find((resource) => resource.id === resourceId) ??
+        builtInResources.find((resource) => resource.id === resourceId))
+    : undefined;
+}

@@ -22,8 +22,16 @@ const en = {
   'render.complete': 'Complete',
   'render.idle': 'Real-time',
   'render.error': 'Rendering stopped',
-  'render.hint':
-    'Path tracing shows the whole building without editor helpers. Editing or moving the camera resets accumulation. Save PNG to capture the rendered view.',
+  'render.settingsHint':
+    'Start or exit path tracing from the viewport. These settings affect the next real-time or path-traced frame.',
+  'render.postProcessing': 'Real-time finishing',
+  'render.gtao': 'Grounded shadows (GTAO)',
+  'render.taa': 'Temporal anti-aliasing (TAA / TRAA)',
+  'render.postProcessingHint':
+    'GTAO uses depth and normals for contact shading. TRAA uses motion vectors and resets after camera or scene changes. Both apply to real-time preview only.',
+  'render.postProcessingUnavailable':
+    'Post-processing could not initialize. Real-time preview remains available.',
+  'render.postProcessingFailed': 'Post-processing could not initialize. {reason}',
   'render.environment': 'Environment lighting',
   'render.importEnvironment': 'Import panorama',
   'render.clearEnvironment': 'Clear environment',
@@ -87,8 +95,14 @@ const zh: Record<keyof typeof en, string> = {
   'render.complete': '已完成',
   'render.idle': '实时渲染',
   'render.error': '渲染已停止',
-  'render.hint':
-    '光追显示整栋建筑，不包含编辑辅助。编辑或移动相机后重新累计采样。保存 PNG 可输出当前渲染画面。',
+  'render.settingsHint': '请在视口中启动或退出光追；这些设置影响下一帧实时预览或光追结果。',
+  'render.postProcessing': '实时画面增强',
+  'render.gtao': '接触阴影（GTAO）',
+  'render.taa': '时间抗锯齿（TAA / TRAA）',
+  'render.postProcessingHint':
+    'GTAO 使用深度和法线生成接触关系；TRAA 使用运动矢量，并在相机或场景变化后重置。两者只用于实时预览。',
+  'render.postProcessingUnavailable': '后处理无法初始化，实时预览仍可使用。',
+  'render.postProcessingFailed': '后处理无法初始化。{reason}',
   'render.environment': '环境光照',
   'render.importEnvironment': '导入全景贴图',
   'render.clearEnvironment': '清除环境',

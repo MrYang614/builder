@@ -66,6 +66,7 @@ export function ViewportHost() {
       Object.assign(window, {
         __editor: {
           document: services.core.getSnapshot,
+          session: services.session.getSnapshot,
           diagnostics: () => runtime.diagnostics(),
           project: (p: { x: number; y: number; z: number }) => runtime.worldToClient(p),
           history: () => services.core.getHistoryState(),
@@ -77,8 +78,12 @@ export function ViewportHost() {
       unsub();
       unsubSession();
       unsubCamera();
-      runtime.dispose();
-      detachRuntime();
+      try {
+        runtime.dispose();
+      } finally {
+        // Detach the disposed owner even when a GPU disposer reports a cleanup failure.
+        detachRuntime();
+      }
     };
   }, [services]);
   useEffect(
@@ -87,6 +92,7 @@ export function ViewportHost() {
   );
   useEffect(() => {
     services.runtimeRef.current?.renderer.domElement.setAttribute('aria-label', t('viewportLabel'));
+    services.runtimeRef.current?.setSession();
   }, [t, services]);
   return (
     <div className="viewport" ref={container} data-testid="viewport-host" aria-label={t('app')}>

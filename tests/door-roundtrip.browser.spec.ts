@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -297,9 +298,9 @@ test('actual save/open/move/hinge/direction/save/GLB roundtrip preserves half-op
     );
   }
   expect(await snapshot(page)).toEqual(beforeExport);
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/door-roundtrip-validation.json',
+    evidencePath('theme-toggle/evidence/door-roundtrip-validation.json'),
     JSON.stringify(
       {
         platform: 'Windows Chromium SwiftShader browser; not native Tauri/macOS acceptance',

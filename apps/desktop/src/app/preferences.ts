@@ -52,23 +52,30 @@ export function createPreferenceWriter<Settings>(options: {
     flush,
     async retryAndFlush() {
       // A fresh request lets the next close recover after a transient IO or permission failure.
-      await persist();
+      void persist();
       await flush();
     },
   };
 }
 
-/** Flush before checking the project, so edits made during preference IO are still guarded. */
+/** Guard the project between flushes so settings changed during its dialog/IO also reach disk. */
 export async function guardPreferenceClose(
   flush: () => Promise<void>,
   projectGuard: () => Promise<boolean>,
   onFailure: (error: unknown) => void,
+  finalFlush = flush,
 ): Promise<boolean> {
-  try {
-    await flush();
-  } catch (error) {
-    onFailure(error);
+  const settle = async (operation: () => Promise<void>) => {
+    try {
+      await operation();
+      return true;
+    } catch (error) {
+      onFailure(error);
+      return false;
+    }
+  };
+  if (!(await settle(flush)) || !(await projectGuard())) {
     return false;
   }
-  return projectGuard();
+  return settle(finalFlush);
 }

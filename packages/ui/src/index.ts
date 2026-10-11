@@ -24,3 +24,4 @@ export { ToggleGroup, ToggleGroupItem } from './components/toggle-group';
 export { Alert, AlertTitle, AlertDescription } from './components/alert';
 export { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from './components/tooltip';
 export { Slider } from './components/slider';
+export { Toggle } from './components/toggle';

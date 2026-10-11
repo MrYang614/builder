@@ -1,17 +1,17 @@
-import { readFileSync } from 'node:fs';
-import { runInNewContext } from 'node:vm';
-import ts from 'typescript';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as THREE from 'three';
 import type { EnvironmentResource, ProjectDocument } from '@building/editor-core';
 import { defaultEnvironmentSettings, getEnvironmentSettings } from '@building/editor-core';
-import { initialRenderState } from '../packages/three-runtime/src/renderer';
+import { RuntimeRendering } from '../packages/three-runtime/src/runtime-rendering';
 import type { RenderState, RendererBackend } from '../packages/three-runtime/src/renderer';
 import type { PathTraceStats } from '../packages/three-runtime/src/pathtracing';
-import { createDefaultEnvironmentTexture } from '../packages/three-runtime/src/environment';
+import type { RasterPostProcessor } from '../packages/three-runtime/src/postprocessing';
+
+type TestCallback = ReturnType<typeof vi.fn<(...args: unknown[]) => void>>;
 
 interface BorrowedPath {
   start(scene: THREE.Scene, camera: THREE.Camera): Promise<void>;
+  setMaxSamples(samples: number): void;
   pause(paused: boolean): void;
   dispose(): void;
   updateCamera(camera: THREE.Camera): void;
@@ -22,16 +22,17 @@ interface BorrowedPath {
 interface FakeCanvas {
   tabIndex: number;
   dataset: Record<string, string>;
-  setAttribute: ReturnType<typeof vi.fn>;
-  getAttribute: ReturnType<typeof vi.fn>;
-  replaceWith: ReturnType<typeof vi.fn>;
-  toBlob: ReturnType<typeof vi.fn>;
+  setAttribute: TestCallback;
+  getAttribute: TestCallback;
+  replaceWith: TestCallback;
+  toBlob: TestCallback;
+  remove: TestCallback;
 }
 interface FakeRenderer {
   domElement: FakeCanvas;
-  render: ReturnType<typeof vi.fn>;
-  setPixelRatio: ReturnType<typeof vi.fn>;
-  setClearColor: ReturnType<typeof vi.fn>;
+  render: TestCallback;
+  setPixelRatio: TestCallback;
+  setClearColor: TestCallback;
   outputColorSpace: string;
   toneMapping: number;
   toneMappingExposure: number;
@@ -43,8 +44,8 @@ type RendererErrorInfo = { message: string; api: string; type: string } | string
 interface RuntimeHarness {
   previous: ProjectDocument;
   options: {
-    status: ReturnType<typeof vi.fn>;
-    renderState: ReturnType<typeof vi.fn>;
+    status: TestCallback;
+    renderState: TestCallback;
     getDocument(): ProjectDocument;
   };
   scene: THREE.Scene;
@@ -52,10 +53,10 @@ interface RuntimeHarness {
   currentRenderer: FakeRenderer;
   renderer: FakeRenderer;
   theme: { background: string };
-  controls: { disconnect: ReturnType<typeof vi.fn>; connect: ReturnType<typeof vi.fn> };
-  cancel: ReturnType<typeof vi.fn>;
-  bindCanvas: ReturnType<typeof vi.fn>;
-  resize: ReturnType<typeof vi.fn>;
+  controls: { disconnect: TestCallback; connect: TestCallback };
+  cancel: TestCallback;
+  bindCanvas: TestCallback;
+  resize: TestCallback;
   renderState: RenderState;
   path: BorrowedPath | null;
   pathBuilding: { dispose(): void } | null;
@@ -74,14 +75,18 @@ interface RuntimeHarness {
   environmentTextureKey: string;
   environmentTexture: THREE.Texture | null;
   disposed: boolean;
+  postProcessing: RasterPostProcessor | null;
   applyEnvironment(document: ProjectDocument): Promise<void>;
   capturePNG(): Promise<ArrayBuffer>;
   pathCameraSignature(): string;
   frame(time: number): Promise<void>;
   stopPathResources(): void;
   setPathTracing(enabled: boolean): Promise<void>;
+  setPathSamples(samples: number): void;
+  markPathDirty(): void;
   setRendererBackend(backend: RendererBackend): Promise<boolean>;
   bindRendererCallbacks(renderer: FakeRenderer): void;
+  dispose(): void;
 }
 
 const loadTexture = vi.fn<(resource: EnvironmentResource) => Promise<THREE.Texture>>();
@@ -97,89 +102,25 @@ const buildBuilding = vi.fn<
   }
 >();
 
-/**
- * Runs unchanged methods and field initializers from the production TypeScript source.
- * Only the DOM/GPU-allocating constructor body is removed by an AST transform. Decoding,
- * renderer allocation and RAF are owned fakes; these tests make no browser or GPU claim.
- */
-function compileRuntime(): new () => RuntimeHarness {
-  const source = readFileSync('packages/three-runtime/src/runtime.ts', 'utf8');
-  const output = ts.transpileModule(source, {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
-    transformers: {
-      before: [
-        (context) => {
-          const visitor: ts.Visitor = (node) => {
-            if (ts.isClassDeclaration(node) && node.name?.text === 'ThreeRuntime') {
-              const members = node.members.map((member) =>
-                ts.isConstructorDeclaration(member)
-                  ? context.factory.updateConstructorDeclaration(
-                      member,
-                      member.modifiers,
-                      member.parameters,
-                      context.factory.createBlock([]),
-                    )
-                  : member,
-              );
-              return context.factory.updateClassDeclaration(
-                node,
-                node.modifiers,
-                node.name,
-                node.typeParameters,
-                node.heritageClauses,
-                members,
-              );
-            }
-            return ts.visitEachChild(node, visitor, context);
-          };
-          return (file) => ts.visitNode(file, visitor) as ts.SourceFile;
-        },
-      ],
-    },
-  }).outputText;
-  const exports: Record<string, unknown> = {};
-  runInNewContext(
-    output,
-    {
-      exports,
-      module: { exports },
-      setTimeout,
-      clearTimeout,
-      requestAnimationFrame: requestFrame,
-      cancelAnimationFrame: vi.fn(),
-      console,
-      crypto,
-      devicePixelRatio: 1,
-      require: (id: string) => {
-        if (id === 'three') {
-          return THREE;
-        }
-        if (id === '@building/editor-core') {
-          return { ToolStateMachine: class {} };
-        }
-        if (id === './renderer') {
-          return {
-            initialRenderState,
-            createSceneRenderer: createRenderer,
-            disposeSceneRenderer: releaseRenderer,
-          };
-        }
-        if (id === './environment') {
-          return { loadEnvironmentTexture: loadTexture, createDefaultEnvironmentTexture };
-        }
-        if (id === './scene') {
-          return { buildBuilding };
-        }
-        if (id === './pathtracing') {
-          return { PathTraceSession: { create: createPath } };
-        }
-        return {};
-      },
-    },
-    { filename: 'production-runtime.ts' },
-  );
-  return exports.ThreeRuntime as new () => RuntimeHarness;
-}
+vi.mock('../packages/three-runtime/src/renderer', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../packages/three-runtime/src/renderer')>()),
+  createWebGLRenderer: () => fakeRenderer(),
+  createSceneRenderer: (backend: RendererBackend) => createRenderer(backend),
+  disposeSceneRenderer: (renderer: FakeRenderer) => releaseRenderer(renderer),
+}));
+vi.mock('../packages/three-runtime/src/postprocessing', () => ({
+  createRasterPostProcessing: () => null,
+}));
+vi.mock('../packages/three-runtime/src/environment', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../packages/three-runtime/src/environment')>()),
+  loadEnvironmentTexture: (resource: EnvironmentResource) => loadTexture(resource),
+}));
+vi.mock('../packages/three-runtime/src/scene', () => ({
+  buildBuilding: (document: ProjectDocument) => buildBuilding(document),
+}));
+vi.mock('../packages/three-runtime/src/pathtracing', () => ({
+  PathTraceSession: { create: (...args: unknown[]) => Reflect.apply(createPath, undefined, args) },
+}));
 
 function project(resource?: EnvironmentResource): ProjectDocument {
   return {
@@ -213,8 +154,7 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 function runtime() {
-  const Runtime = compileRuntime();
-  const value = new Runtime();
+  const value = {} as RuntimeHarness;
   value.previous = project();
   value.options = {
     status: vi.fn(),
@@ -222,13 +162,87 @@ function runtime() {
     getDocument: () => value.previous,
   };
   value.preview = { visible: false };
-  value.currentRenderer = fakeRenderer();
   value.theme = { background: 'semantic-viewport-test-color' };
   value.controls = { disconnect: vi.fn(), connect: vi.fn() };
   value.cancel = vi.fn();
   value.bindCanvas = vi.fn();
   value.resize = vi.fn();
+  value.scene = new THREE.Scene();
+  value.camera = new THREE.PerspectiveCamera(45, 1, 0.05, 1500);
   value.scene.add(new THREE.DirectionalLight(), new THREE.HemisphereLight());
+  const owner = new RuntimeRendering(value.scene, value.camera, {
+    background: () => value.theme.background,
+    document: () => value.previous,
+    snapshot: () => value.previous,
+    interactive: () => value.preview.visible,
+    advanceAnimations: () => false,
+    cancelEditing: () => value.cancel(),
+    disconnectControls: () => value.controls.disconnect(),
+    connectControls: (canvas) => value.controls.connect(canvas),
+    bindCanvas: () => value.bindCanvas(),
+    resizeViewport: () => value.resize(),
+    status: (code, params) => value.options.status(code, params),
+    renderState: (state) => value.options.renderState(state),
+  });
+  // Tests observe the actual owners and inject owned allocation fakes at their resource boundary.
+  // These aliases preserve the existing lifecycle assertions without production test-only APIs.
+  const renderer = owner as unknown as Record<string, unknown>;
+  const path = Reflect.get(owner, 'path') as Record<string, unknown>;
+  const environment = Reflect.get(owner, 'environment') as Record<string, unknown>;
+  const scheduler = Reflect.get(owner, 'scheduler') as Record<string, unknown>;
+  const properties = (target: Record<string, unknown>, keys: string[]) => {
+    for (const key of keys) {
+      Object.defineProperty(value, key, {
+        get: () => target[key],
+        set: (next: unknown) => {
+          target[key] = next;
+        },
+      });
+    }
+  };
+  properties(renderer, [
+    'currentRenderer',
+    'renderState',
+    'rendererCallbacksCleanup',
+    'postProcessing',
+    'lastInteraction',
+  ]);
+  properties(path, [
+    'path',
+    'pathBuilding',
+    'pathScene',
+    'pathDefaultEnvironment',
+    'pathPaused',
+    'pathDirty',
+    'pathCameraKey',
+    'pathTimer',
+  ]);
+  properties(environment, ['environmentKey', 'environmentTextureKey', 'environmentTexture']);
+  properties(scheduler, ['frameCount', 'frameInProgress']);
+  Object.defineProperty(value, 'renderer', { get: () => owner.renderer });
+  Object.defineProperty(value, 'disposed', {
+    get: () => renderer.disposed,
+    set: (next: boolean) => {
+      renderer.disposed = next;
+      path.disposed = next;
+      environment.disposed = next;
+      scheduler.disposed = next;
+    },
+  });
+  value.applyEnvironment = (doc) =>
+    Reflect.apply(environment.apply as (doc: ProjectDocument) => Promise<void>, environment, [doc]);
+  value.pathCameraSignature = () => Reflect.apply(path.cameraSignature as () => string, path, []);
+  value.frame = (time) =>
+    Reflect.apply(scheduler.frame as (time: number) => Promise<void>, scheduler, [time]);
+  value.stopPathResources = () => Reflect.apply(path.stop as () => void, path, []);
+  value.capturePNG = () => owner.capturePNG();
+  value.setPathTracing = (enabled) => owner.setPathTracing(enabled);
+  value.setPathSamples = (samples) => owner.setPathSamples(samples);
+  value.markPathDirty = () => Reflect.apply(path.markDirty as () => void, path, []);
+  value.setRendererBackend = (backend) => owner.setRendererBackend(backend);
+  value.dispose = () => owner.dispose();
+  value.bindRendererCallbacks = (next) =>
+    Reflect.apply(renderer.bindRendererCallbacks as (next: FakeRenderer) => void, renderer, [next]);
   return value;
 }
 function fakeRenderer(nativeGPU = false): FakeRenderer {
@@ -249,8 +263,9 @@ function fakeRenderer(nativeGPU = false): FakeRenderer {
       getAttribute: vi.fn(() => '3D viewport'),
       replaceWith: vi.fn(),
       toBlob: vi.fn((callback: BlobCallback) => callback(new Blob(['encoded PNG fixture']))),
+      remove: vi.fn(),
     },
-  } as FakeRenderer;
+  } as unknown as FakeRenderer;
   if (!nativeGPU) {
     // Own data properties shadow WebGLRenderer's GPU-dependent color-space accessor.
     Object.setPrototypeOf(renderer, THREE.WebGLRenderer.prototype);
@@ -261,7 +276,7 @@ async function apply(value: RuntimeHarness, document: ProjectDocument) {
   value.previous = document;
   await value.applyEnvironment(document);
 }
-function retainedPath(value: RuntimeHarness, state: Partial<PathTraceStats> = {}) {
+function allocatedPath(state: Partial<PathTraceStats> = {}) {
   let stats: PathTraceStats = {
     backend: 'webgl',
     samples: 16,
@@ -275,6 +290,9 @@ function retainedPath(value: RuntimeHarness, state: Partial<PathTraceStats> = {}
   };
   const path = {
     start: vi.fn(async (_scene: THREE.Scene, _camera: THREE.Camera) => {}),
+    setMaxSamples: vi.fn((samples: number) => {
+      stats = { ...stats, targetSamples: samples };
+    }),
     pause: vi.fn(),
     dispose: vi.fn(),
     updateCamera: vi.fn((_camera: THREE.Camera) => {
@@ -284,8 +302,12 @@ function retainedPath(value: RuntimeHarness, state: Partial<PathTraceStats> = {}
     present: vi.fn(),
     getStats: vi.fn(() => stats),
   };
+  return path;
+}
+function retainedPath(value: RuntimeHarness, state: Partial<PathTraceStats> = {}) {
+  const path = allocatedPath(state);
   value.path = path;
-  value.pathPaused = stats.paused;
+  value.pathPaused = path.getStats().paused;
   value.pathCameraKey = value.pathCameraSignature();
   value.renderState = { ...value.renderState, mode: 'pathtrace', samples: 16 };
   return path;
@@ -293,6 +315,9 @@ function retainedPath(value: RuntimeHarness, state: Partial<PathTraceStats> = {}
 
 beforeEach(() => {
   vi.useFakeTimers();
+  vi.stubGlobal('requestAnimationFrame', requestFrame);
+  vi.stubGlobal('cancelAnimationFrame', vi.fn());
+  vi.stubGlobal('devicePixelRatio', 1);
   loadTexture.mockReset();
   requestFrame.mockClear();
   createRenderer.mockReset();
@@ -303,9 +328,322 @@ beforeEach(() => {
 afterEach(() => {
   vi.clearAllTimers();
   vi.useRealTimers();
+  vi.unstubAllGlobals();
 });
 
-describe('production runtime rendering methods with owned fakes (no GPU claim)', () => {
+describe('production render owners with owned allocation fakes (no GPU claim)', () => {
+  test.each(['stale', 'failed'] as const)(
+    'a %s asynchronous path allocation releases every pending owner when its tracer cleanup fails',
+    async (outcome) => {
+      const value = runtime();
+      const pending = deferred<void>();
+      const primary = new Error('path initialization primary failure');
+      const secondary = new Error('tracer cleanup secondary failure');
+      const path = allocatedPath();
+      path.start.mockImplementation(() => pending.promise);
+      path.dispose.mockImplementation(() => {
+        throw secondary;
+      });
+      const buildingDispose = vi.fn();
+      buildBuilding.mockReturnValue({
+        root: new THREE.Group(),
+        resources: { ready: async () => {} },
+        dispose: buildingDispose,
+      });
+      createPath.mockResolvedValue(path);
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        const starting = value.setPathTracing(true);
+        await vi.waitFor(() => expect(path.start).toHaveBeenCalledOnce());
+        const scene = path.start.mock.calls[0][0];
+        const releaseEnvironment = vi.spyOn(scene.environment!, 'dispose');
+        if (outcome === 'stale') {
+          await value.setPathTracing(false);
+          pending.resolve();
+        } else {
+          pending.reject(primary);
+        }
+        await expect(starting).resolves.toBeUndefined();
+        expect(path.dispose).toHaveBeenCalledOnce();
+        expect(buildingDispose).toHaveBeenCalledOnce();
+        expect(releaseEnvironment).toHaveBeenCalledOnce();
+        expect(warning).toHaveBeenCalledOnce();
+        expect(value.path).toBeNull();
+        expect(value.pathBuilding).toBeNull();
+        expect(value.pathDefaultEnvironment).toBeNull();
+        if (outcome === 'failed') {
+          expect(value.renderState).toMatchObject({
+            mode: 'raster',
+            pathStatus: 'error',
+            error: 'render.pathFailed',
+          });
+          expect(value.options.status).toHaveBeenCalledWith('render.pathFailed', {
+            reason: String(primary),
+          });
+        } else {
+          expect(value.options.status).not.toHaveBeenCalledWith(
+            'render.pathFailed',
+            expect.anything(),
+          );
+        }
+        value.dispose();
+      } finally {
+        warning.mockRestore();
+      }
+    },
+  );
+
+  test('a debounced path rebuild releases every predecessor and accepts the new owner after cleanup fails', async () => {
+    const value = runtime();
+    const previous = retainedPath(value);
+    previous.dispose.mockImplementation(() => {
+      throw new Error('previous tracer cleanup failure');
+    });
+    const previousBuildingDispose = vi.fn();
+    value.pathBuilding = { dispose: previousBuildingDispose };
+    const previousEnvironment = new THREE.Texture();
+    const previousEnvironmentDispose = vi.spyOn(previousEnvironment, 'dispose');
+    value.pathDefaultEnvironment = previousEnvironment;
+    const accepted = allocatedPath({ samples: 0, minSamples: 0, maxSamples: 0, complete: false });
+    const buildingDispose = vi.fn();
+    buildBuilding.mockReturnValue({
+      root: new THREE.Group(),
+      resources: { ready: async () => {} },
+      dispose: buildingDispose,
+    });
+    createPath.mockResolvedValue(accepted);
+    value.markPathDirty();
+    await vi.advanceTimersByTimeAsync(200);
+    expect(previous.dispose).toHaveBeenCalledOnce();
+    expect(previousBuildingDispose).toHaveBeenCalledOnce();
+    expect(previousEnvironmentDispose).toHaveBeenCalledOnce();
+    expect(value.path).toBe(accepted);
+    expect(value.renderState).toMatchObject({
+      mode: 'pathtrace',
+      pathStatus: 'rendering',
+      error: 'render.cleanupFailed',
+    });
+    expect(value.options.status).toHaveBeenCalledWith('render.cleanupFailed', {
+      reason: 'AggregateError: runtime.cleanupFailed',
+    });
+    await value.setPathTracing(false);
+    expect(accepted.dispose).toHaveBeenCalledOnce();
+    expect(buildingDispose).toHaveBeenCalledOnce();
+    value.dispose();
+  });
+
+  test('render owner disposal releases callbacks, panorama and renderer after post effects fail', async () => {
+    const value = runtime();
+    const gpu = fakeRenderer(true);
+    const originalError = gpu.onError;
+    const originalLost = gpu.onDeviceLost;
+    createRenderer.mockResolvedValue(gpu);
+    await value.setRendererBackend('webgpu');
+    const environment = new THREE.Texture();
+    const environmentDispose = vi.spyOn(environment, 'dispose');
+    loadTexture.mockResolvedValue(environment);
+    await apply(value, project(panorama('accepted')));
+    const postDispose = vi.fn(() => {
+      throw new Error('post effects cleanup failure');
+    });
+    value.postProcessing = {
+      state: value.renderState.postProcessing,
+      update: vi.fn(),
+      setSize: vi.fn(),
+      invalidateHistory: vi.fn(),
+      render: vi.fn(() => false),
+      dispose: postDispose,
+    };
+    releaseRenderer.mockClear();
+    expect(() => value.dispose()).toThrow(AggregateError);
+    expect(value.postProcessing).toBeNull();
+    expect(value.rendererCallbacksCleanup).toBeNull();
+    expect(environmentDispose).toHaveBeenCalledOnce();
+    expect(releaseRenderer).toHaveBeenCalledExactlyOnceWith(gpu);
+    expect(gpu.domElement.remove).toHaveBeenCalledOnce();
+    expect(gpu.onError).toBe(originalError);
+    expect(gpu.onDeviceLost).toBe(originalLost);
+    expect(() => value.dispose()).not.toThrow();
+    expect(postDispose).toHaveBeenCalledOnce();
+  });
+
+  test('asynchronous renderer teardown rejection is reported after public owner disposal', async () => {
+    const value = runtime();
+    const primary = new Error('renderer teardown failure');
+    releaseRenderer.mockRejectedValue(primary);
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      value.dispose();
+      await Promise.resolve();
+      expect(warning).toHaveBeenCalledExactlyOnceWith('Renderer resource cleanup failed.', primary);
+      expect(value.renderer.domElement.remove).toHaveBeenCalledOnce();
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
+  test('sample target changes during backend initialization are applied to the accepted path session', async () => {
+    const value = runtime();
+    const pending = deferred<BorrowedPath>();
+    const buildingDispose = vi.fn();
+    buildBuilding.mockReturnValue({
+      root: new THREE.Group(),
+      resources: { ready: async () => {} },
+      dispose: buildingDispose,
+    });
+    createPath.mockReturnValue(pending.promise);
+    const starting = value.setPathTracing(true);
+    await vi.waitFor(() => expect(createPath).toHaveBeenCalledOnce());
+    expect(createPath).toHaveBeenCalledWith(value.renderer, { maxSamples: 128 });
+    value.setPathSamples(32);
+    const accepted = {
+      start: vi.fn(async (_scene: THREE.Scene, _camera: THREE.Camera) => {}),
+      setMaxSamples: vi.fn(),
+      pause: vi.fn(),
+      dispose: vi.fn(),
+      updateCamera: vi.fn(),
+      renderSample: vi.fn(async () => false),
+      present: vi.fn(),
+      getStats: vi.fn(() => ({
+        backend: 'webgl' as const,
+        samples: 0,
+        minSamples: 0,
+        maxSamples: 0,
+        targetSamples: 32,
+        paused: false,
+        complete: false,
+        ready: true,
+      })),
+    };
+    pending.resolve(accepted);
+    await starting;
+    expect(accepted.setMaxSamples).toHaveBeenCalledExactlyOnceWith(32);
+    expect(value.renderState).toMatchObject({ targetSamples: 32, pathStatus: 'rendering' });
+    await value.setPathTracing(false);
+    expect(accepted.dispose).toHaveBeenCalledOnce();
+    expect(buildingDispose).toHaveBeenCalledOnce();
+  });
+  test('public dispose releases all accepted owners once and rejects late backend and panorama allocations', async () => {
+    const value = runtime();
+    const gpu = fakeRenderer(true);
+    const originalError = gpu.onError;
+    const originalLost = gpu.onDeviceLost;
+    createRenderer.mockResolvedValueOnce(gpu);
+    expect(await value.setRendererBackend('webgpu')).toBe(true);
+    const acceptedEnvironment = new THREE.Texture();
+    const releaseEnvironment = vi.spyOn(acceptedEnvironment, 'dispose');
+    loadTexture.mockResolvedValueOnce(acceptedEnvironment);
+    await apply(value, project(panorama('accepted')));
+    const path = retainedPath(value, { backend: 'webgpu' });
+    const releaseBuilding = vi.fn();
+    value.pathBuilding = { dispose: releaseBuilding };
+    value.pathScene = new THREE.Scene();
+    const pathEnvironment = new THREE.Texture();
+    const releasePathEnvironment = vi.spyOn(pathEnvironment, 'dispose');
+    value.pathDefaultEnvironment = pathEnvironment;
+    const releasePost = vi.fn();
+    value.postProcessing = {
+      state: value.renderState.postProcessing,
+      update: vi.fn(),
+      setSize: vi.fn(),
+      invalidateHistory: vi.fn(),
+      render: vi.fn(() => false),
+      dispose: releasePost,
+    };
+    const pendingRenderer = deferred<FakeRenderer>();
+    const pendingTexture = deferred<THREE.Texture>();
+    createRenderer.mockReturnValueOnce(pendingRenderer.promise);
+    loadTexture.mockReturnValueOnce(pendingTexture.promise);
+    releaseRenderer.mockClear();
+    const backendChange = value.setRendererBackend('webgl');
+    const panoramaChange = apply(value, project(panorama('pending')));
+    const before = value.renderState;
+    const document = value.previous;
+    const publications = value.options.renderState.mock.calls.length;
+    const connections = value.controls.connect.mock.calls.length;
+    const bindings = value.bindCanvas.mock.calls.length;
+
+    value.dispose();
+    value.dispose();
+
+    expect(path.dispose).toHaveBeenCalledTimes(1);
+    expect(releaseBuilding).toHaveBeenCalledTimes(1);
+    expect(releasePathEnvironment).toHaveBeenCalledTimes(1);
+    expect(releasePost).toHaveBeenCalledTimes(1);
+    expect(releaseEnvironment).toHaveBeenCalledTimes(1);
+    expect(releaseRenderer).toHaveBeenCalledExactlyOnceWith(gpu);
+    expect(gpu.domElement.remove).toHaveBeenCalledTimes(1);
+    expect(gpu.onError).toBe(originalError);
+    expect(gpu.onDeviceLost).toBe(originalLost);
+    expect(value.path).toBeNull();
+    expect(value.pathBuilding).toBeNull();
+    expect(value.pathDefaultEnvironment).toBeNull();
+    expect(value.environmentTexture).toBeNull();
+    expect(value.postProcessing).toBeNull();
+    expect(value.rendererCallbacksCleanup).toBeNull();
+
+    const lateRenderer = fakeRenderer();
+    const lateTexture = new THREE.Texture();
+    const releaseLateTexture = vi.spyOn(lateTexture, 'dispose');
+    pendingRenderer.resolve(lateRenderer);
+    pendingTexture.resolve(lateTexture);
+    expect(await backendChange).toBe(false);
+    await panoramaChange;
+
+    expect(releaseRenderer.mock.calls.map(([renderer]) => renderer)).toEqual([gpu, lateRenderer]);
+    expect(releaseLateTexture).toHaveBeenCalledTimes(1);
+    expect(lateRenderer.domElement.replaceWith).not.toHaveBeenCalled();
+    expect(value.controls.connect).toHaveBeenCalledTimes(connections);
+    expect(value.bindCanvas).toHaveBeenCalledTimes(bindings);
+    expect(value.options.renderState).toHaveBeenCalledTimes(publications);
+    expect(value.renderState).toBe(before);
+    expect(value.previous).toBe(document);
+    expect(value.renderer).toBe(gpu);
+  });
+
+  test('public dispose during an awaited sample suppresses publication and RAF continuation', async () => {
+    const value = runtime();
+    const path = retainedPath(value, { complete: false });
+    const pending = deferred<boolean>();
+    path.renderSample.mockReturnValue(pending.promise);
+    const running = value.frame(1000);
+    expect(path.renderSample).toHaveBeenCalledTimes(1);
+    expect(value.frameInProgress).toBe(true);
+    const publications = value.options.renderState.mock.calls.length;
+    value.dispose();
+    value.dispose();
+    pending.resolve(true);
+    await running;
+    expect(path.dispose).toHaveBeenCalledTimes(1);
+    expect(releaseRenderer).toHaveBeenCalledExactlyOnceWith(value.renderer);
+    expect(value.renderer.domElement.remove).toHaveBeenCalledTimes(1);
+    expect(value.options.renderState).toHaveBeenCalledTimes(publications);
+    expect(requestFrame).not.toHaveBeenCalled();
+    expect(value.frameCount).toBe(0);
+    expect(value.frameInProgress).toBe(false);
+  });
+
+  test('a sample rejection after public disposal cannot publish a path failure or restart raster rendering', async () => {
+    const value = runtime();
+    const path = retainedPath(value, { complete: false });
+    const pending = deferred<boolean>();
+    path.renderSample.mockReturnValue(pending.promise);
+    const running = value.frame(1000);
+    const before = value.renderState;
+    const publications = value.options.renderState.mock.calls.length;
+    value.dispose();
+    pending.reject(new Error('GPU readback rejected after its session was disposed'));
+    await running;
+    expect(path.dispose).toHaveBeenCalledTimes(1);
+    expect(value.options.status).not.toHaveBeenCalled();
+    expect(value.options.renderState).toHaveBeenCalledTimes(publications);
+    expect(value.renderState).toBe(before);
+    expect(value.currentRenderer.render).not.toHaveBeenCalled();
+    expect(requestFrame).not.toHaveBeenCalled();
+    expect(value.frameCount).toBe(0);
+    expect(value.frameInProgress).toBe(false);
+  });
+
   test.each([
     {
       message: 'WGSL parsing: unresolved value nodeUniform16_sampler',
@@ -318,7 +656,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
     async (info) => {
       const value = runtime();
       const gpu = fakeRenderer(true);
-      const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+      const originalError = gpu.onError as TestCallback;
       createRenderer.mockResolvedValue(gpu);
       expect(await value.setRendererBackend('webgpu')).toBe(true);
       const path = retainedPath(value, { backend: 'webgpu' });
@@ -371,7 +709,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
   test('later invalid command-buffer errors are logged without replacing the first shader failure status', async () => {
     const value = runtime();
     const gpu = fakeRenderer(true);
-    const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+    const originalError = gpu.onError as TestCallback;
     createRenderer.mockResolvedValue(gpu);
     expect(await value.setRendererBackend('webgpu')).toBe(true);
     const path = retainedPath(value, { backend: 'webgpu' });
@@ -485,6 +823,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
         };
         const retryPath = {
           start: vi.fn(async (_scene: THREE.Scene, _camera: THREE.Camera) => {}),
+          setMaxSamples: vi.fn(),
           pause: vi.fn(),
           dispose: vi.fn(),
           updateCamera: vi.fn(),
@@ -537,7 +876,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
   test('a rejected in-flight sample preserves the earlier GPU shader error and schedules only a raster redraw', async () => {
     const value = runtime();
     const gpu = fakeRenderer(true);
-    const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+    const originalError = gpu.onError as TestCallback;
     createRenderer.mockResolvedValue(gpu);
     expect(await value.setRendererBackend('webgpu')).toBe(true);
     const path = retainedPath(value, { backend: 'webgpu', complete: false });
@@ -600,7 +939,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
   test('switching backend restores original handlers and ignores a previously captured GPU error callback', async () => {
     const value = runtime();
     const gpu = fakeRenderer(true);
-    const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+    const originalError = gpu.onError as TestCallback;
     const originalLost = gpu.onDeviceLost;
     createRenderer.mockResolvedValueOnce(gpu).mockResolvedValueOnce(fakeRenderer());
     expect(await value.setRendererBackend('webgpu')).toBe(true);
@@ -626,7 +965,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
   test('disposed runtime ignores late GPU error callbacks and callback cleanup restores both original handlers', async () => {
     const value = runtime();
     const gpu = fakeRenderer(true);
-    const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+    const originalError = gpu.onError as TestCallback;
     const originalLost = gpu.onDeviceLost;
     createRenderer.mockResolvedValue(gpu);
     expect(await value.setRendererBackend('webgpu')).toBe(true);
@@ -652,7 +991,7 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
   test('a GPU error during ordinary raster editing remains a backend log and does not invent a path failure', async () => {
     const value = runtime();
     const gpu = fakeRenderer(true);
-    const originalError = gpu.onError as ReturnType<typeof vi.fn>;
+    const originalError = gpu.onError as TestCallback;
     createRenderer.mockResolvedValue(gpu);
     expect(await value.setRendererBackend('webgpu')).toBe(true);
     const before = value.renderState;
@@ -903,6 +1242,29 @@ describe('production runtime rendering methods with owned fakes (no GPU claim)',
     expect(path.present).toHaveBeenCalledTimes(1);
     expect(requestFrame).toHaveBeenCalledTimes(1);
     await expect(value.capturePNG()).rejects.toThrow('render.notReady');
+  });
+
+  test('a stationary editing preview does not sustain temporal RAF; refinement resumes after it clears', async () => {
+    const value = runtime();
+    const render = vi.fn(() => true);
+    const invalidateHistory = vi.fn();
+    value.postProcessing = {
+      state: { gtao: true, taa: true, available: true, history: 'accumulating' },
+      update: vi.fn(),
+      setSize: vi.fn(),
+      invalidateHistory,
+      render,
+      dispose: vi.fn(),
+    };
+    value.preview.visible = true;
+    await value.frame(1000);
+    expect(render).toHaveBeenCalledTimes(1);
+    expect(invalidateHistory).toHaveBeenCalledTimes(1);
+    expect(requestFrame).not.toHaveBeenCalled();
+    value.preview.visible = false;
+    await value.frame(1100);
+    expect(render).toHaveBeenCalledTimes(2);
+    expect(requestFrame).toHaveBeenCalledTimes(1);
   });
 
   test('old version-one documents keep absent environment fields and defaults do not mutate the project', () => {

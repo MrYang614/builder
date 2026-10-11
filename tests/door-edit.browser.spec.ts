@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -487,8 +488,8 @@ test('A10: door width/height, real drag, direct deletion and one undo update act
   } finally {
     record.stages = stages;
     record.pageErrors = errors;
-    await mkdir(resolve('test-results/theme-toggle/evidence'), { recursive: true });
-    const file = resolve('test-results/theme-toggle/evidence/door-edit-validation.json');
+    await mkdir(resolve(evidencePath('theme-toggle/evidence')), { recursive: true });
+    const file = resolve(evidencePath('theme-toggle/evidence/door-edit-validation.json'));
     await writeFile(file, JSON.stringify(record, null, 2) + '\n');
     await testInfo.attach('door-edit-independent-export-evidence', {
       path: file,

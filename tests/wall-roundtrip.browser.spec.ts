@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -420,8 +421,8 @@ test('A27: property length and real endpoint drag round-trip one L wall with doo
   } finally {
     record.exports = exports;
     record.pageErrors = errors;
-    await mkdir(resolve('test-results/theme-toggle/evidence'), { recursive: true });
-    const path = resolve('test-results/theme-toggle/evidence/wall-roundtrip-validation.json');
+    await mkdir(resolve(evidencePath('theme-toggle/evidence')), { recursive: true });
+    const path = resolve(evidencePath('theme-toggle/evidence/wall-roundtrip-validation.json'));
     await writeFile(path, JSON.stringify(record, null, 2) + '\n');
     await testInfo.attach('wall-roundtrip-evidence', { path, contentType: 'application/json' });
   }

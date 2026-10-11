@@ -31,6 +31,7 @@ export class ToolStateMachine {
   getState(): ToolState {
     return this.state;
   }
+  /** Advances transient drafts and emits commands; temporary camera input keeps draft state intact. */
   handle(input: ToolInput): ToolIntent | undefined {
     if (input.type === 'camera') {
       this.cameraActive = input.active;

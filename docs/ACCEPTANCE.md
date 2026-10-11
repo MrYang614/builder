@@ -133,3 +133,74 @@ H01–H06 的完整要求、实现、测试、证据来源和限制见 [HEADER-L
 | --- | --- | --- | --- | --- | --- |
 | H09 | 只保留亮／暗主题，图标点击直接切换，无系统跟随或主题弹窗；重启保留偏好 | HeaderPreferences按钮；ui ThemeProvider／validTheme；main／HTML首屏；platform与Rust设置迁移 | 双语点击／Enter／Space、无listbox、OS媒体变化不改主题、偏好重载与旧system迁移；设置／UI合约与Rust边界；theme-toggle-validation.json | 已实现未验证 | 浏览器及设置边界验证记录在专项报告；实际新Tauri宿主重启未执行，不替代Windows／macOS验收 |
 | H10 | 原生窗口默认尺寸由1280×800改为1600×900 | tauri.conf.json main width／height，最低900×600保持 | 配置检查、1600×900浏览器布局及Windows发布构建；theme-toggle-validation.json | 已实现未验证 | 未启动新原生宿主；浏览器viewport不等同操作系统窗口或高DPI实际尺寸 |
+
+## 后处理与主界面光追入口验收补充（2026-10-11）
+
+| 要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 主界面启动／退出光追，设置只保留采样、后处理和环境参数 | `apps/desktop/src/ui/RenderControls.tsx`、`runtime.ts` 状态机；准备、渲染、暂停、完成、失败与返回实时编辑文案 | `tests/rendering-ui.browser.spec.ts`；`tests/rendering.browser.spec.ts`；`tests/webgpu.hardware.ts`；真实 Chromium 操作和三周期资源回收 | 验证通过 | Tauri 原生标题栏／文件对话框仍按历史平台边界未重跑 |
+| WebGPU 实时 GTAO 与 TRAA 接入 | `webgpu-postprocessing.ts` 使用 Three 0.186.1 `GTAONode`、`TRAANode`；独立深度／法线／velocity pre-pass；光追不复用该链 | `tests/webgpu.hardware.ts` 真实 RTX4070 SUPER/Dawn：着色器、渲染、光追16采样、暂停继续、PNG及切换通过 | 验证通过 | 未在 macOS 或 Tauri WebView 实机运行 |
+| WebGL 实时 GTAO 与深度重投影 TAA | `postprocessing.ts` 的 `GTAOPass` 默认色彩合成；`webgl-taa.ts` 8样本 Halton 抖动、前一帧 VP 重投影、深度拒绝、YCoCg邻域裁剪 | `tests/postprocessing.browser.spec.ts` SwiftShader 浏览器：独立开关、相机变化、缩放、画布截图、无 shader/TSL 错误；证据 `test-results/postprocessing/evidence.json` | 验证通过 | 浏览器计时只用于同场景相对观察，不替代正式 Q5 硬件基准 |
+| 历史失效、资源释放和兼容性失败反馈 | 模式切换、相机／文档／环境／DPR变化失效；后处理异常回退直渲染并可见提示；旧 renderer、composer、pre-pass 和历史资源释放 | `tests/runtime-rendering.test.ts` 24项；`tests/postprocessing.browser.spec.ts`；`npm run check` | 验证通过 | 真实 device-lost 仍需目标设备补验 |
+| 场景视觉层次与代码边界 | 默认双向灯光、阴影、弱化网格、ghost 透明度；`App.tsx` 拆为职责明确的 UI 子组件；`renderer-lifecycle.ts`、`viewport-decorations.ts`、`render-state.ts` | 同视角实时截图 `test-results/postprocessing.browser-*/realtime-postprocessing.png`；Impeccable 交互审查记录；规则检查器 | 已实现未验证 | 光照意图已实际观察，正式设备帧率和显存测量待 Q5 系统确认 |
+
+首轮代码／渲染审查发现 GTAO 最终输出误用灰度 Denoise、WebGPU AO 与场景 pass 自引用、WebGL 全屏 shader 重复声明属性、后处理切换和异步 backend 清理竞态；已修复并以单元、浏览器及真实 WebGPU 回归。第二轮用户视角审查发现设置面板迁移后旧测试仍假定弹窗保持打开、准备中退出路径的按钮约束不足、capturePNG 绕过实时后处理、网格与 ghost 默认干扰主体；已修复并重跑双语／双主题、缩放、连续切换、后处理开关和光追入口测试。
+
+“GTAO”在当前锁定 Three 版本中确有 `GTAONode`，因此 WebGPU 使用它；没有改成 SSAO。WebGPU 的 TAA 开关使用 `TRAANode`，WebGL 使用独立的深度重投影 TAA；光追模式单独使用 path tracer 累积，不叠加实时 GTAO／TAA。
+
+## 可配置几何吸附验收补充（2026-10-11）
+
+修改前记录：拾取由 `ThreeRuntime.coordinates`／`pick` 完成，地面交点由 `ground` 计算，绘制和拖动通过 `ToolStateMachine` 与 EditorCore 预览事务提交；原有 `snapPoint` 只覆盖墙端点／边线与楼板顶点／边线、始终回退网格且没有统一开关。最小接入边界确定为 EditorCore 纯几何候选与排序、SessionStore 的单一 `snap` 状态、ThreeRuntime 的当前层候选索引和辅助标记、ToolOptions 的开关；正式对象、ChangeSet、历史与导出边界保持不变。
+
+| 要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 开关与配置属于 session，不写 ProjectDocument 或 undo/redo | `session.ts` 单一 `snap: SnapSettings`；`ToolOptions` Toggle；`SnappingSettings` 模式、公差与网格；services bridge | `snap.test.ts`、`runtime-snap.test.ts`；`snapping.browser.spec.ts` 实际开关／设置、文档及历史不变 | 验证通过 | 默认开启、综合模式、公差0.16m、网格0.1m；会话内设置，不持久化为本机偏好；宿主重启未验 |
+| 点目标、可解释结果与确定优先级 | `snap.ts` 墙端点／连接节点、楼板顶点、洞口四个平面角点、有效墙边锚点与交点；对象／楼层／类型／坐标／距离／提示键 | `snap.test.ts` 排序、重复、退化、公差、精度、关闭原始输入；真实两次鼠标墙绘制端点完全相等 | 验证通过 | 沿现有水平XZ编辑平面，Y由当前楼层提供；未引入竖向编辑或任意外部mesh顶点 |
+| 有限线段投影与实际墙连接边界 | `snap-primitives.ts` 最近点投影；`building-geometry/snap-boundaries.ts` 共享实体周界，含L外角延长及内侧裁切；墙中心线／外露边线／楼板边线 | `snap-boundaries.test.ts`、`runtime-snap.test.ts` 真实L边界／所有者过滤；浏览器线中点与两墙截图 | 验证通过 | 开口角点为可编辑平面 footprint；完整三维洞口高度不作为新的编辑轴 |
+| 正式候选缓存与自吸附／ghost／隐藏／辅助过滤 | `RuntimeSnapIndex` 分楼层及对象几何签名，验证ChangeSet后局部更新；连接边界只在墙几何变化后重解，保留未变owner组 | runtime单元检查无效ChangeSet、宿主改变、材料／楼板不重解墙、局部owner保留；浏览器工程编辑／楼层／相机／resize | 验证通过 | 世界坐标索引与相机无关；相机与窗口变化清除反馈并重新投射，不重复重建静态几何 |
+| 预览与提交共用结果，一次拖动一条历史 | `RuntimeSnapping` 约束后求解；`drag-anchor` 保留正式抓取锚点；`drag-geometry` 精确提交目标坐标；Core预览事务 | 实际端点及整墙拖动、文档不变、一次提交、Escape／pointercancel；楼板及门窗既有回归 | 验证通过 | Alt/Option临时绕过；关闭仍沿原始精确输入路径；不支持的对象回退原输入 |
+| 克制反馈、两主题两语言与键盘入口 | local DOM米制坐标、目标类型状态、点标记、可复用有限线段网格条；所有UI颜色来自语义token | `snapping.browser.spec.ts` 双语×双主题900×600、按下状态／Tooltip／焦点／只读禁用、配置错误恢复；UI-REVIEW.md | 验证通过 | 浏览器键盘及可访问名称通过，不等同屏幕阅读器整链任务或原生DPI验收 |
+| 取消、失焦、相机及渲染切换无残留，资源按所有权释放 | runtime取消事务、capture／blur清理；`SnapFeedback.dispose` 释放自有几何／材质，借用点标记由runtime释放；静止交互不持续TAA调度；公开阴影回调避免陈旧sampler重新上传已释放纹理 | runtime几何／反馈／调度单元；浏览器连续开关、相机、实时↔光追与辅助对象消失；20轮资源专项完整UUID稳定、项目资源归零，`resource-final/runtime-validation.json` | 验证通过 | Three资源单元与浏览器计数不是原生显存字节峰值；真实WebGPU及设备丢失未在本轮验收 |
+| 开关性能可复现 | 40点固定世界轨迹、实际鼠标dispatch、runtime帧／查询／重建计数 | `snapping-validation.json` 与 `.test-artifacts/snapping/` 保存完整轨迹、JSON、PNG及测试报告 | 验证通过 | 仅900×600、DPR1、两墙SwiftShader浏览器观察；不是FPS／P95或Q5正式基准 |
+| Tauri Windows／macOS与正式参考设备 | 当前功能走现有Tauri／React／Three边界，没有新增原生或IPC循环 | Rust及编译检查；本轮未启动原生GUI | 已实现未验证 | 遵守此前原生停止边界；macOS／Option实机／触控板／屏幕阅读器／DPI多屏未验；Q5目标设备仍为需求待确认 |
+| Q5正式系统／硬件及性能目标 | 保留原Q5待确认边界；本轮测量是软件GPU浏览器固定轨迹 | 未采集参考设备FPS／P95及进程／显存峰值 | 需求待确认 | 需要确定正式系统、CPU／GPU、驱动、WebView和设备；两墙数据不替代高密度工程基准 |
+
+固定顺序为交点／连接节点 → 墙端点 → 有效锚点／洞口角点 → 楼板顶点 → 有限线段最近点 → 公差内网格 → 原位置。同级按距离和完整稳定语义键排序，遍历顺序不影响结果。关闭和Alt/Option绕过不查询候选；绕过不进入历史。运行时结果同时保留未调整射线位置及鼠标到结果的距离，抓取锚点距离用于公差判断，避免整墙抓取偏移被误当成吸附半径。
+
+首轮技术审查实际修复：重叠候选元数据不确定、派生交点重复处理、无效ChangeSet导致旧候选、洞口宿主身份／隐藏过滤、拖动抓取偏移与小数精度、墙正交约束造成标记／提交不一致、连接墙外角与内侧边界遗漏、门窗拾取表面与地面投射不一致。对应纯函数、缓存、资源与浏览器回归均保留。runtime原超限文件从既有1812行降为1806行，规则上限同步降低；新增模块均低于500行。
+
+第二轮在真实Chromium编辑器操作两墙、线中点、空白、ghost、拖动、连续开关、相机、resize、主题／语言及光追。发现细线反馈在后处理下难以辨认，改为复用的有限段网格条；发现静止预览反复失效TAA历史导致连续调度，改为输入驱动交互帧、结束后有限精炼。加强GPU探针另发现共享阴影材质重新上传已释放的工程砖纹理，增加公开onBeforeShadow借用材质策略修复，未关闭阴影或隐藏残留。旧资源／相机／动画时序／ghost透明度测试的前提变化另作测试维护，不将其描述为吸附产品缺陷。最终命令、测试数量、控制台及实测值见专项JSON。
+
+性能数据只记录真实40点鼠标dispatch加等待空闲的总耗时、实际渲染帧数、累计查询耗时和候选重建次数。完整世界／屏幕轨迹与场景、viewport、canvas、DPR随证据保存；两组耗时差不能证明吸附提高性能，没有采集FPS或P50/P95。浏览器结果不标记为桌面或macOS验收，Q5参考系统和硬件仍为需求待确认。
+
+## ThreeRuntime 组织优化验收补充（2026-10-11）
+
+| 要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 小模块保持完整职责与公开API，整个three-runtime手写源不超过500行 | runtime协调入口；独立交互／预览／拾取／正式场景／选择／动画／渲染／调度／环境／光追所有者；contracts集中类型；移除两项大小例外 | ARCHITECTURE.md；check、typecheck；runtime-refactor-validation.json的源码行数与SHA256 | 验证通过 | 只调整runtime内部组织，不改变UI、正式模型、保存格式或Core所有权 |
+| 绘制／拖动／吸附／取消、ChangeSet、主题／楼层及干净导出保持 | 所有者保留原命令／revision边界与同步顺序；diagnostics兼容 | runtime-interaction与runtime-scene-owners直接模块回归；选定浏览器实际鼠标及GLB；最终主题专项通过；按最新结果去重31条浏览器路径通过，详见runtime-refactor-validation.json | 验证通过 | 另有一条既有UI提示计数失败，单独记录；本轮未启动Tauri GUI，macOS／设备仍按历史限制 |
+| 资源与监听闭环、陈旧异步完成不污染新编辑器 | owned helper／灯光／阴影幂等释放；backend／decode／path请求版本；销毁后sample reject停止反馈与RAF | runtime-rendering实际dispose、scheduler与scene-owners回归；20轮真实GPU UUID资源专项，工程资源归零、15张renderer纹理身份及9个runtime监听稳定，BVH构造／释放1071，控制台／页面错误0 | 验证通过 | fakes、浏览器GPU资源计数不等同原生显存字节或真实设备丢失验收 |
+| 原有设置错误提示只出现一次的浏览器断言 | App视口与RenderingSettings弹窗的既有notice.error分支均保留；本轮不修改无关UI | rendering-ui.browser.spec.ts:281，全页alert期望1、实际2；独立Core实验拒绝intensity11、零发布／历史变化，未调用runtime.sync | 验证失败 | 这是既有UI问题；案例在计数处早停，后续旋转、损坏HDR及英文断言本轮未执行；不计入runtime功能通过 |
+
+本轮没有性能提升主张。原始浏览器失败保留；旧主题测试假定2盏灯，当前重构前基线已为1盏半球灯和2盏方向灯，更新完整3盏身份／类型断言。复测发现旧探针最后读取GTAO法线预处理的临时清屏色，改为记录非override的真实颜色渲染，保留后处理、背景token精确断言、两主题灯光／曝光和正式材质完全一致的检查。修复资源所有权后262项／27文件单元、四套TS、check、Rust20项及build通过；浏览器最终数量与源文件SHA256见runtime-refactor-validation.json。Tauri／macOS及真实硬件范围保持历史限制。
+
+## 全仓审查修复验收补充（2026-10-11）
+
+本节补充本轮结果，原始 A01–A42 条件及此前失败记录保留。逐项问题、触发条件、修复及限制见 REPOSITORY-REVIEW.md；最终执行结果以 repository-review-validation.json 为准。
+
+| 要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 正式数据不可变、非法预览不提交、revision可靠前进 | Core独立 immutable／commands／changes／validation；缓存只信任冻结资源，最新非法预览拒绝提交，整数溢出保持历史 | core-review.test.ts；core.test.ts；纯Core类型目标 | 验证通过 | 不改变既有合法命令与文件版本；边界回归不证明所有未知输入均无缺陷 |
+| 合法密集洞口可生成完整网格，Core与几何边界一致 | TypedArray一次分配，复用solids，统一1e-7正交边界；无关墙依赖跳过扫描 | geometry-review.test.ts 80窗完整索引／洞口面积；core-geometry-review/evidence.json 冷计算记录 | 验证通过 | Node单次冷计算不是桌面FPS／P95，Q5硬件仍待确认 |
+| 绘制相机切换保留起点，关闭或Alt绕过吸附保持精度 | runtime交互恢复绘制；门窗placement／drag使用原始坐标 | runtime-interaction／runtime-drag-geometry单元；runtime.browser.spec.ts真实鼠标操作 | 验证通过 | 浏览器验证不替代macOS Option／触控板／原生窗口验收 |
+| 资源异常回滚与迟到任务不污染新状态 | 构造、导出、资源池统一逐项清理；主错误保留；doc／pool身份及最新采样目标检查 | runtime-scene-failure／runtime-export-failure／runtime-rendering故障注入；资源与光追浏览器回归 | 验证通过 | 计数和模拟disposer故障不等同原生VRAM字节峰值或设备丢失 |
+| 容器及偏好在解码前有预算、失败保存保持旧文件 | manifest数量／按引用展开256MiB预算、ZIP声明与最终大小校验、设置限读4097字节；PNG空MIME按字节推断；TS与Rust拒绝非对象根JSON | container／settings／images单元；Rust25项含两个native打开入口；实际TS ZIP→Rust→TS互通 | 验证通过 | Rust临时目录及模拟故障不冒充真实磁盘满、权限矩阵或native GUI |
+| 关闭只批准同一正式快照，注销及异步失败可恢复 | project-close循环复核快照；最后等待最新偏好队列；active close listener和错误边界 | project-close／preferences-close／window单元；真实注册接口使用模拟Tauri窗口 | 验证通过 | 只验证业务保护与注册生命周期；Windows标题栏X、macOS原生关闭仍已实现未验证 |
+| 精确字段、撤销与异步材质导入保持最新编辑；确认均结算 | Numeric／TextField真正编辑才提交；MaterialFields读取最新binding；ConfirmProvider替换／卸载结算cancel；snapshot位于try/finally | repository-review.browser.spec.ts六项通过；实际ConfirmProvider替换／卸载复测通过；services.test.ts | 验证通过 | 确认测试首轮CJS动态import错误保留，修正测试加载后实际provider通过；未执行屏幕阅读器／高对比度验收 |
+| 打开文件期间的新正式修改不被迟到替换丢弃 | open捕获批准快照，文件解码后复核；变更时保留工程并提示重新打开 | snapshot.browser.spec.ts真实保存ZIP／打开解码延迟／编辑／保留／再次批准路径，最终源码通过 | 验证通过 | Chromium实际业务路径；不是原生文件对话框验收 |
+| 设置错误只显示一个alert，关闭弹窗后错误仍可见 | App与RenderingSettings按弹窗状态分配同一notice展示 | rendering-ui.browser.spec.ts原有完整错误路径通过；repository-review.browser.spec.ts重复alert专项通过 | 验证通过 | 此行描述本轮修复，保留上一节历史验证失败；不是完整屏幕阅读器验收 |
+| 全仓生产源码不超过500行并保持依赖边界 | 拆分Core／validation／geometry／Rust storage／Inspector完整职责；删除五项旧ceiling | npm run check／typecheck；CODE-QUALITY／ARCHITECTURE；源码行数与SHA256 | 验证通过 | 测试场景矩阵、生成／vendored源码仍沿原文档范围，不增加生产豁免 |
+| Tauri窗口符合已确认尺寸 | main默认1600×900、最小900×600；配置单元断言 | settings.test.ts；tauri.conf.json | 已实现未验证 | 配置与编译不替代实际宿主尺寸、DPI、多屏或macOS验收 |
+| 大型工程真实循环与导出保持资源、几何和动画 | 原50循环／5下载／GPU计数／独立Validator断言保持；同一测试在软件和实际GPU分别执行 | 软件SwiftShader原600秒限时失败，完成20轮／2导出；实际RTX4070 SUPER完整50轮／5导出通过、Validator错误／警告均0；最终资源20轮另通过 | 验证通过 | 通过范围为硬件Chromium WebGL业务回归；软件GPU项仍验证失败，原trace保留；不是原生或Q5正式FPS／P95验收 |
+
+没有将浏览器／模拟IPC结果标为桌面验收；未启动新原生GUI或执行安装。固定Skills、生成token CSS、原PRD及历史验收行未修改。首次完整浏览器执行的export-samples刷新了共享最新输出，已保存到隔离目录并修正后续输出路径；具体原始记录及去重方式见本轮验证JSON。

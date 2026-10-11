@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
@@ -39,8 +40,8 @@ async function number(page: Page, label: string, value: string) {
   await page.getByLabel(label, { exact: true }).press('Enter');
 }
 function evidence(name: string, details: unknown) {
-  const path = 'test-results/theme-toggle/evidence/slab-floor-validation.json';
-  mkdirSync('test-results/theme-toggle/evidence', { recursive: true });
+  const path = evidencePath('theme-toggle/evidence/slab-floor-validation.json');
+  mkdirSync(evidencePath('theme-toggle/evidence'), { recursive: true });
   const previous = existsSync(path)
     ? JSON.parse(readFileSync(path, 'utf8'))
     : {
@@ -285,7 +286,8 @@ test('A11 actual cross-floor mouse selection, material, opening placement and sn
   for (const id of ghostIds) {
     const records = ghostDisplay.filter((record) => record.id === id);
     expect(records.length).toBeGreaterThan(0);
-    expect(records.every((record) => record.opacity === 0.25 && record.transparent)).toBe(true);
+    // The reviewed realtime display uses 0.18 for ghosts; formal materials stay opaque.
+    expect(records.every((record) => record.opacity === 0.18 && record.transparent)).toBe(true);
   }
   const ghostTargets = [
     { name: 'wall', x: -1, z: -1.14, y: 1.2 },

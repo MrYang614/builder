@@ -195,6 +195,7 @@ export function environmentResourceBytes(resource: EnvironmentResource): Uint8Ar
   }
   return bytes;
 }
+/** Maps validated environment MIME to the portable asset extension used by container writers. */
 export function environmentExtension(
   mime: EnvironmentResource['mime'],
 ): 'hdr' | 'exr' | 'png' | 'jpg' {

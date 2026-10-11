@@ -9,6 +9,7 @@ use std::{
 };
 
 type Result<T> = std::result::Result<T, AppError>;
+/// Canonical extensions keep environment resource paths independent of the source filename.
 pub fn environment_extension(mime: &str) -> Result<&'static str> {
     match mime {
         "image/vnd.radiance" => Ok("hdr"),
@@ -21,6 +22,7 @@ pub fn environment_extension(mime: &str) -> Result<&'static str> {
         )),
     }
 }
+/// Bounds header dimensions before full decoding and rejects non-finite HDR/EXR pixels.
 pub fn validate_environment(bytes: &[u8], expected_mime: Option<&str>) -> Result<&'static str> {
     if bytes.is_empty() || bytes.len() > MAX_ENVIRONMENT_BYTES {
         return Err(AppError::new(
@@ -88,6 +90,7 @@ pub fn validate_environment(bytes: &[u8], expected_mime: Option<&str>) -> Result
     }
     Ok(mime)
 }
+/// Accepts only embedded, format-matched environment bytes within the dedicated asset budget.
 pub fn decode_environment_resource(resource: &Resource) -> Result<Vec<u8>> {
     if resource.name.len() > 4096 || resource.data_url.len() > MAX_ENVIRONMENT_BYTES * 4 / 3 + 256 {
         return Err(AppError::new(
@@ -109,7 +112,14 @@ pub fn decode_environment_resource(resource: &Resource) -> Result<Vec<u8>> {
     validate_environment(&bytes, Some(&resource.mime))?;
     Ok(bytes)
 }
+/// Reads a bounded local asset and validates it before sending binary bytes to the WebView.
 pub fn read_environment_bytes(path: &Path) -> Result<Vec<u8>> {
+    if !path.is_absolute() {
+        return Err(AppError::new(
+            "invalid_path",
+            "Environment path must be absolute",
+        ));
+    }
     let file = File::open(path).map_err(|e| AppError::io(e, "read_failed"))?;
     let metadata = file
         .metadata()

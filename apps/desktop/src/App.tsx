@@ -13,26 +13,14 @@ import {
   Download,
   Plus,
   Settings,
-  Focus,
-  Move,
-  Rotate3d,
   SaveAll,
   Blocks,
 } from 'lucide-react';
 import {
   Button,
   IconButton,
-  Input,
-  Field,
-  FieldGroup,
-  FieldLabel,
   ToggleGroup,
   ToggleGroupItem,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
   Alert,
   AlertTitle,
   AlertDescription,
@@ -43,271 +31,33 @@ import {
 import {
   createEmptyProject,
   createExampleProject,
-  createId,
   keyboardIntent,
   type Tool,
-  type Command,
 } from '@building/editor-core';
 import { exportGLB } from '@building/three-runtime';
 import { ViewportHost } from './integration/ViewportHost';
 import { useEditor, useDocument, useSession, useSignal } from './app/services';
 import { builtInResources } from './app/materials';
 import { openProject, saveProject, saveGLB, registerCloseGuard } from './platform';
+import { guardProjectClose } from './app/project-close';
 import { deletionContents } from './app/deletion';
-import { guardPreferenceClose } from './app/preferences';
 import { Inspector } from './ui/Inspector';
-import { RenderingSettings } from './ui/RenderingSettings';
+import { Floors } from './ui/Floors';
+import { SettingsDialog } from './ui/SettingsDialog';
+import { ToolOptions } from './ui/ToolOptions';
 import { HeaderPreferences } from './ui/HeaderPreferences';
 import { HeaderWindow } from './ui/WindowControls';
-import { Choice, Numeric } from './ui/fields';
 import { useConfirm } from './ui/confirm';
 import { useLanguage } from './ui/i18n';
 import './editor.css';
 
-function Floors() {
-  const { core, session, submit } = useEditor(),
-    doc = useDocument(),
-    s = useSession(),
-    { t } = useLanguage(),
-    confirm = useConfirm();
-  const level = doc.levels.find((l) => l.id === s.currentLevelId)!;
-  const add = () => {
-    const last = [...doc.levels].sort((a, b) => a.elevation - b.elevation).at(-1)!;
-    const id = createId('level');
-    if (
-      submit({
-        type: 'add-level',
-        level: {
-          id,
-          name: String(doc.levels.length + 1),
-          elevation: last.elevation + last.height,
-          height: 3,
-        },
-      })
-    ) {
-      session.set({ currentLevelId: id, selectedId: undefined, selectedSurface: undefined });
-    }
-  };
-  const remove = async () => {
-    if ((await confirm('deleteImpact', false, deletionContents(doc, level.id))) === 'confirm') {
-      submit({ type: 'delete-level', id: level.id });
-    }
-  };
-  const objects = [...doc.walls, ...doc.slabs, ...doc.openings].filter(
-    (o) => o.levelId === s.currentLevelId,
-  );
-  return (
-    <aside className="floors" aria-label={t('levels')}>
-      <div className="panel-heading">
-        <h2>{t('levels')}</h2>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              aria-label={t('addLevel')}
-              onClick={add}
-              disabled={s.wholeBuildingPreview}
-            >
-              <Plus />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{t('addLevel')}</TooltipContent>
-        </Tooltip>
-      </div>
-      <div className="floor-list">
-        {doc.levels.map((l) => (
-          <Button
-            key={l.id}
-            variant={l.id === level.id ? 'secondary' : 'ghost'}
-            className="floor-item"
-            onClick={() => {
-              session.set({
-                currentLevelId: l.id,
-                selectedId: undefined,
-                selectedSurface: undefined,
-              });
-            }}
-          >
-            <span>{l.name}</span>
-            <span className="muted">{l.elevation.toFixed(2)} m</span>
-          </Button>
-        ))}
-      </div>
-      <section className="level-fields" key={level.id}>
-        <FieldGroup>
-          <Field>
-            <FieldLabel htmlFor="level-name">{t('name')}</FieldLabel>
-            <Input
-              id="level-name"
-              defaultValue={level.name}
-              onBlur={(e) => {
-                if (e.target.value !== level.name) {
-                  submit({ type: 'update-level', id: level.id, patch: { name: e.target.value } });
-                }
-              }}
-            />
-          </Field>
-          <Numeric
-            label={t('levelElevation')}
-            value={level.elevation}
-            onCommit={(v) =>
-              submit({ type: 'update-level', id: level.id, patch: { elevation: v } })
-            }
-          />
-          <Numeric
-            label={t('levelHeight')}
-            value={level.height}
-            onCommit={asyncLevelHeight(submit, level.id)}
-          />
-          <p className="muted">{t('levelShift')}</p>
-          <Button
-            variant="outline"
-            disabled={doc.levels.length === 1 || s.wholeBuildingPreview}
-            onClick={() => void remove()}
-          >
-            {t('deleteLevel')}
-          </Button>
-        </FieldGroup>
-      </section>
-      <section className="object-list">
-        <h3>{t('objects')}</h3>
-        <p className="muted">{t('objectCount', { count: objects.length })}</p>
-        {objects.map((o, i) => (
-          <Button
-            key={o.id}
-            size="sm"
-            variant={s.selectedId === o.id ? 'secondary' : 'ghost'}
-            className="object-item"
-            onClick={() => session.set({ selectedId: o.id, selectedSurface: undefined })}
-          >
-            {t(
-              'start' in o
-                ? 'wall'
-                : 'polygon' in o
-                  ? o.purpose === 'roof'
-                    ? 'roof'
-                    : 'slab'
-                  : o.kind,
-            )}{' '}
-            {i + 1}
-          </Button>
-        ))}
-      </section>
-      <span className="muted floor-version">
-        {core.getSnapshot().schemaVersion === 1 ? t('schema') : ''}
-      </span>
-    </aside>
-  );
-}
-function asyncLevelHeight(submit: (c: Command) => boolean, id: string) {
-  return (height: number) =>
-    submit({ type: 'update-level', id, patch: { height }, moveAbove: true });
-}
-function ToolOptions() {
-  const { session, camera, runtimeRef } = useEditor(),
-    s = useSession(),
-    doc = useDocument(),
-    { t } = useLanguage(),
-    mode = useSignal(camera);
-  const level = doc.levels.find((l) => l.id === s.currentLevelId)!;
-  return (
-    <div className="viewport-toolbar">
-      <div className="camera-tools">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => runtimeRef.current?.focus('selected')}
-          disabled={!s.selectedId}
-        >
-          <Focus data-icon="inline-start" />
-          {t('focus')}
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => runtimeRef.current?.focus('level')}>
-          {t('current')}
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => runtimeRef.current?.focus('all')}>
-          {t('all')}
-        </Button>
-        <Button size="sm" variant="outline" onClick={() => runtimeRef.current?.focus('top')}>
-          {t('topView')}
-        </Button>
-      </div>
-      <ToggleGroup
-        type="single"
-        value={mode}
-        onValueChange={(v) => {
-          if (v) {
-            camera.set(v as typeof mode);
-          }
-        }}
-        aria-label={t('edit')}
-        size="sm"
-        variant="outline"
-      >
-        <ToggleGroupItem value="edit">{t('edit')}</ToggleGroupItem>
-        <ToggleGroupItem value="rotate">
-          <Rotate3d />
-          {t('rotate')}
-        </ToggleGroupItem>
-        <ToggleGroupItem value="pan">
-          <Move />
-          {t('pan')}
-        </ToggleGroupItem>
-      </ToggleGroup>
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={s.wholeBuildingPreview}
-          onChange={(e) => session.set({ wholeBuildingPreview: e.target.checked })}
-        />
-        {t('preview')}
-      </label>
-      {s.tool === 'slab' && (
-        <div className="slab-options">
-          <Choice
-            label={t('purpose')}
-            value={s.slabPurpose}
-            options={['floor', 'roof'].map((value) => ({ value, label: t(value) }))}
-            onChange={(v) => session.set({ slabPurpose: v as 'floor' | 'roof' })}
-          />
-          {s.slabPurpose === 'roof' && (
-            <Numeric
-              label={t('roofHeight')}
-              value={s.roofElevation ?? level.elevation + level.height}
-              onCommit={(v) => {
-                session.set({ roofElevation: v });
-              }}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-function SettingsDialog({
-  open,
-  onOpenChange,
+export default function App({
+  flushPreferences,
+  settlePreferences,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  flushPreferences: () => Promise<void>;
+  settlePreferences: () => Promise<void>;
 }) {
-  const { t } = useLanguage();
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="settings-dialog" showCloseButton={false}>
-        <DialogTitle>{t('settings')}</DialogTitle>
-        <DialogDescription>{t('render.settingsDescription')}</DialogDescription>
-        <RenderingSettings />
-        <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>{t('close')}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export default function App({ flushPreferences }: { flushPreferences: () => Promise<void> }) {
   const services = useEditor(),
     doc = useDocument(),
     s = useSession(),
@@ -329,8 +79,8 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
       return false;
     }
     services.busy.set(true);
-    const snapshot = services.runtimeRef.current?.snapshot() ?? services.core.getSnapshot();
     try {
+      const snapshot = services.runtimeRef.current?.snapshot() ?? services.core.getSnapshot();
       const result = await saveProject(snapshot, asNew ? undefined : path);
       if (!result) {
         return false;
@@ -359,7 +109,7 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
     );
   };
   const replace = async (example = false) => {
-    if (busy || !(await guard())) {
+    if (services.busy.get() || !(await guard()) || services.busy.get()) {
       return;
     }
     const next = example ? createExampleProject() : createEmptyProject(t('new'));
@@ -389,13 +139,19 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
     services.runtimeRef.current?.focus('all');
   };
   const open = async () => {
-    if (busy || !(await guard())) {
+    if (services.busy.get() || !(await guard()) || services.busy.get()) {
       return;
     }
     services.busy.set(true);
     try {
+      // File decoding yields to live edits; approval only covers this immutable snapshot.
+      const approved = services.core.getSnapshot();
       const result = await openProject();
       if (result) {
+        if (services.core.getSnapshot() !== approved) {
+          services.notice.set({ key: 'openChanged', error: true });
+          return;
+        }
         const replaced = services.core.replace(result.doc);
         if (!replaced.ok) {
           failure(replaced.error);
@@ -419,12 +175,12 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
     }
   };
   const exportModel = async () => {
-    if (busy) {
+    if (services.busy.get()) {
       return;
     }
     services.busy.set(true);
-    const snapshot = services.runtimeRef.current?.snapshot() ?? services.core.getSnapshot();
     try {
+      const snapshot = services.runtimeRef.current?.snapshot() ?? services.core.getSnapshot();
       const bytes = await exportGLB(snapshot);
       if (await saveGLB(bytes)) {
         services.notice.set({ key: 'exported', error: false });
@@ -502,12 +258,16 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
     window.addEventListener('beforeunload', beforeUnload);
     let cleanup: (() => void) | undefined;
     let active = true;
-    void registerCloseGuard(() =>
-      guardPreferenceClose(
-        flushPreferences,
-        () => callbacks.current.guard(),
-        () => services.notice.set({ key: 'settingsFailure', error: true }),
-      ),
+    void registerCloseGuard(
+      () =>
+        guardProjectClose({
+          flushPreferences,
+          settlePreferences,
+          getSnapshot: services.core.getSnapshot,
+          guard: () => callbacks.current.guard(),
+          onError: () => services.notice.set({ key: 'settingsFailure', error: true }),
+        }),
+      () => services.notice.set({ key: 'closeGuardFailure', error: true }),
     )
       .then((fn) => {
         if (active) {
@@ -523,7 +283,7 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
       window.removeEventListener('keydown', handler);
       window.removeEventListener('beforeunload', beforeUnload);
     };
-  }, [services, flushPreferences]);
+  }, [services, flushPreferences, settlePreferences]);
   const tools: [Tool, typeof MousePointer2][] = [
     ['select', MousePointer2],
     ['wall', BrickWall],
@@ -641,7 +401,7 @@ export default function App({ flushPreferences }: { flushPreferences: () => Prom
         <section className="viewport-region">
           <ToolOptions />
           <ViewportHost />
-          {notice.error && (
+          {notice.error && !settingsOpen && (
             <div className="error-notice">
               <Alert variant="destructive">
                 <AlertTitle>{t('error')}</AlertTitle>

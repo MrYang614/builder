@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -86,9 +87,9 @@ test('a late real save keeps new edits dirty and cannot let New discard them', a
   expect(stored.walls[0]!.height).toBe(original.walls[0]!.height);
   expect(await documentOf(page)).toEqual(edited);
   await expect(page.getByTestId('dirty-state')).toHaveText('未保存修改');
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/save-race-validation.json',
+    evidencePath('theme-toggle/evidence/save-race-validation.json'),
     JSON.stringify(
       {
         scope:
@@ -148,7 +149,7 @@ test('real export uses its captured document while later UI edits remain indepen
   expect(await documentOf(page)).toEqual(edited);
   await expect(page.getByTestId('dirty-state')).toHaveText('未保存修改');
   await writeFile(
-    'test-results/theme-toggle/evidence/export-race-validation.json',
+    evidencePath('theme-toggle/evidence/export-race-validation.json'),
     JSON.stringify(
       {
         scope:
@@ -163,4 +164,36 @@ test('real export uses its captured document while later UI edits remain indepen
       2,
     ) + '\n',
   );
+});
+
+test('a late project open preserves edits made after the replacement was approved', async ({
+  page,
+}, testInfo) => {
+  const downloaded = page.waitForEvent('download');
+  await page.getByRole('button', { name: '保存', exact: true }).click();
+  const file = resolve(testInfo.outputDir, 'open-before-edit.building');
+  await (await downloaded).saveAs(file);
+  await expect(page.getByTestId('dirty-state')).toHaveText('已保存');
+  const saved = await documentOf(page);
+  await page.evaluate(() => {
+    (window as unknown as Instrumented).__snapshotGate.enabled = true;
+  });
+  const chooser = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: '打开', exact: true }).click();
+  await (await chooser).setFiles(file);
+  await page.waitForFunction(() => (window as unknown as Instrumented).__snapshotGate.pending > 0);
+  await number(page, '高度（m）', '3.4');
+  const edited = await documentOf(page);
+  await page.evaluate(() => (window as unknown as Instrumented).__snapshotGate.release());
+  await expect(page.getByRole('button', { name: '打开', exact: true })).toBeEnabled();
+  expect(await documentOf(page)).toEqual(edited);
+  await expect(page.getByTestId('dirty-state')).toHaveText('未保存修改');
+  await expect(page.getByRole('alert')).toContainText('新修改已保留');
+  // A fresh approval can still open the exact same valid container.
+  const retry = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: '打开', exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: '放弃', exact: true }).click();
+  await (await retry).setFiles(file);
+  await expect(page.getByTestId('dirty-state')).toHaveText('已保存');
+  expect((await documentOf(page)).walls[0]!.height).toBe(saved.walls[0]!.height);
 });

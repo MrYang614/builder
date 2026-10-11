@@ -1,7 +1,8 @@
+import { useId } from 'react';
 import { Button, FieldSet, FieldLegend, FieldGroup, Input } from '@building/ui';
 import type { Command, EnvironmentSettings } from '@building/editor-core';
 import { useEditor, useDocument, useSession, useSignal } from '../app/services';
-import { importEnvironment, savePNG } from '../platform';
+import { importEnvironment } from '../platform';
 import { Choice, Numeric } from './fields';
 import { useLanguage } from './i18n';
 
@@ -41,6 +42,9 @@ export function RenderingSettings() {
   const updateEnvironment = (patch: Partial<EnvironmentSettings>) =>
     submitEnvironment({ type: 'set-environment', environment: { ...environment, ...patch } });
   const importPanorama = async () => {
+    if (services.busy.get()) {
+      return;
+    }
     services.busy.set(true);
     const projectId = doc.id;
     try {
@@ -69,22 +73,6 @@ export function RenderingSettings() {
       services.busy.set(false);
     }
   };
-  const saveRender = async () => {
-    services.busy.set(true);
-    try {
-      const runtime = services.runtimeRef.current;
-      if (!runtime) {
-        throw new Error('render.notReady');
-      }
-      if (await savePNG(await runtime.capturePNG())) {
-        services.notice.set({ key: 'render.pngSaved', error: false });
-      }
-    } catch (error) {
-      failure(error);
-    } finally {
-      services.busy.set(false);
-    }
-  };
   return (
     <>
       <FieldSet disabled={state.switching || busy}>
@@ -100,40 +88,34 @@ export function RenderingSettings() {
             }))}
             onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
           />
-          <div className="render-actions">
-            <Button
-              variant="outline"
-              onClick={() =>
-                void services.runtimeRef.current?.setPathTracing(state.mode !== 'pathtrace')
+          <p className="render-hint">{t('render.settingsHint')}</p>
+        </FieldGroup>
+      </FieldSet>
+      <FieldSet disabled={busy || state.mode === 'pathtrace' || !state.postProcessing.available}>
+        <FieldLegend>{t('render.postProcessing')}</FieldLegend>
+        <FieldGroup>
+          <label className="checkbox-label render-check">
+            <Input
+              type="checkbox"
+              checked={state.postProcessing.gtao}
+              onChange={(event) =>
+                services.runtimeRef.current?.setGTAOEnabled(event.target.checked)
               }
-            >
-              {t(state.mode === 'pathtrace' ? 'render.raster' : 'render.start')}
-            </Button>
-            {state.mode === 'pathtrace' && (
-              <Button
-                variant="outline"
-                disabled={state.pathStatus === 'building'}
-                onClick={() =>
-                  services.runtimeRef.current?.pausePathTracing(state.pathStatus !== 'paused')
-                }
-              >
-                {t(state.pathStatus === 'paused' ? 'render.resume' : 'render.pause')}
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              disabled={
-                state.mode !== 'pathtrace' ||
-                state.samples < 1 ||
-                state.pathStatus === 'building' ||
-                state.environmentLoading
-              }
-              onClick={() => void saveRender()}
-            >
-              {t('render.exportPNG')}
-            </Button>
-          </div>
-          <p className="render-hint">{t('render.hint')}</p>
+            />
+            {t('render.gtao')}
+          </label>
+          <label className="checkbox-label render-check">
+            <Input
+              type="checkbox"
+              checked={state.postProcessing.taa}
+              onChange={(event) => services.runtimeRef.current?.setTAAEnabled(event.target.checked)}
+            />
+            {t('render.taa')}
+          </label>
+          <p className="render-hint">{t('render.postProcessingHint')}</p>
+          {!state.postProcessing.available && (
+            <output>{t('render.postProcessingUnavailable')}</output>
+          )}
         </FieldGroup>
       </FieldSet>
       <FieldSet disabled={busy || session.wholeBuildingPreview}>
@@ -217,4 +199,3 @@ export function RenderingSettings() {
     </>
   );
 }
-import { useId } from 'react';

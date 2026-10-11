@@ -163,6 +163,19 @@ for (const file of [...walk('apps/desktop/src'), ...walk('packages')].filter((x)
     errors.push(`${file}: architecture violation`);
   }
 }
+const handWrittenSources = [
+  ...walk('apps/desktop/src'),
+  ...walk('apps/desktop/src-tauri/src'),
+  ...walk('packages'),
+].filter((file) => /\.(ts|tsx|rs)$/.test(file));
+for (const file of handWrittenSources) {
+  const lines = readFileSync(new URL(file, root), 'utf8').split(/\r?\n/);
+  const count = lines.at(-1) === '' ? lines.length - 1 : lines.length;
+  const ceiling = 500;
+  if (count > ceiling) {
+    errors.push(`${file}: ${count} lines exceeds ${ceiling}; split responsibility boundaries`);
+  }
+}
 const source = JSON.parse(
   readFileSync(new URL('packages/ui/src/tokens/source.json', root), 'utf8'),
 );
@@ -197,5 +210,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  'Dependency boundaries, UI color literals, dual-theme keys, generated CSS and skills: PASS',
+  'Source line ceilings, dependency boundaries, UI tokens, generated CSS and skills: PASS',
 );

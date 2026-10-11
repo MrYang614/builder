@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect } from '@playwright/test';
 import { resolve } from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -209,13 +210,13 @@ test('decoded and GPU-rendered image versions release CPU cache on repeated impo
     gpu: result.baseline,
   });
   expect(result.disposed).toEqual({ cached: 0, materials: 0, textures: 0, references: 0 });
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/resource-cache-validation.json',
+    evidencePath('theme-toggle/evidence/resource-cache-validation.json'),
     JSON.stringify(
       {
         platform:
-          'Windows Chromium SwiftShader isolated material-pool integration; actual PNG decoding/GPU drawing, not native Tauri/file chooser acceptance',
+          'Windows Chromium WebGL isolated material-pool integration; actual PNG decoding/GPU drawing, not native Tauri/file chooser acceptance',
         cycles: 20,
         removalPrunesCpuCache: true,
         sameIdReplacementPrunesCpuCache: true,

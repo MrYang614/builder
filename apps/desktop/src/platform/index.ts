@@ -97,6 +97,7 @@ function chooseFile(accept: string, testId: string): Promise<File | null> {
   });
 }
 
+/** Validates a chosen portable file before handing its detached document to EditorCore. */
 export async function openProject(): Promise<{ doc: ProjectDocument; path: string } | null> {
   if (isDesktop()) {
     const path = await open({
@@ -121,6 +122,7 @@ export async function openProject(): Promise<{ doc: ProjectDocument; path: strin
     path: file.name,
   };
 }
+/** Captures the revision before dialogs or IO so concurrent edits cannot alter this save. */
 export async function saveProject(
   document: ProjectDocument,
   currentPath?: string,
@@ -149,6 +151,7 @@ export async function saveProject(
   download(await encodeProjectContainer(snapshot), name, 'application/zip');
   return name;
 }
+/** Saves an independently built model through native atomic IO or a browser download. */
 export async function saveGLB(buffer: ArrayBuffer): Promise<string | null> {
   if (isDesktop()) {
     const chosen = await save({
@@ -167,6 +170,7 @@ export async function saveGLB(buffer: ArrayBuffer): Promise<string | null> {
   download(buffer, 'Building.glb', 'model/gltf-binary');
   return 'Building.glb';
 }
+/** Decodes the render export before showing a destination dialog or starting a download. */
 export async function savePNG(buffer: ArrayBuffer): Promise<string | null> {
   const bytes = new Uint8Array(buffer);
   if ((await validateEnvironmentBytes(bytes)).mime !== 'image/png') {
@@ -189,6 +193,7 @@ export async function savePNG(buffer: ArrayBuffer): Promise<string | null> {
   download(buffer, 'Building.png', 'image/png');
   return 'Building.png';
 }
+/** Imports embedded panorama bytes; formal environment settings remain owned by EditorCore. */
 export async function importEnvironment(): Promise<EnvironmentResource | null> {
   if (isDesktop()) {
     const path = await open({
@@ -207,6 +212,7 @@ export async function importEnvironment(): Promise<EnvironmentResource | null> {
   const file = await chooseFile('.hdr,.exr,image/png,image/jpeg', 'environment-file-input');
   return file ? browserEnvironmentResource(file) : null;
 }
+/** Validates dropped panoramas with the browser decoder and, on desktop, the native boundary. */
 export async function importEnvironmentFile(file: File): Promise<EnvironmentResource> {
   const resource = await browserEnvironmentResource(file);
   if (isDesktop()) {
@@ -216,6 +222,7 @@ export async function importEnvironmentFile(file: File): Promise<EnvironmentReso
   }
   return resource;
 }
+/** Imports a self-contained PNG/JPEG without retaining a dependency on its original file. */
 export async function importImage(): Promise<Resource | null> {
   if (isDesktop()) {
     const path = await open({
@@ -232,9 +239,12 @@ export async function importImage(): Promise<Resource | null> {
   const file = await chooseFile('image/png,image/jpeg', 'image-file-input');
   return file ? browserResource(file) : null;
 }
+/** Infers and decodes surface bytes before requesting native metadata for a dropped file. */
 export async function importImageFile(file: File): Promise<Resource> {
+  // A dropped file may omit its MIME; use the same decoded resource in both host adapters.
+  const resource = await browserResource(file);
   if (!isDesktop()) {
-    return browserResource(file);
+    return resource;
   }
   const metadata = await invoke<Omit<Resource, 'dataUrl'>>(
     'import_image_bytes',
@@ -242,12 +252,13 @@ export async function importImageFile(file: File): Promise<Resource> {
     {
       headers: {
         'X-File-Name': encodeURIComponent(file.name),
-        'X-File-Mime': encodeURIComponent(file.type),
+        'X-File-Mime': encodeURIComponent(resource.mime),
       },
     },
   );
-  return { ...(await browserResource(file)), ...metadata };
+  return { ...resource, ...metadata };
 }
+/** Normalizes legacy local preferences, preferring the native file in the desktop host. */
 export async function loadSettings(): Promise<AppSettings> {
   if (isDesktop()) {
     return normalizeSettings(await invoke<unknown>('load_settings'));
@@ -258,36 +269,65 @@ export async function loadSettings(): Promise<AppSettings> {
     return { ...defaultSettings };
   }
 }
+/** Persists local preferences; the native file is authoritative and its cache is optional. */
 export async function saveSettings(settings: AppSettings): Promise<void> {
   const normalized = normalizeSettings(settings);
   if (isDesktop()) {
     await invoke<void>('save_settings', { settings: normalized });
+    // The native file is authoritative; an unavailable startup cache must not block close.
+    try {
+      localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(normalized));
+    } catch {
+      // loadSettings restores the native preferences on the next desktop startup.
+    }
+    return;
   }
   localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(normalized));
 }
 
-/** Register once at app assembly; the UI supplies its save/discard/cancel decision. */
-export async function registerCloseGuard(guard: () => Promise<boolean>): Promise<() => void> {
+/** Owns one native close listener; guard/destroy failures keep the window open and reach onError. */
+export async function registerCloseGuard(
+  guard: () => Promise<boolean>,
+  onError: (error: unknown) => void = (error) => console.error(error),
+): Promise<() => void> {
   if (!isDesktop()) {
     return () => {};
   }
   const { getCurrentWindow } = await import('@tauri-apps/api/window');
   const window = getCurrentWindow();
   let pending = false;
-  return window.onCloseRequested(async (event) => {
+  let active = true;
+  const unlisten = await window.onCloseRequested(async (event) => {
+    if (!active) {
+      return;
+    }
     event.preventDefault();
     if (pending) {
       return;
     }
     pending = true;
     try {
-      if (await guard()) {
+      if ((await guard()) && active) {
         await window.destroy();
+      }
+    } catch (error) {
+      if (active) {
+        try {
+          onError(error);
+        } catch {
+          // Tauri does not await event callbacks; notification failures cannot escape as rejections.
+        }
       }
     } finally {
       pending = false;
     }
   });
+  return () => {
+    if (active) {
+      active = false;
+      unlisten();
+    }
+  };
 }
 
 export { createWindowControls } from './window';

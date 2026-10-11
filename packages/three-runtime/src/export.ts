@@ -1,6 +1,7 @@
 import type { ProjectDocument } from '@building/editor-core';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { buildBuilding } from './scene';
+import { cleanupAfterFailure } from './resource-cleanup';
 
 async function exportSnapshot(
   document: ProjectDocument,
@@ -9,9 +10,10 @@ async function exportSnapshot(
   // Freeze a single revision before loading textures or awaiting the exporter.
   const snapshot = structuredClone(document),
     built = buildBuilding(snapshot);
+  let result: ArrayBuffer | object;
   try {
     await built.resources.ready();
-    const result = await new GLTFExporter().parseAsync(built.root, {
+    result = await new GLTFExporter().parseAsync(built.root, {
       binary,
       animations: built.animations,
       trs: true,
@@ -21,10 +23,12 @@ async function exportSnapshot(
     if (binary && !(result instanceof ArrayBuffer)) {
       throw new Error('export.invalidBinary');
     }
-    return result;
-  } finally {
-    built.dispose();
+  } catch (error) {
+    cleanupAfterFailure(() => built.dispose());
+    throw error;
   }
+  built.dispose();
+  return result;
 }
 export async function exportGLB(document: ProjectDocument): Promise<ArrayBuffer> {
   return (await exportSnapshot(document, true)) as ArrayBuffer;

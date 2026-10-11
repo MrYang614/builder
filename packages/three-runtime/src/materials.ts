@@ -6,6 +6,7 @@ import {
   type Texture,
 } from 'three';
 import type { ProjectDocument, SurfaceBinding } from '@building/editor-core';
+import { cleanupAfterFailure, runResourceCleanup } from './resource-cleanup';
 
 interface MaterialEntry {
   material: MeshStandardMaterial;
@@ -78,42 +79,47 @@ export class ResourcePool {
         opacity: options.glass ? 0.32 : 1,
         depthWrite: !options.glass,
       });
-      material.name = options.glass
-        ? 'Glass'
-        : resource
-          ? `Image_${resource.id}`
-          : `Colour_${binding.color.slice(1)}`;
-      if (resource) {
-        const imageKey = textureId!;
-        let textureEntry = this.textures.get(imageKey);
-        if (!textureEntry) {
-          let resolve!: () => void, reject!: (error: Error) => void;
-          const loaded = new Promise<void>((yes, no) => {
-            resolve = yes;
-            reject = no;
-          });
-          // Rejecting remains observable through ready(); avoid an unhandled rejection before export.
-          void loaded.catch(() => undefined);
-          const texture = new TextureLoader().load(
-            resource.dataUrl,
-            () => resolve(),
-            undefined,
-            () => reject(new Error(`runtime.textureDecodeFailed:${resource.id}`)),
-          );
-          texture.colorSpace = SRGBColorSpace;
-          texture.wrapS = RepeatWrapping;
-          texture.wrapT = RepeatWrapping;
-          texture.name = resource.id;
-          textureEntry = { texture, refs: 0, loaded };
-          this.textures.set(imageKey, textureEntry);
+      try {
+        material.name = options.glass
+          ? 'Glass'
+          : resource
+            ? `Image_${resource.id}`
+            : `Colour_${binding.color.slice(1)}`;
+        if (resource) {
+          const imageKey = textureId!;
+          let textureEntry = this.textures.get(imageKey);
+          if (!textureEntry) {
+            let resolve!: () => void, reject!: (error: Error) => void;
+            const loaded = new Promise<void>((yes, no) => {
+              resolve = yes;
+              reject = no;
+            });
+            // Rejecting remains observable through ready(); avoid an unhandled rejection before export.
+            void loaded.catch(() => undefined);
+            const texture = new TextureLoader().load(
+              resource.dataUrl,
+              () => resolve(),
+              undefined,
+              () => reject(new Error(`runtime.textureDecodeFailed:${resource.id}`)),
+            );
+            texture.colorSpace = SRGBColorSpace;
+            texture.wrapS = RepeatWrapping;
+            texture.wrapT = RepeatWrapping;
+            texture.name = resource.id;
+            textureEntry = { texture, refs: 0, loaded };
+            this.textures.set(imageKey, textureEntry);
+          }
+          textureEntry.refs++;
+          material.map = textureEntry.texture;
+          entry = { material, refs: 0, textureId: imageKey };
+        } else {
+          entry = { material, refs: 0 };
         }
-        textureEntry.refs++;
-        material.map = textureEntry.texture;
-        entry = { material, refs: 0, textureId: imageKey };
-      } else {
-        entry = { material, refs: 0 };
+        this.materials.set(key, entry);
+      } catch (error) {
+        cleanupAfterFailure(() => material.dispose());
+        throw error;
       }
-      this.materials.set(key, entry);
     }
     entry.refs++;
     let released = false;
@@ -129,15 +135,16 @@ export class ResourcePool {
           return;
         }
         if (--current.refs === 0) {
-          current.material.dispose();
           this.materials.delete(key);
+          const cleanup = [() => current.material.dispose()];
           if (current.textureId) {
             const texture = this.textures.get(current.textureId);
             if (texture && --texture.refs === 0) {
-              texture.texture.dispose();
               this.textures.delete(current.textureId);
+              cleanup.push(() => texture.texture.dispose());
             }
           }
+          runResourceCleanup(cleanup);
         }
       },
     };
@@ -161,14 +168,13 @@ export class ResourcePool {
       return;
     }
     this.disposed = true;
-    for (const entry of this.materials.values()) {
-      entry.material.dispose();
-    }
-    for (const entry of this.textures.values()) {
-      entry.texture.dispose();
-    }
+    const owned = [
+      ...[...this.materials.values()].map((entry) => () => entry.material.dispose()),
+      ...[...this.textures.values()].map((entry) => () => entry.texture.dispose()),
+    ];
     this.materials.clear();
     this.textures.clear();
     this.resourceVersions.clear();
+    runResourceCleanup(owned);
   }
 }

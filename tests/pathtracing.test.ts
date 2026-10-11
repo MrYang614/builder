@@ -82,7 +82,12 @@ class FakeWebGLTracer {
     fsQuad: { material: { dispose: vi.fn() } },
   });
   readonly primaryTarget = new WebGLRenderTarget();
-  dispose = vi.fn(() => this.primaryTarget.dispose());
+  readonly _quad = { geometry: new BufferGeometry(), material: new ShaderMaterial() };
+  dispose = vi.fn(() => {
+    this._quad.geometry.dispose();
+    this._quad.material.dispose();
+    this.primaryTarget.dispose();
+  });
   reset = vi.fn(() => {
     this.samples = 0;
   });
@@ -210,6 +215,91 @@ afterEach(() => {
 });
 
 describe('PathTraceSession controller (mocked GPU drivers; no hardware claim)', () => {
+  test('an event failure in the first public presentation quad still releases its material and remaining derived resources', async () => {
+    const session = await start(webGLRenderer());
+    const tracer = latestGL();
+    const primary = new Error('presentation quad geometry cleanup failure');
+    tracer._quad.geometry.addEventListener('dispose', () => {
+      throw primary;
+    });
+    const materialDispose = vi.spyOn(tracer._quad.material, 'dispose');
+    const geometryDispose = vi.spyOn(tracer._generator.geometry, 'dispose');
+    expect(() => session.dispose()).toThrow(primary);
+    expect(materialDispose).toHaveBeenCalledOnce();
+    expect(geometryDispose).toHaveBeenCalledOnce();
+    expect(tracer._pathTracer.material.dispose).toHaveBeenCalledOnce();
+    expect(tracer._lowResPathTracer.material.dispose).toHaveBeenCalledOnce();
+    expect(() => session.dispose()).not.toThrow();
+    expect(materialDispose).toHaveBeenCalledOnce();
+  });
+
+  test.each([false, true])(
+    'WebGPU supplemental release attempts every allocation after a native LUT event fails (primary failure: %s)',
+    async (primaryFailure) => {
+      const session = await start(webGPURenderer());
+      const tracer = latestGPU();
+      const lut = tracer.material!.turquinTexture!;
+      const remaining = [
+        tracer._blitQuad!.material,
+        tracer._atlasDebugQuad!.material,
+        tracer._sampleDensityQuad!.material,
+        tracer._debugBoundsQuad!.material,
+        tracer._bvhData!.textureAtlas.texture,
+        tracer._pathTracer!.lightsInfo.iesAtlas.texture,
+      ];
+      lut.addEventListener('dispose', () => {
+        throw new Error('native LUT cleanup failure');
+      });
+      const primary = new Error('public tracer cleanup primary failure');
+      if (primaryFailure) {
+        tracer.dispose.mockImplementation(() => {
+          throw primary;
+        });
+      }
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        expect(() => session.dispose()).toThrow(primaryFailure ? primary : AggregateError);
+        expect(lut.dispose).toHaveBeenCalledOnce();
+        remaining.forEach((resource) => expect(resource.dispose).toHaveBeenCalledOnce());
+        expect(() => session.dispose()).not.toThrow();
+        expect(warning).toHaveBeenCalledTimes(primaryFailure ? 1 : 0);
+      } finally {
+        warning.mockRestore();
+      }
+      tracer.random.blueNoise.dispose();
+    },
+  );
+
+  test('WebGL cleanup preserves a public tracer failure while releasing all supplemental allocations after an atlas event fails', async () => {
+    const session = await start(webGLRenderer());
+    const tracer = latestGL();
+    const primary = new Error('public tracer cleanup primary failure');
+    tracer.dispose.mockImplementation(() => {
+      tracer.primaryTarget.dispose();
+      throw primary;
+    });
+    tracer.atlas.addEventListener('dispose', () => {
+      throw new Error('native atlas cleanup failure');
+    });
+    const atlasDispose = vi.spyOn(tracer.atlas, 'dispose');
+    const geometryDispose = vi.spyOn(tracer._generator.geometry, 'dispose');
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      expect(() => session.dispose()).toThrow(primary);
+      expect(atlasDispose).toHaveBeenCalledOnce();
+      expect(geometryDispose).toHaveBeenCalledOnce();
+      expect(tracer._pathTracer.material.dispose).toHaveBeenCalledOnce();
+      expect(tracer._lowResPathTracer.material.dispose).toHaveBeenCalledOnce();
+      expect(tracer._pathTracer._blendQuad.material.dispose).toHaveBeenCalledOnce();
+      expect(tracer._lowResPathTracer._blendQuad.material.dispose).toHaveBeenCalledOnce();
+      expect(tracer._internalBackground.dispose).toHaveBeenCalledOnce();
+      expect(warning).toHaveBeenCalledOnce();
+      expect(() => session.dispose()).not.toThrow();
+    } finally {
+      warning.mockRestore();
+    }
+  });
+
   test('legacy WebGL samples stop at the measured target and present/pause do not accumulate', async () => {
     const session = await start(webGLRenderer(), 2),
       tracer = latestGL();

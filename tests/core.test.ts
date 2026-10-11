@@ -190,7 +190,7 @@ describe('domain commands, atomic history, snapshots and host dependencies', () 
     expect(
       core.preview(token, { type: 'update-opening', id: doorId, patch: { offset: 99 } }).ok,
     ).toBe(false);
-    expect(errorCode(core.commitPreview(token))).toBe('transaction.empty');
+    expect(errorCode(core.commitPreview(token))).toBe('opening.outsideWall');
     token = core.beginPreview();
     core.preview(token, { type: 'update-opening', id: doorId, patch: { offset: 2 } });
     core.execute({ type: 'rename-project', name: 'Newer' });

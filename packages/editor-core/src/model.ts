@@ -112,6 +112,7 @@ export interface ProjectDocument {
 export function defaultEnvironmentSettings(): EnvironmentSettings {
   return { intensity: 1, rotation: 0, background: false };
 }
+/** Reads compatibility defaults for legacy v1 files without installing lighting into the document. */
 export function getEnvironmentSettings(document: ProjectDocument): EnvironmentSettings {
   return document.environment ?? defaultEnvironmentSettings();
 }
@@ -130,10 +131,12 @@ export const DEFAULTS = Object.freeze({
   animationDuration: 1,
 });
 let nextId = 0;
+/** Creates process-local domain IDs without depending on browser or host APIs. */
 export function createId(prefix = 'object'): string {
   nextId += 1;
   return `${prefix}_${Date.now().toString(36)}_${nextId.toString(36)}`;
 }
+/** Creates an independent material binding with physical tile sizes in metres. */
 export function defaultSurface(color = '#ded8cd'): SurfaceBinding {
   return { color, tileWidth: 0.5, tileHeight: 0.5, rotation: 0, offsetX: 0, offsetY: 0 };
 }
@@ -157,6 +160,7 @@ export function defaultOpeningMaterials(): NonNullable<Opening['materials']> {
 export function wallLength(wall: Pick<Wall, 'start' | 'end'>): number {
   return Math.hypot(wall.end.x - wall.start.x, wall.end.z - wall.start.z);
 }
+/** Normalizes either diagonal order into the formal rectangular footprint. */
 export function rectanglePolygon(a: Vec2, b: Vec2): Vec2[] {
   const minX = Math.min(a.x, b.x),
     maxX = Math.max(a.x, b.x);
@@ -169,6 +173,7 @@ export function rectanglePolygon(a: Vec2, b: Vec2): Vec2[] {
     { x: minX, z: maxZ },
   ];
 }
+/** Creates editable parameters with one floor; no walls, slabs or automatic roof are inferred. */
 export function createEmptyProject(name = 'Untitled'): ProjectDocument {
   return {
     schemaVersion: 1,
@@ -183,6 +188,7 @@ export function createEmptyProject(name = 'Untitled'): ProjectDocument {
     continuity: [],
   };
 }
+/** Creates caller-owned wall parameters; committing them through Core validates orthogonal topology. */
 export function createWall(levelId: string, start: Vec2, end: Vec2): Wall {
   return {
     id: createId('wall'),
@@ -195,6 +201,7 @@ export function createWall(levelId: string, start: Vec2, end: Vec2): Wall {
     materials: defaultWallMaterials(),
   };
 }
+/** Creates a thick rectangular slab whose explicit elevation and purpose survive project loading. */
 export function createSlab(
   levelId: string,
   a: Vec2,
@@ -212,6 +219,7 @@ export function createSlab(
     materials: defaultSlabMaterials(),
   };
 }
+/** Creates hosted opening/animation parameters; host clearance is validated when Core installs them. */
 export function createOpening(wall: Wall, kind: Opening['kind'], offset: number): Opening {
   return {
     id: createId(kind),

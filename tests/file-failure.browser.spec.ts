@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect } from '@playwright/test';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -68,9 +69,9 @@ test('real saved files with truncation, future version or corrupt images fail vi
   expect(
     await page.evaluate(() => (window as unknown as Instrumented).__editor.document()),
   ).toEqual(original);
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
   await writeFile(
-    'test-results/theme-toggle/evidence/file-failure-validation.json',
+    evidencePath('theme-toggle/evidence/file-failure-validation.json'),
     JSON.stringify(
       {
         scope:

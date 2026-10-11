@@ -2,6 +2,7 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
+import { evidencePath } from './evidence-path';
 import assert from 'node:assert/strict';
 import { createEmptyProject } from '@building/editor-core';
 import {
@@ -17,7 +18,9 @@ doc.resources.push({
   dataUrl:
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=',
 });
-const directory = resolve('tests/artifacts/native/interoperability');
+const directory = process.env.BUILDING_EVIDENCE_ROOT
+  ? evidencePath('native/interoperability')
+  : resolve('tests/artifacts/native/interoperability');
 await mkdir(directory, { recursive: true });
 const browserPath = resolve(directory, 'browser-generated.building');
 const jsonPath = resolve(directory, 'rust-unpacked.json');

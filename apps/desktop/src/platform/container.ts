@@ -144,6 +144,7 @@ export async function validateEnvironmentBytes(
   }
   return metadata;
 }
+/** Decodes panorama bytes and retains the original file contents for portable save/export. */
 export async function browserEnvironmentResource(file: File): Promise<EnvironmentResource> {
   if (file.size > ENVIRONMENT_LIMITS.maxBytes) {
     throw error('environment.assetTooLarge', file.name);
@@ -157,6 +158,7 @@ export async function browserEnvironmentResource(file: File): Promise<Environmen
     dataUrl: dataUrl(bytes, metadata.mime),
   };
 }
+/** Validates surface image bytes and gives identical content a stable hash-based identity. */
 export async function browserResource(file: File): Promise<Resource> {
   if (file.size > MAX_IMAGE_BYTES) {
     throw error('resource_too_large', file.name);
@@ -171,14 +173,20 @@ export async function browserResource(file: File): Promise<Resource> {
     dataUrl: dataUrl(bytes, mime),
   };
 }
+/** Serializes a detached snapshot; both deduplicated ZIP bytes and alias expansion stay bounded. */
 export async function encodeProjectContainer(document: ProjectDocument): Promise<Uint8Array> {
   checked(document);
   const snapshot = structuredClone(document);
   const files: Record<string, Uint8Array> = {};
   let total = 0;
+  let expandedTotal = 0;
   const storedResources = [];
   for (const resource of snapshot.resources) {
     const bytes = bytesFromResource(resource);
+    expandedTotal += bytes.length;
+    if (expandedTotal > MAX_PROJECT_BYTES) {
+      throw error('file_too_large', 'Expanded project resources exceed 256 MiB');
+    }
     await validateImage(bytes, resource.mime);
     const hash = await digest(bytes);
     const path = `resources/${hash}.${resource.mime === 'image/png' ? 'png' : 'jpg'}`;
@@ -202,6 +210,10 @@ export async function encodeProjectContainer(document: ProjectDocument): Promise
     const storedEnvironments = [];
     for (const resource of snapshot.environmentResources) {
       const bytes = environmentResourceBytes(resource);
+      expandedTotal += bytes.length;
+      if (expandedTotal > MAX_PROJECT_BYTES) {
+        throw error('file_too_large', 'Expanded project resources exceed 256 MiB');
+      }
       await validateEnvironmentBytes(bytes, resource.mime);
       const hash = await digest(bytes);
       const path = `environment-resources/${hash}.${environmentExtension(resource.mime)}`;
@@ -226,19 +238,35 @@ export async function encodeProjectContainer(document: ProjectDocument): Promise
   if (files['project.json'].length > MAX_JSON_BYTES) {
     throw error('file_too_large', 'Project data limit is 32 MiB');
   }
-  return zipSync(files, { level: 6 });
+  const container = zipSync(files, { level: 6 });
+  if (container.length > MAX_PROJECT_BYTES) {
+    throw error('file_too_large', 'Project container limit is 256 MiB');
+  }
+  return container;
 }
+/** Bounds the manifest and resource expansion before materializing validated formal data. */
 export async function decodeProjectContainer(bytes: Uint8Array): Promise<ProjectDocument> {
   if (bytes.length > MAX_PROJECT_BYTES) {
     throw error('file_too_large', 'Project limit is 256 MiB');
   }
   let total = 0;
   const archiveNames = new Set<string>();
+  const archiveSizes = new Map<string, number>();
   let files: Record<string, Uint8Array>;
   try {
     files = unzipSync(bytes, {
       filter: (file) => {
         total += file.originalSize;
+        const entryLimit =
+          file.name === 'project.json'
+            ? MAX_JSON_BYTES
+            : file.name.startsWith('environment-resources/')
+              ? ENVIRONMENT_LIMITS.maxBytes
+              : MAX_IMAGE_BYTES;
+        // Inspect declared sizes before fflate allocates each decompressed entry.
+        if (file.originalSize > entryLimit) {
+          throw error('file_too_large', 'Archive entry exceeds its supported byte limit');
+        }
         if (
           total > MAX_PROJECT_BYTES + MAX_JSON_BYTES ||
           archiveNames.size > 20_000 ||
@@ -251,7 +279,9 @@ export async function decodeProjectContainer(bytes: Uint8Array): Promise<Project
           throw error('corrupt_project', 'Unsafe archive entry');
         }
         archiveNames.add(file.name);
-        return true;
+        archiveSizes.set(file.name, file.originalSize);
+        // Decompress only the manifest until its alias expansion has also been bounded.
+        return file.name === 'project.json';
       },
     });
   } catch (failure) {
@@ -271,7 +301,11 @@ export async function decodeProjectContainer(bytes: Uint8Array): Promise<Project
   }
   let document: Record<string, unknown>;
   try {
-    document = JSON.parse(strFromU8(json)) as Record<string, unknown>;
+    const parsed: unknown = JSON.parse(strFromU8(json));
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw error('corrupt_project', 'Project JSON must contain an object');
+    }
+    document = parsed as Record<string, unknown>;
   } catch {
     throw error('corrupt_project', 'Invalid project JSON');
   }
@@ -280,6 +314,35 @@ export async function decodeProjectContainer(bytes: Uint8Array): Promise<Project
   }
   if (!Array.isArray(document.resources)) {
     throw error('invalid_project', 'Missing resource list');
+  }
+  if (document.resources.length > 1000) {
+    throw error('file_too_large', 'Too many surface resources');
+  }
+  if (
+    document.environmentResources !== undefined &&
+    (!Array.isArray(document.environmentResources) ||
+      document.environmentResources.length > ENVIRONMENT_LIMITS.maxResources)
+  ) {
+    throw error('environment.invalid', 'Invalid environment resource list');
+  }
+  const manifestPaths = new Set<string>();
+  let expandedTotal = 0;
+  for (const entry of [
+    ...document.resources,
+    ...(Array.isArray(document.environmentResources) ? document.environmentResources : []),
+  ]) {
+    if (entry && typeof entry === 'object' && 'path' in entry && typeof entry.path === 'string') {
+      manifestPaths.add(entry.path);
+      expandedTotal += archiveSizes.get(entry.path) ?? 0;
+      if (expandedTotal > MAX_PROJECT_BYTES) {
+        throw error('file_too_large', 'Expanded project resources exceed 256 MiB');
+      }
+    }
+  }
+  try {
+    Object.assign(files, unzipSync(bytes, { filter: (file) => manifestPaths.has(file.name) }));
+  } catch {
+    throw error('corrupt_project', 'Invalid project resource data');
   }
   const expectedFiles = new Set(['project.json']);
   const resources: Resource[] = [];
@@ -355,7 +418,7 @@ export async function decodeProjectContainer(bytes: Uint8Array): Promise<Project
     }
     document.environmentResources = environments;
   }
-  if (Object.keys(files).some((path) => !expectedFiles.has(path))) {
+  if ([...archiveNames].some((path) => !expectedFiles.has(path))) {
     throw error('unknown_fields', 'Unrecognized project files');
   }
   checked(document);

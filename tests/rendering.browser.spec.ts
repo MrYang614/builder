@@ -1,3 +1,4 @@
+import { evidencePath } from './evidence-path';
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -165,8 +166,8 @@ async function actualDownload(page: Page, button: string, file: string) {
 async function evidence(name: string, value: unknown, testInfo: TestInfo) {
   const content = JSON.stringify(value, null, 2);
   await writeFile(testInfo.outputPath(`${name}.json`), content);
-  await mkdir('test-results/theme-toggle/evidence', { recursive: true });
-  await writeFile(`test-results/theme-toggle/evidence/${name}.json`, content);
+  await mkdir(evidencePath('theme-toggle/evidence'), { recursive: true });
+  await writeFile(evidencePath(`theme-toggle/evidence/${name}.json`), content);
 }
 
 test('real HDR environment import settings history and portable project roundtrip leave GLB clean', async ({
@@ -425,6 +426,7 @@ test('real WebGL path tracing reaches 16 samples pauses resumes downloads a nonu
   });
   expect(initial.environment.resourceId).toBe(document.environment!.resourceId);
   await choose(page, '目标采样数', '16');
+  await page.getByRole('button', { name: '关闭', exact: true }).click();
   const cycles: {
     start: Diagnostics;
     paused: Diagnostics;
@@ -561,7 +563,6 @@ test('real WebGL path tracing reaches 16 samples pauses resumes downloads a nonu
     expect(await snapshot(page)).toEqual(document);
     cycles.push({ start, paused, complete, released, elapsedMs: Date.now() - started });
   }
-  await settings(page, false);
   const projectPath = testInfo.outputPath('pathtrace-environment.building');
   const projectBytes = await actualDownload(page, '保存', projectPath);
   const archive = unzipSync(projectBytes);
@@ -580,7 +581,7 @@ test('real WebGL path tracing reaches 16 samples pauses resumes downloads a nonu
     'rendering-pathtrace-validation',
     {
       platform:
-        'Windows Chromium SwiftShader WebGL browser; software GPU results are not native or hardware performance certification',
+        'Windows Chromium WebGL browser; results are not native or Q5 performance certification',
       path: 'Actual mouse building → actual UI target16/start/pause/resume → real shader samples → actual PNG download and decoded pixel inspection → three return/start resource cycles',
       initial,
       cycles,
