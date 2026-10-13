@@ -10,6 +10,9 @@
   ],
   "scripts": {
     "dev": "vite --config apps/desktop/vite.config.ts",
+    "storybook": "npm run dev --workspace @building/storybook --",
+    "build:storybook": "npm run check && npm run typecheck --workspace @building/storybook && npm run build --workspace @building/storybook",
+    "test:storybook": "playwright test --config playwright.storybook.config.ts",
     "build": "npm run check && tsc --noEmit && vite build --config apps/desktop/vite.config.ts",
     "check": "npm run format:check && npm run lint && npm run check:architecture",
     "check:architecture": "node scripts/check.mjs",
@@ -17,7 +20,7 @@
     "format:check": "oxfmt --check -c .oxfmtrc.json .",
     "lint": "oxlint -c .oxlintrc.json --deny-warnings --report-unused-disable-directives .",
     "lint:fix": "oxlint -c .oxlintrc.json --deny-warnings --report-unused-disable-directives --fix .",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p packages/editor-core/tsconfig.json && tsc --noEmit -p packages/building-geometry/tsconfig.json",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p packages/editor-core/tsconfig.json && tsc --noEmit -p packages/building-geometry/tsconfig.json && npm run typecheck --workspace @building/storybook",
     "tokens": "node scripts/generate-tokens.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test",

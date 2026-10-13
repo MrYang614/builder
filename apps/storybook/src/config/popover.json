@@ -1,0 +1,8 @@
+{
+  "title": "View options / 视图选项",
+  "description": "Change the preview presentation.",
+  "size": "md",
+  "side": "bottom",
+  "align": "start",
+  "modal": false
+}

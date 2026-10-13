@@ -79,6 +79,12 @@ npm run verify          # check + typecheck + 单元测试 + 生产构建
 
 ## 本次验证记录
 
+2026-10-13 UI 基础体系补充：format／lint 和架构检查纳入 `apps/storybook/src`、`.storybook` 与 Vite 配置；typecheck 在原四套目标外增加独立 Storybook 源码／示例／浏览器测试目标。UI 包继续禁止建筑业务、Three、Tauri 依赖；桌面禁止 Storybook／Sucrase 导入；公共 UI 调用由 AST 检查禁止 className/style 外观覆盖。所有新增手写源文件遵守500行，不新增文件大小例外。
+
+Select 的丰富选项需要 APG combobox/listbox/option 主动后代模式：局部 `prefer-tag-over-role` 注释仅覆盖该结构，并说明原生 option 不能承载这些外部 slots。没有整包禁用规则。浏览器焦点探针现在检查实际拥有可见边框的 InputGroup，同时继续断言原生输入焦点、语义色与可见光环；Select 活动选项探针使用真实 `role=option` 和 `data-active`。原失败报告保留，不放宽超时或降低断言。
+
+本轮命令、干净依赖安装、编译模块图、组件覆盖和最终结果见 `docs/UI-COMPONENTS.md` 与 `test-results/ui-foundation-2026-10-13/validation.json`。固定 Skills、生成 token CSS、原 PRD 和原 A01–A42 行及历史证据仍保持原字节约束。
+
 最终结果记录于 `docs/code-quality-validation.json`，原始迁移诊断与源文件基线保留在 `test-results/code-quality`。首轮589条主要是缺少花括号及类型导入；没有删除失败测试或降低严格类型检查。安全自动修复曾将TypedArray的嵌套数组转换错误地化简为TypedArray.map，严格tsc捕获后改成明确Array.from，几何测试继续检查原体积／洞口／UV。
 
 原生WebDriver脚本只移除未使用css辅助声明；287个保留的字符串／模板片段cooked值逐项不变，语法通过，未重新执行原生GUI。浏览器回归与生产检查另列真实结果；历史NSIS和旧全套测试产物保留，不伪称本次已重新打包桌面或执行macOS。

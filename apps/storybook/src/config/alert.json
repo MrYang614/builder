@@ -1,0 +1,6 @@
+{
+  "variant": "default",
+  "title": "Changes pending / 等待确认",
+  "description": "Review the current changes, then choose an action.",
+  "closeLabel": "Dismiss message"
+}

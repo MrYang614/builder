@@ -1,0 +1,8 @@
+{
+  "title": "Remove item / 删除项目",
+  "description": "This action removes the selected item.",
+  "confirmLabel": "Remove",
+  "cancelLabel": "Keep item",
+  "destructive": true,
+  "loading": false
+}

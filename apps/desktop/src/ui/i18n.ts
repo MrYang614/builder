@@ -1,4 +1,3 @@
-import { createContext, use, useEffect, useState, type ReactNode, createElement } from 'react';
 import { extraMessages } from './errors';
 import { renderMessages } from './render-messages';
 import { editingMessages } from './editing-messages';
@@ -93,6 +92,7 @@ const en = {
   savedMessage: 'Project saved',
   loadMessage: 'Project opened',
   error: 'Operation failed',
+  inputInvalid: 'Enter a valid value and confirm again.',
   roof: 'Top cap',
   floor: 'Ordinary slab',
   purpose: 'Slab purpose',
@@ -284,6 +284,7 @@ const zh: Record<Key, string> = {
   savedMessage: '工程已保存',
   loadMessage: '工程已打开',
   error: '操作失败',
+  inputInvalid: '请输入有效值后重新确认。',
   roof: '顶层封板',
   floor: '普通楼板',
   purpose: '楼板用途',
@@ -441,48 +442,7 @@ export function translate(
   }
   return text;
 }
-const Context = createContext<{
-  language: Language;
-  setLanguage: (l: Language) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
-} | null>(null);
-export function LanguageProvider({
-  children,
-  onPreference,
-}: {
-  children: ReactNode;
-  onPreference?: (l: Language) => void;
-}) {
-  const [language, setLanguage] = useState<Language>(() =>
-    localStorage.getItem('building-language') === 'en' ? 'en' : 'zh-CN',
-  );
-  useEffect(() => {
-    document.documentElement.lang = language;
-    document.title = language === 'en' ? en.app : zh.app;
-  }, [language]);
-  return createElement(
-    Context,
-    {
-      value: {
-        language,
-        setLanguage: (l) => {
-          setLanguage(l);
-          localStorage.setItem('building-language', l);
-          onPreference?.(l);
-        },
-        t: (key, p) => translate(language, key, p),
-      },
-    },
-    children,
-  );
-}
-export function useLanguage() {
-  const c = use(Context);
-  if (!c) {
-    throw new Error('LanguageProvider required');
-  }
-  return c;
-}
+export { LanguageProvider, useLanguage, useOptionalLanguage } from './language-context';
 export const languageKeys = {
   en: [
     ...Object.keys(en),

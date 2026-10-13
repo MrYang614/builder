@@ -1,22 +1,8 @@
-import { useEffect, useId, useRef, useState } from 'react';
-import {
-  Input,
-  Field,
-  FieldLabel,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from '@building/ui';
-/** Removes binary arithmetic tails only in the display; tiny values never round to zero. */
-function numericDisplay(value: number): string {
-  const rounded = Number(value.toPrecision(15));
-  return String(Number.isFinite(rounded) && (rounded !== 0 || value === 0) ? rounded : value);
-}
+import { useState } from 'react';
+import { Form, Input, InputNumber, Select } from '@building/ui';
+import { useOptionalLanguage } from './i18n';
 
-/** Keeps exact formal precision; untouched display formatting never creates a command. */
+/** Adapts shared numeric drafts to the domain callback; empty values never reach EditorCore. */
 export function Numeric({
   label,
   value,
@@ -24,75 +10,31 @@ export function Numeric({
 }: {
   label: string;
   value: number;
-  onCommit: (v: number) => boolean | void;
+  onCommit: (value: number) => boolean | void;
 }) {
-  const id = useId(),
-    ref = useRef<HTMLInputElement>(null),
-    [draft, setDraft] = useState(numericDisplay(value)),
-    [invalid, setInvalid] = useState(false),
-    [edited, setEdited] = useState(false);
-  useEffect(() => {
-    if (document.activeElement !== ref.current) {
-      setDraft(numericDisplay(value));
-      setInvalid(false);
-      setEdited(false);
-    }
-  }, [value]);
-  const commit = () => {
-    if (!edited) {
-      setDraft(numericDisplay(value));
-      setInvalid(false);
-      return;
-    }
-    if (draft.trim() === '' || !Number.isFinite(Number(draft))) {
-      setInvalid(true);
-      return;
-    }
-    if (Number(draft) === value) {
-      setInvalid(false);
-      setEdited(false);
-      return;
-    }
-    const ok = onCommit(Number(draft));
-    setInvalid(ok === false);
-    if (ok !== false) {
-      setEdited(false);
-    }
-  };
+  const [invalid, setInvalid] = useState(false);
+  const language = useOptionalLanguage();
   return (
-    <Field data-invalid={invalid}>
-      <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      <Input
-        ref={ref}
-        id={id}
-        inputMode="decimal"
-        data-escape-handled="true"
-        value={draft}
+    <Form.Item
+      label={label}
+      announceError={false}
+      error={
+        invalid
+          ? (language?.t('inputInvalid') ?? 'Enter a valid value and confirm again.')
+          : undefined
+      }
+    >
+      <InputNumber
         aria-invalid={invalid}
-        onChange={(e) => {
-          setDraft(e.target.value);
-          setEdited(true);
-          setInvalid(false);
-        }}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            commit();
-          }
-          if (e.key === 'Escape') {
-            setDraft(numericDisplay(value));
-            setEdited(false);
-            setInvalid(false);
-            e.stopPropagation();
-          }
-        }}
+        value={value}
+        onCommit={(next) => (next === null ? false : onCommit(next))}
+        onCommitErrorChange={setInvalid}
       />
-    </Field>
+    </Form.Item>
   );
 }
 
-/** Reconciles committed text with undo while retaining active or rejected input drafts. */
+/** The UI package owns IME and commit timing; this adapter submits only accepted text changes. */
 export function TextField({
   label,
   value,
@@ -102,60 +44,29 @@ export function TextField({
   value: string;
   onCommit: (value: string) => boolean | void;
 }) {
-  const id = useId(),
-    ref = useRef<HTMLInputElement>(null),
-    [draft, setDraft] = useState(value),
-    [invalid, setInvalid] = useState(false),
-    [edited, setEdited] = useState(false);
-  useEffect(() => {
-    if (document.activeElement !== ref.current) {
-      setDraft(value);
-      setInvalid(false);
-      setEdited(false);
-    }
-  }, [value]);
-  const commit = () => {
-    if (!edited) {
-      setDraft(value);
-      setInvalid(false);
-      return;
-    }
-    const rejected = draft !== value && onCommit(draft) === false;
-    setInvalid(rejected);
-    if (!rejected) {
-      setEdited(false);
-    }
-  };
+  const [invalid, setInvalid] = useState(false);
+  const language = useOptionalLanguage();
   return (
-    <Field data-invalid={invalid}>
-      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+    <Form.Item
+      label={label}
+      announceError={false}
+      error={
+        invalid
+          ? (language?.t('inputInvalid') ?? 'Enter a valid value and confirm again.')
+          : undefined
+      }
+    >
       <Input
-        ref={ref}
-        id={id}
-        value={draft}
         aria-invalid={invalid}
-        data-escape-handled="true"
-        onChange={(event) => {
-          setDraft(event.target.value);
-          setEdited(true);
-          setInvalid(false);
-        }}
-        onBlur={commit}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            commit();
-          } else if (event.key === 'Escape') {
-            setDraft(value);
-            setEdited(false);
-            setInvalid(false);
-            event.stopPropagation();
-          }
-        }}
+        value={value}
+        onCommit={onCommit}
+        onCommitErrorChange={setInvalid}
       />
-    </Field>
+    </Form.Item>
   );
 }
+
+/** Presents one complete selector without repeating primitive composition in each inspector field. */
 export function Choice({
   label,
   value,
@@ -167,24 +78,18 @@ export function Choice({
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
 }) {
-  const id = useId();
   return (
-    <Field>
-      <FieldLabel htmlFor={id}>{label}</FieldLabel>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger id={id} aria-label={label}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {options.map((o) => (
-              <SelectItem value={o.value} key={o.value}>
-                {o.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </Field>
+    <Form.Item label={label}>
+      <Select
+        aria-label={label}
+        value={value}
+        options={options}
+        onValueChange={(next) => {
+          if (next !== undefined) {
+            onChange(next);
+          }
+        }}
+      />
+    </Form.Item>
   );
 }

@@ -1,13 +1,5 @@
 import { Focus, Move, Rotate3d } from 'lucide-react';
-import {
-  Button,
-  Toggle,
-  ToggleGroup,
-  ToggleGroupItem,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@building/ui';
+import { Button, Checkbox, Toggle, ToggleGroup, Tooltip } from '@building/ui';
 import { useEditor, useDocument, useSession, useSignal } from '../app/services';
 import { Choice, Numeric } from './fields';
 import { RenderControls } from './RenderControls';
@@ -32,12 +24,12 @@ export function ToolOptions({
     <div className="viewport-toolbar">
       <div className="camera-tools">
         <Button
+          icon={Focus}
           size="sm"
           variant="outline"
           onClick={() => runtimeRef.current?.focus('selected')}
           disabled={!s.selectedId}
         >
-          <Focus data-icon="inline-start" />
           {t('focus')}
         </Button>
         <Button size="sm" variant="outline" onClick={() => runtimeRef.current?.focus('level')}>
@@ -51,56 +43,47 @@ export function ToolOptions({
         </Button>
       </div>
       <RenderControls open={renderOpen} onOpenChange={onRenderOpenChange} />
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span className="inline-flex">
-            <Toggle
-              size="sm"
-              variant="outline"
-              pressed={s.snap.enabled}
-              aria-label={t('snap')}
-              aria-pressed={s.snap.enabled}
-              disabled={s.wholeBuildingPreview || rendering.mode === 'pathtrace'}
-              onPressedChange={(enabled) => session.set({ snap: { ...s.snap, enabled } })}
-            >
-              {s.snap.enabled ? t('snapOn') : t('snapOff')}
-            </Toggle>
-          </span>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" sideOffset={6}>
-          {s.snap.enabled ? t('snapOn') : t('snapOff')} · {t('snapHint')}
-        </TooltipContent>
+      <Tooltip
+        content={
+          s.snap.enabled
+            ? t('snapOn') + ' · ' + t('snapHint')
+            : t('snapOff') + ' · ' + t('snapHint')
+        }
+        side="bottom"
+      >
+        <Toggle
+          size="sm"
+          variant="outline"
+          pressed={s.snap.enabled}
+          label={t('snap')}
+          aria-pressed={s.snap.enabled}
+          disabled={s.wholeBuildingPreview || rendering.mode === 'pathtrace'}
+          onPressedChange={(enabled) => session.set({ snap: { ...s.snap, enabled } })}
+        >
+          {s.snap.enabled ? t('snapOn') : t('snapOff')}
+        </Toggle>
       </Tooltip>
       <ToggleGroup
-        type="single"
         value={mode}
         onValueChange={(v) => {
           if (v) {
             camera.set(v as typeof mode);
           }
         }}
-        aria-label={t('edit')}
+        label={t('edit')}
         size="sm"
         variant="outline"
-      >
-        <ToggleGroupItem value="edit">{t('edit')}</ToggleGroupItem>
-        <ToggleGroupItem value="rotate">
-          <Rotate3d />
-          {t('rotate')}
-        </ToggleGroupItem>
-        <ToggleGroupItem value="pan">
-          <Move />
-          {t('pan')}
-        </ToggleGroupItem>
-      </ToggleGroup>
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={s.wholeBuildingPreview}
-          onChange={(e) => session.set({ wholeBuildingPreview: e.target.checked })}
-        />
-        {t('preview')}
-      </label>
+        options={[
+          { value: 'edit', label: t('edit') },
+          { value: 'rotate', label: t('rotate'), icon: Rotate3d },
+          { value: 'pan', label: t('pan'), icon: Move },
+        ]}
+      />
+      <Checkbox
+        label={t('preview')}
+        checked={s.wholeBuildingPreview}
+        onCheckedChange={(checked) => session.set({ wholeBuildingPreview: checked })}
+      />
       {s.tool === 'slab' && (
         <div className="slab-options">
           <Choice

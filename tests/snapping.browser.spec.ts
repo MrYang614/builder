@@ -178,7 +178,7 @@ test('separate wall strokes join exactly; finite lines, incremental scene edits,
   await moveWorld(page, edited.end.x + 0.04, edited.end.z + 0.04, floor.elevation);
   expect((await diagnostics(page)).snap.result?.objectId).toBeUndefined();
   expect((await diagnostics(page)).snap.result?.levelId).toBe(floor.id);
-  await page.locator('.floor-item').first().click();
+  await page.locator('.floor-list button').first().click();
   await page.getByRole('button', { name: '俯视', exact: true }).click();
   await moveWorld(page, edited.end.x + 0.04, edited.end.z + 0.04);
   expect((await diagnostics(page)).snap.result?.point).toEqual(edited.end);

@@ -1,191 +1,223 @@
-import * as React from 'react';
-import { cn } from '@building/ui/lib/utils';
-import { XIcon } from 'lucide-react';
-import { Dialog as DialogPrimitive } from 'radix-ui';
-
-import { Button } from '@building/ui/components/button';
-
-type CloseControl =
-  | { showCloseButton?: false; closeLabel?: never }
-  | { showCloseButton: true; closeLabel: string };
-
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
-}
-
-function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
-}
-
-function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
-}
-
-function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
-}
-
-function DialogOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return (
-    <DialogPrimitive.Overlay
-      data-slot="dialog-overlay"
-      className={cn(
-        'fixed inset-0 z-50 bg-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-function DialogContent({
-  className,
-  children,
-  showCloseButton = false,
-  closeLabel,
-  onOpenAutoFocus,
-  onCloseAutoFocus,
-  onFocusCapture,
-  onEscapeKeyDown,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & CloseControl) {
-  const previousFocus = React.useRef<HTMLElement | null>(null);
-  return (
-    <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
-      <DialogPrimitive.Content
-        data-slot="dialog-content"
-        className={cn(
-          'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg shadow-shadow transition-[opacity,transform] duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 sm:max-w-lg',
-          className,
-        )}
-        {...props}
-        onFocusCapture={(event) => {
-          onFocusCapture?.(event);
-          const focused = event.target;
-          if (
-            !event.defaultPrevented &&
-            focused instanceof HTMLElement &&
-            event.currentTarget.contains(focused)
-          ) {
-            const bounds = focused.getBoundingClientRect();
-            const viewport = event.currentTarget.getBoundingClientRect();
-            // Radix wraps focus with preventScroll. Reveal the focused control in
-            // scrollable dialogs without replacing its focus trap or tab order.
-            if (bounds.top < viewport.top || bounds.bottom > viewport.bottom) {
-              focused.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
-            }
-          }
-        }}
-        onEscapeKeyDown={(event) => {
-          onEscapeKeyDown?.(event);
-          // Draft editors consume Escape at the target; Radix observes it earlier
-          // at document capture. Prevent only dismissal, so the editor still receives it.
-          if (
-            !event.defaultPrevented &&
-            event.target instanceof Element &&
-            event.target.closest('[data-escape-handled="true"]')
-          ) {
-            event.preventDefault();
-          }
-        }}
-        onOpenAutoFocus={(event) => {
-          previousFocus.current =
-            document.activeElement instanceof HTMLElement ? document.activeElement : null;
-          onOpenAutoFocus?.(event);
-        }}
-        onCloseAutoFocus={(event) => {
-          onCloseAutoFocus?.(event);
-          // Controlled dialogs may have no Radix Trigger. Keep the real opener for restoration.
-          if (!event.defaultPrevented && previousFocus.current?.isConnected) {
-            event.preventDefault();
-            previousFocus.current.focus({ preventScroll: true });
-          }
-        }}
-      >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-          >
-            <XIcon />
-            <span className="sr-only">{closeLabel}</span>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </DialogPortal>
-  );
-}
-
-function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="dialog-header"
-      className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
-      {...props}
-    />
-  );
-}
-
-function DialogFooter({
-  className,
-  showCloseButton = false,
-  closeLabel,
-  children,
-  ...props
-}: React.ComponentProps<'div'> & CloseControl) {
-  return (
-    <div
-      data-slot="dialog-footer"
-      className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
-      {...props}
-    >
-      {children}
-      {showCloseButton && (
-        <DialogPrimitive.Close asChild>
-          <Button variant="outline">{closeLabel}</Button>
-        </DialogPrimitive.Close>
-      )}
-    </div>
-  );
-}
-
-function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      data-slot="dialog-title"
-      className={cn('text-lg leading-none font-semibold', className)}
-      {...props}
-    />
-  );
-}
-
-function DialogDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
-  return (
-    <DialogPrimitive.Description
-      data-slot="dialog-description"
-      className={cn('text-sm text-muted-foreground', className)}
-      {...props}
-    />
-  );
-}
-
-export {
-  Dialog,
-  DialogClose,
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ReactElement,
+  type ReactNode,
+  type RefObject,
+  type Ref,
+} from 'react';
+import {
+  Dialog as DialogPrimitive,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
-};
+} from '../primitives/dialog';
+import { cn } from '../lib/utils';
+import { Button } from './button';
+import { Alert } from './alert';
+import type { ComponentSize } from './component-types';
+
+export interface DialogProps {
+  title: ReactNode;
+  description?: ReactNode;
+  children?: ReactNode;
+  footer?: ReactNode;
+  trigger?: ReactElement;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  size?: ComponentSize;
+  dismissible?: boolean;
+  closeLabel?: string;
+  showCloseButton?: boolean;
+  initialFocusRef?: RefObject<HTMLElement | null>;
+  role?: 'dialog' | 'alertdialog';
+  ref?: Ref<HTMLDivElement>;
+}
+
+/** The primitive preserves draft Escape handling, the focus trap, scroll visibility and opener restoration. */
+export function Dialog({
+  title,
+  description,
+  children,
+  footer,
+  trigger,
+  size = 'md',
+  dismissible = true,
+  closeLabel = 'Close',
+  showCloseButton = true,
+  initialFocusRef,
+  role = 'dialog',
+  ref,
+  ...props
+}: DialogProps) {
+  return (
+    <DialogPrimitive {...props}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      <DialogContent
+        ref={ref}
+        role={role}
+        {...(description ? {} : { 'aria-describedby': undefined })}
+        {...(showCloseButton && dismissible
+          ? { showCloseButton: true, closeLabel }
+          : { showCloseButton: false })}
+        className={cn(
+          'max-h-[calc(100dvh-2rem)] overflow-y-auto',
+          size === 'sm' ? 'sm:max-w-sm' : size === 'lg' ? 'sm:max-w-3xl' : 'sm:max-w-xl',
+        )}
+        onEscapeKeyDown={(event) => {
+          if (!dismissible) {
+            event.preventDefault();
+          }
+        }}
+        onPointerDownOutside={(event) => {
+          if (!dismissible) {
+            event.preventDefault();
+          }
+        }}
+        onOpenAutoFocus={(event) => {
+          if (initialFocusRef?.current) {
+            event.preventDefault();
+            initialFocusRef.current.focus();
+          }
+        }}
+      >
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          {description && <DialogDescription>{description}</DialogDescription>}
+        </DialogHeader>
+        {children}
+        {footer && <DialogFooter>{footer}</DialogFooter>}
+      </DialogContent>
+    </DialogPrimitive>
+  );
+}
+
+export interface ConfirmDialogProps extends Omit<
+  DialogProps,
+  'footer' | 'dismissible' | 'role' | 'initialFocusRef'
+> {
+  confirmLabel: string;
+  cancelLabel: string;
+  onConfirm: () => void | Promise<void>;
+  onCancel?: () => void;
+  destructive?: boolean;
+  loading?: boolean;
+  confirmErrorLabel?: string;
+}
+
+/** Async confirmation closes only after success; stale completion cannot update a replaced or unmounted dialog. */
+export function ConfirmDialog({
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  confirmLabel,
+  cancelLabel,
+  onConfirm,
+  onCancel,
+  destructive = false,
+  loading = false,
+  confirmErrorLabel = 'The action failed. Please try again.',
+  children,
+  ...props
+}: ConfirmDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string>();
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const generation = useRef(0);
+  const busy = useRef(false);
+  const isOpen = open ?? internalOpen;
+  const [previousOpen, setPreviousOpen] = useState(isOpen);
+  // An externally closed/reopened confirmation starts a fresh request state.
+  // This guarded render adjustment avoids showing a stale pending action for one frame.
+  if (previousOpen !== isOpen) {
+    setPreviousOpen(isOpen);
+    setPending(false);
+    setError(undefined);
+  }
+  useEffect(() => {
+    if (!isOpen) {
+      generation.current += 1;
+      busy.current = false;
+    }
+  }, [isOpen]);
+  useEffect(
+    () => () => {
+      generation.current += 1;
+    },
+    [],
+  );
+  function changeOpen(next: boolean) {
+    setInternalOpen(next);
+    setError(undefined);
+    onOpenChange?.(next);
+    if (!next) {
+      onCancel?.();
+    }
+  }
+  async function confirm() {
+    if (busy.current || loading) {
+      return;
+    }
+    busy.current = true;
+    const current = ++generation.current;
+    setPending(true);
+    setError(undefined);
+    try {
+      await onConfirm();
+      if (current === generation.current) {
+        setInternalOpen(false);
+        onOpenChange?.(false);
+      }
+    } catch (failure) {
+      if (current === generation.current) {
+        setError(failure instanceof Error ? failure.message : confirmErrorLabel);
+      }
+    } finally {
+      if (current === generation.current) {
+        busy.current = false;
+        setPending(false);
+      }
+    }
+  }
+  return (
+    <Dialog
+      {...props}
+      open={isOpen}
+      onOpenChange={changeOpen}
+      role="alertdialog"
+      initialFocusRef={cancelRef}
+      dismissible={!pending && !loading}
+      showCloseButton={false}
+      footer={
+        <>
+          <Button
+            ref={cancelRef}
+            variant="outline"
+            disabled={pending || loading}
+            onClick={() => changeOpen(false)}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            variant={destructive ? 'destructive' : 'default'}
+            loading={pending || loading}
+            onClick={() => {
+              void confirm();
+            }}
+          >
+            {confirmLabel}
+          </Button>
+        </>
+      }
+    >
+      {children}
+      {error && <Alert variant="destructive" description={error} />}
+    </Dialog>
+  );
+}

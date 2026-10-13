@@ -1,61 +1,153 @@
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@building/ui/lib/utils';
-import { Slot } from 'radix-ui';
+import type { ComponentProps, ReactNode } from 'react';
+import { LoaderCircle } from 'lucide-react';
+import { Button as ButtonPrimitive } from '../primitives/button';
+import { cn } from '../lib/utils';
+import { Tooltip } from './tooltip';
+import {
+  renderIcon,
+  type ComponentIcon,
+  type ComponentSize,
+  type ComponentWidth,
+} from './component-types';
 
-const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40',
-        outline:
-          'border bg-background shadow-xs shadow-shadow hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-        'icon-xs': "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
-        'icon-sm': 'size-8',
-        'icon-lg': 'size-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-);
+export type ButtonVariant =
+  | 'default'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'destructive'
+  | 'link'
+  | 'danger-ghost';
+export type ButtonProps = Omit<ComponentProps<'button'>, 'className' | 'style'> & {
+  variant?: ButtonVariant;
+  size?: ComponentSize;
+  width?: ComponentWidth;
+  alignment?: 'start' | 'center' | 'between';
+  wrap?: boolean;
+  icon?: ComponentIcon;
+  suffix?: ReactNode;
+  loading?: boolean;
+  loadingLabel?: string;
+};
 
-function Button({
-  className,
+const sizes = { sm: 'sm', md: 'default', lg: 'lg' } as const;
+
+/** Loading keeps the action's accessible name and blocks repeat submission at the native button. */
+function ButtonRoot({
   variant = 'default',
-  size = 'default',
-  asChild = false,
+  size = 'md',
+  width = 'auto',
+  alignment = 'center',
+  wrap = false,
+  icon,
+  suffix,
+  loading = false,
+  loadingLabel,
+  disabled,
+  children,
+  type = 'button',
   ...props
-}: React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
-  const Comp = asChild ? Slot.Root : 'button';
-
+}: ButtonProps) {
   return (
-    <Comp
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+    <ButtonPrimitive
       {...props}
-    />
+      type={type}
+      variant={variant === 'danger-ghost' ? 'ghost' : variant}
+      size={sizes[size]}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      className={cn(
+        width === 'full' && 'w-full',
+        alignment === 'start' && 'justify-start',
+        alignment === 'between' && 'justify-between',
+        variant === 'danger-ghost' && 'hover:bg-destructive hover:text-destructive-foreground',
+        wrap && 'h-auto whitespace-normal text-left',
+        wrap && (size === 'sm' ? 'min-h-8' : size === 'lg' ? 'min-h-10' : 'min-h-9'),
+      )}
+    >
+      {loading ? (
+        <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+      ) : icon ? (
+        renderIcon(icon)
+      ) : null}
+      {loading && loadingLabel ? loadingLabel : children}
+      {suffix && <span className="ml-auto text-xs text-current opacity-80">{suffix}</span>}
+    </ButtonPrimitive>
   );
 }
 
-export { Button, buttonVariants };
+export type IconButtonProps = Omit<
+  ButtonProps,
+  'children' | 'aria-label' | 'width' | 'alignment' | 'suffix' | 'wrap'
+> & {
+  label: string;
+  icon: ComponentIcon;
+  tooltip?: boolean | string;
+};
+
+/** A disabled icon action still exposes its hint, while its native control retains the name. */
+function ButtonIcon({
+  label,
+  icon,
+  tooltip = true,
+  variant = 'ghost',
+  size = 'md',
+  loading = false,
+  loadingLabel,
+  disabled,
+  type = 'button',
+  ...props
+}: IconButtonProps) {
+  const button = (
+    <ButtonPrimitive
+      {...props}
+      type={type}
+      aria-label={loading && loadingLabel ? loadingLabel : label}
+      aria-busy={loading || undefined}
+      variant={variant === 'danger-ghost' ? 'ghost' : variant}
+      size={size === 'sm' ? 'icon-sm' : size === 'lg' ? 'icon-lg' : 'icon'}
+      disabled={disabled || loading}
+      className={
+        variant === 'danger-ghost'
+          ? 'hover:bg-destructive hover:text-destructive-foreground'
+          : undefined
+      }
+    >
+      {loading ? (
+        <LoaderCircle aria-hidden="true" className="motion-safe:animate-spin" />
+      ) : icon ? (
+        renderIcon(icon)
+      ) : null}
+    </ButtonPrimitive>
+  );
+  return tooltip ? (
+    <Tooltip content={typeof tooltip === 'string' ? tooltip : label} side="bottom">
+      <span className="inline-flex shrink-0">{button}</span>
+    </Tooltip>
+  ) : (
+    button
+  );
+}
+
+export interface ButtonGroupProps {
+  label?: string;
+  orientation?: 'horizontal' | 'vertical';
+  children: ReactNode;
+}
+
+function ButtonGroup({ label, orientation = 'horizontal', children }: ButtonGroupProps) {
+  return (
+    <fieldset
+      data-slot="button-group"
+      aria-label={label}
+      className={cn(
+        'm-0 inline-flex min-w-0 gap-1 border-0 p-0',
+        orientation === 'vertical' ? 'flex-col' : 'flex-wrap items-center',
+      )}
+    >
+      {children}
+    </fieldset>
+  );
+}
+
+export const Button = Object.assign(ButtonRoot, { Icon: ButtonIcon, Group: ButtonGroup });

@@ -1,55 +1,82 @@
-import * as React from 'react';
-import { cn } from '@building/ui/lib/utils';
-import { Slider as SliderPrimitive } from 'radix-ui';
+import type { ComponentProps } from 'react';
+import { Slider as Primitive } from '../primitives/slider';
+import { cn } from '../lib/utils';
+import { useFieldControl } from './form';
+import type { ComponentSize, ComponentWidth } from './component-types';
 
-function Slider({
-  className,
-  defaultValue,
-  value,
+export type SliderProps = Omit<
+  ComponentProps<typeof Primitive>,
+  'className' | 'style' | 'asChild' | 'thumbLabels' | 'controlId'
+> & {
+  size?: ComponentSize;
+  width?: ComponentWidth;
+  label?: string;
+  thumbLabels?: readonly string[];
+};
+
+/** Readonly sliders retain focus and announce values while pointer and adjustment keys cannot edit them. */
+export function Slider({
+  size = 'md',
+  width = 'full',
+  label,
+  thumbLabels,
+  readOnly = false,
+  id,
+  disabled,
   min = 0,
-  max = 100,
+  defaultValue,
+  onValueChange,
+  onValueCommit,
+  onKeyDownCapture,
+  onPointerDownCapture,
   ...props
-}: React.ComponentProps<typeof SliderPrimitive.Root>) {
-  const _values = React.useMemo(
-    () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max]),
-    [value, defaultValue, min, max],
-  );
-
+}: SliderProps) {
+  const field = useFieldControl();
   return (
-    <SliderPrimitive.Root
-      data-slot="slider"
-      defaultValue={defaultValue}
-      value={value}
-      min={min}
-      max={max}
-      className={cn(
-        'relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col',
-        className,
-      )}
+    <Primitive
       {...props}
-    >
-      <SliderPrimitive.Track
-        data-slot="slider-track"
-        className={cn(
-          'relative grow overflow-hidden rounded-full bg-muted data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5',
-        )}
-      >
-        <SliderPrimitive.Range
-          data-slot="slider-range"
-          className={cn(
-            'absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full',
-          )}
-        />
-      </SliderPrimitive.Track>
-      {Array.from({ length: _values.length }, (_, index) => (
-        <SliderPrimitive.Thumb
-          data-slot="slider-thumb"
-          key={index}
-          className="block size-4 shrink-0 rounded-full border border-primary bg-background shadow-sm shadow-shadow ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
-        />
-      ))}
-    </SliderPrimitive.Root>
+      min={min}
+      defaultValue={defaultValue ?? [min]}
+      controlId={id ?? field.id}
+      aria-describedby={props['aria-describedby'] ?? field.describedBy}
+      aria-invalid={props['aria-invalid'] ?? field.invalid}
+      readOnly={readOnly}
+      thumbLabels={thumbLabels ?? (label ? [label] : undefined)}
+      disabled={Boolean(disabled) || field.disabled}
+      onValueChange={readOnly ? undefined : onValueChange}
+      onValueCommit={readOnly ? undefined : onValueCommit}
+      className={cn(
+        width === 'auto' && 'w-48',
+        size === 'sm'
+          ? '[&_[data-slot=slider-thumb]]:size-3 [&_[data-slot=slider-track]]:h-1'
+          : size === 'lg'
+            ? '[&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-track]]:h-2'
+            : undefined,
+      )}
+      onPointerDownCapture={(event) => {
+        onPointerDownCapture?.(event);
+        if (readOnly) {
+          event.preventDefault();
+        }
+      }}
+      onKeyDownCapture={(event) => {
+        onKeyDownCapture?.(event);
+        if (
+          readOnly &&
+          [
+            'ArrowUp',
+            'ArrowDown',
+            'ArrowLeft',
+            'ArrowRight',
+            'Home',
+            'End',
+            'PageUp',
+            'PageDown',
+          ].includes(event.key)
+        ) {
+          event.preventDefault();
+        }
+      }}
+    />
   );
 }
-
-export { Slider };

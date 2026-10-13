@@ -1,0 +1,7 @@
+{
+  "title": "Project settings / 项目设置",
+  "description": "Edit project preferences.",
+  "size": "md",
+  "dismissible": true,
+  "closeLabel": "Close dialog"
+}

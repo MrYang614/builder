@@ -1,15 +1,6 @@
-import { useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useSyncExternalStore } from 'react';
 import { Cpu, Languages, Moon, Sun } from 'lucide-react';
-import {
-  Button,
-  Select,
-  SelectContent,
-  SelectIconTrigger,
-  SelectItem,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@building/ui';
+import { Button, Select } from '@building/ui';
 import { useTheme } from '@building/ui/theme';
 import { useEditor, useSignal } from '../app/services';
 import { useLanguage } from './i18n';
@@ -20,36 +11,32 @@ function HeaderChoice({
   options,
   onChange,
   disabled,
-  children,
+  icon,
 }: {
   label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
   disabled?: boolean;
-  children: ReactNode;
+  icon: typeof Languages;
 }) {
   const selectedLabel = options.find((option) => option.value === value)?.label;
-  const [selectOpen, setSelectOpen] = useState(false);
-  const [tooltipOpen, setTooltipOpen] = useState(false);
   return (
-    <Select value={value} onValueChange={onChange} onOpenChange={setSelectOpen} disabled={disabled}>
-      <Tooltip open={!selectOpen && tooltipOpen} onOpenChange={setTooltipOpen}>
-        <TooltipTrigger asChild>
-          <SelectIconTrigger aria-label={label}>{children}</SelectIconTrigger>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" sideOffset={6}>
-          {label}: {selectedLabel}
-        </TooltipContent>
-      </Tooltip>
-      <SelectContent position="popper" align="end">
-        {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Select
+      value={value}
+      options={options}
+      onValueChange={(next) => {
+        if (next !== undefined) {
+          onChange(next);
+        }
+      }}
+      disabled={disabled}
+      appearance="icon"
+      icon={icon}
+      aria-label={label}
+      tooltip={label + ': ' + selectedLabel}
+      width="auto"
+    />
   );
 }
 
@@ -91,36 +78,28 @@ export function HeaderPreferences() {
   };
   return (
     <div className="header-preferences">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label={t('appearance')}
-            aria-description={t(mode)}
-            aria-pressed={mode === 'dark'}
-            onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
-          >
-            <ThemeIcon aria-hidden="true" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" sideOffset={6}>
-          {t('appearance')}: {t(mode)}
-        </TooltipContent>
-      </Tooltip>
+      <Button.Icon
+        variant="ghost"
+        label={t('appearance')}
+        icon={ThemeIcon}
+        tooltip={t('appearance') + ': ' + t(mode)}
+        aria-description={t(mode)}
+        aria-pressed={mode === 'dark'}
+        onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
+      />
       <HeaderChoice
         label={t('language')}
+        icon={Languages}
         value={language}
         options={[
           { value: 'en', label: t('english') },
           { value: 'zh-CN', label: t('chinese') },
         ]}
         onChange={(value) => setLanguage(value as typeof language)}
-      >
-        <Languages aria-hidden="true" />
-      </HeaderChoice>
+      />
       <HeaderChoice
         label={t('render.backend')}
+        icon={Cpu}
         value={backend}
         options={[
           ...['webgl', 'webgpu'].map((value) => ({ value, label: t(`render.${value}`) })),
@@ -135,9 +114,7 @@ export function HeaderPreferences() {
         ]}
         disabled={switching || busy}
         onChange={(value) => void changeBackend(value)}
-      >
-        <Cpu aria-hidden="true" />
-      </HeaderChoice>
+      />
     </div>
   );
 }

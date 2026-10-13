@@ -1,5 +1,5 @@
 import type { SnapMode } from '@building/editor-core';
-import { FieldGroup, FieldLegend, FieldSet } from '@building/ui';
+import { Form } from '@building/ui';
 import { useEditor, useSession } from '../app/services';
 import { Choice, Numeric } from './fields';
 import { useLanguage } from './i18n';
@@ -11,10 +11,9 @@ export function SnappingSettings() {
     { t } = useLanguage();
   const modes: Exclude<SnapMode, 'off'>[] = ['all', 'points', 'lines', 'grid'];
   return (
-    <FieldSet aria-label={t('snapSettings')}>
-      <FieldLegend>{t('snapSettings')}</FieldLegend>
+    <Form.Section title={t('snapSettings')}>
       <p className="render-hint">{t('snapHint')}</p>
-      <FieldGroup>
+      <Form.Group>
         <Choice
           label={t('snapMode')}
           value={snap.mode}
@@ -41,7 +40,7 @@ export function SnappingSettings() {
             session.set({ snap: { ...snap, gridSize: value } });
           }}
         />
-      </FieldGroup>
-    </FieldSet>
+      </Form.Group>
+    </Form.Section>
   );
 }

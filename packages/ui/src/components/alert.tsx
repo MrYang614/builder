@@ -1,59 +1,69 @@
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@building/ui/lib/utils';
+import type { ComponentProps, ReactNode } from 'react';
+import { CircleAlert, CircleCheck, Info, TriangleAlert, XIcon } from 'lucide-react';
+import { Alert as AlertPrimitive, AlertDescription, AlertTitle } from '../primitives/alert';
+import { cn } from '../lib/utils';
+import { Button } from './button';
+import { renderIcon, type ComponentIcon } from './component-types';
 
-const alertVariants = cva(
-  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
-  {
-    variants: {
-      variant: {
-        default: 'bg-card text-card-foreground',
-        destructive:
-          'bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-    },
-  },
-);
+export type AlertProps = Omit<ComponentProps<'div'>, 'className' | 'style' | 'title'> & {
+  variant?: 'default' | 'destructive' | 'success' | 'warning';
+  title?: ReactNode;
+  description?: ReactNode;
+  icon?: ComponentIcon | false;
+  action?: ReactNode;
+  onClose?: () => void;
+  closeLabel?: string;
+};
 
-function Alert({
-  className,
-  variant,
+/** Feedback is readable in either theme; the alert role is reserved for meaningful live messages. */
+export function Alert({
+  title,
+  description,
+  children,
+  variant = 'default',
+  icon,
+  action,
+  onClose,
+  closeLabel = 'Dismiss',
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
+}: AlertProps) {
+  const Icon =
+    variant === 'success'
+      ? CircleCheck
+      : variant === 'warning'
+        ? TriangleAlert
+        : variant === 'destructive'
+          ? CircleAlert
+          : Info;
   return (
-    <div
-      data-slot="alert"
-      role="alert"
-      className={cn(alertVariants({ variant }), className)}
+    <AlertPrimitive
       {...props}
-    />
-  );
-}
-
-function AlertTitle({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="alert-title"
-      className={cn('col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight', className)}
-      {...props}
-    />
-  );
-}
-
-function AlertDescription({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="alert-description"
+      variant={variant === 'destructive' ? 'destructive' : 'default'}
       className={cn(
-        'col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed',
-        className,
+        variant === 'success' && 'text-success [&_[data-slot=alert-description]]:text-foreground',
+        variant === 'warning' && 'text-warning [&_[data-slot=alert-description]]:text-foreground',
       )}
-      {...props}
-    />
+    >
+      {icon !== false && (icon ? renderIcon(icon) : <Icon aria-hidden="true" />)}
+      {title && <AlertTitle className="line-clamp-none pr-6">{title}</AlertTitle>}
+      {(description || children) && (
+        <AlertDescription>
+          {description}
+          {children}
+        </AlertDescription>
+      )}
+      {action && <div className="col-start-2 mt-2">{action}</div>}
+      {onClose && (
+        <div className="absolute right-2 top-2">
+          <Button.Icon
+            label={closeLabel}
+            icon={XIcon}
+            tooltip={false}
+            size="sm"
+            onClick={onClose}
+          />
+        </div>
+      )}
+    </AlertPrimitive>
   );
 }
-
-export { Alert, AlertTitle, AlertDescription };

@@ -1,0 +1,13 @@
+{
+  "size": "md",
+  "width": "full",
+  "defaultValue": "一段说明\nA longer description that wraps in a narrow panel.",
+  "autoSize": {
+    "minRows": 3,
+    "maxRows": 8
+  },
+  "showCount": true,
+  "maxLength": 500,
+  "disabled": false,
+  "readOnly": false
+}

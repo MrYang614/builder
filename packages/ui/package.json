@@ -9,6 +9,8 @@
     "./theme": "./src/theme/index.tsx",
     "./styles.css": "./src/styles/index.css",
     "./components/*": "./src/components/*.tsx",
+    "./primitives": "./src/primitives/index.ts",
+    "./primitives/*": "./src/primitives/*.tsx",
     "./lib/utils": "./src/lib/utils.ts"
   },
   "dependencies": {

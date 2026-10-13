@@ -27,6 +27,18 @@ npm run tauri -- build --bundles nsis
 
 Windows NSIS 输出在 `apps/desktop/src-tauri/target/release/bundle/nsis/`，独立 exe 在 `apps/desktop/src-tauri/target/release/builder.exe`。最新双主题与1600×900窗口产物的文件名、字节与SHA256见 [最新产物记录](docs/theme-toggle-validation.json)，[WebGPU修复产物](docs/webgpu-fix-release-artifacts.json)和[上一轮渲染产物](docs/rendering-release-artifacts.json)保留为历史记录。当前未进行系统安装及签名验证；生产包不能称为已安装测试。macOS 在本机 Xcode 工具就绪后执行 `npm ci`、`npm run tauri -- build --bundles app,dmg`，实际系统版本与 CPU 架构待 Q5 确认，步骤不代表已经通过。
 
+## 基础 UI 与 Storybook
+
+`@building/ui` 提供完整、严格类型的组件家族；正式编辑器与独立 Storybook 使用同一实现。组件覆盖、旧调用迁移和使用方式见 [UI 组件体系](docs/UI-COMPONENTS.md)，新增示例与浏览器编译规则见 [Storybook README](apps/storybook/README.md)。
+
+```powershell
+npm run storybook          # http://127.0.0.1:6006
+npm run build:storybook    # apps/storybook/dist
+npm run test:storybook     # 独占 6007 的浏览器验证
+```
+
+TSX、JSON 和 Controls 支持当前页面内的临时预览，不写回文件或保存草稿；刷新、离开示例或重置恢复仓库基线。本地组件／示例／配置修改通过 HMR 更新，现有浏览器草稿保留，重置载入最新基线。重装依赖前也需停止自己启动的 Storybook 进程，避免原生 CSS 模块被占用。
+
 ## 常用操作
 
 1. 选择墙体，点击起点与终点，可继续连接；Esc 结束草稿。选择楼板，点击两个对角点。

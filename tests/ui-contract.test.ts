@@ -417,11 +417,20 @@ describe('actual production stylesheet build', () => {
   const output = path.join(artifactBase, `ui-contract-${process.pid}-${Date.now()}`);
   let styles = '',
     html = '';
+  const modules: string[] = [];
   beforeAll(async () => {
     mkdirSync(artifactBase, { recursive: true });
     await build({
       configFile: path.join(workspace, 'apps/desktop/vite.config.ts'),
       logLevel: 'silent',
+      plugins: [
+        {
+          name: 'record-production-dependency-boundary',
+          generateBundle() {
+            modules.push(...this.getModuleIds());
+          },
+        },
+      ],
       build: { outDir: output, emptyOutDir: true },
     });
     html = readFileSync(path.join(output, 'index.html'), 'utf8');
@@ -465,5 +474,15 @@ describe('actual production stylesheet build', () => {
     expect(html).not.toContain('prefers-color-scheme');
     expect(html.indexOf('building-theme')).toBeLessThan(html.indexOf('type="module"'));
     expect(html).not.toMatch(/<iframe|\/src\/main\.tsx/);
+  });
+  it('keeps development-only Storybook and TSX compiler modules outside the actual editor build', () => {
+    expect(modules.length).toBeGreaterThan(100);
+    expect(
+      modules.filter((module) =>
+        /(?:apps\/storybook|node_modules\/(?:@storybook|storybook|sucrase))/.test(
+          module.replaceAll('\\', '/'),
+        ),
+      ),
+    ).toEqual([]);
   });
 });

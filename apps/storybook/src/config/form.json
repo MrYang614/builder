@@ -1,0 +1,7 @@
+{
+  "label": "Project name / 项目名称",
+  "help": "A shared label and help message.",
+  "required": true,
+  "disabled": false,
+  "orientation": "vertical"
+}

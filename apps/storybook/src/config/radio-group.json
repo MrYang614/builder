@@ -1,0 +1,21 @@
+{
+  "size": "md",
+  "disabled": false,
+  "readOnly": false,
+  "orientation": "vertical",
+  "options": [
+    {
+      "value": "front",
+      "label": "Front / 正面"
+    },
+    {
+      "value": "side",
+      "label": "Side / 侧面"
+    },
+    {
+      "value": "locked",
+      "label": "Disabled / 不可用",
+      "disabled": true
+    }
+  ]
+}

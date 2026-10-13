@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react';
-import { Button, FieldGroup, Tooltip, TooltipContent, TooltipTrigger } from '@building/ui';
+import { Button, Form } from '@building/ui';
 import { createId, type Command } from '@building/editor-core';
 import { useEditor, useDocument, useSession } from '../app/services';
 import { deletionContents } from '../app/deletion';
@@ -44,27 +44,23 @@ export function Floors() {
     <aside className="floors" aria-label={t('levels')}>
       <div className="panel-heading">
         <h2>{t('levels')}</h2>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              aria-label={t('addLevel')}
-              onClick={add}
-              disabled={s.wholeBuildingPreview}
-            >
-              <Plus />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>{t('addLevel')}</TooltipContent>
-        </Tooltip>
+        <Button.Icon
+          size="sm"
+          variant="ghost"
+          label={t('addLevel')}
+          icon={Plus}
+          onClick={add}
+          disabled={s.wholeBuildingPreview}
+        />
       </div>
       <div className="floor-list">
         {doc.levels.map((l) => (
           <Button
             key={l.id}
             variant={l.id === level.id ? 'secondary' : 'ghost'}
-            className="floor-item"
+            width="full"
+            alignment="between"
+            suffix={l.elevation.toFixed(2) + ' m'}
             onClick={() => {
               session.set({
                 currentLevelId: l.id,
@@ -73,13 +69,12 @@ export function Floors() {
               });
             }}
           >
-            <span>{l.name}</span>
-            <span className="muted">{l.elevation.toFixed(2)} m</span>
+            {l.name}
           </Button>
         ))}
       </div>
       <section className="level-fields" key={level.id}>
-        <FieldGroup>
+        <Form.Group>
           <TextField
             label={t('name')}
             value={level.name}
@@ -105,7 +100,7 @@ export function Floors() {
           >
             {t('deleteLevel')}
           </Button>
-        </FieldGroup>
+        </Form.Group>
       </section>
       <section className="object-list">
         <h3>{t('objects')}</h3>
@@ -115,7 +110,8 @@ export function Floors() {
             key={o.id}
             size="sm"
             variant={s.selectedId === o.id ? 'secondary' : 'ghost'}
-            className="object-item"
+            width="full"
+            alignment="start"
             onClick={() => session.set({ selectedId: o.id, selectedSurface: undefined })}
           >
             {t(

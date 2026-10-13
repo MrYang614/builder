@@ -1,0 +1,8 @@
+{
+  "label": "Save / 保存",
+  "size": "md",
+  "variant": "ghost",
+  "tooltip": true,
+  "loading": false,
+  "disabled": false
+}

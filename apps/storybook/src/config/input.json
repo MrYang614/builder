@@ -1,0 +1,9 @@
+{
+  "size": "md",
+  "width": "full",
+  "defaultValue": "庭院 Courtyard",
+  "placeholder": "Name / 名称",
+  "allowClear": true,
+  "disabled": false,
+  "readOnly": false
+}

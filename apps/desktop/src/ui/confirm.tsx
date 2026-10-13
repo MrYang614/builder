@@ -1,12 +1,5 @@
 import { createContext, use, useEffect, useRef, useState, type ReactNode } from 'react';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@building/ui';
+import { Button, Dialog } from '@building/ui';
 import { useLanguage } from './i18n';
 type Result = 'save' | 'discard' | 'confirm' | 'cancel';
 type Pending = {
@@ -50,16 +43,17 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
       {children}
       <Dialog
         open={!!pending}
+        title={t(pending?.save ? 'unsaved' : 'confirm')}
+        description={t(pending?.message ?? 'confirm', pending?.params)}
+        closeLabel={t('cancel')}
+        showCloseButton={false}
         onOpenChange={(open) => {
           if (!open) {
             finish('cancel');
           }
         }}
-      >
-        <DialogContent showCloseButton={false}>
-          <DialogTitle>{t(pending?.save ? 'unsaved' : 'confirm')}</DialogTitle>
-          <DialogDescription>{t(pending?.message ?? 'confirm', pending?.params)}</DialogDescription>
-          <DialogFooter>
+        footer={
+          <>
             <Button variant="outline" onClick={() => finish('cancel')}>
               {t('cancel')}
             </Button>
@@ -75,9 +69,9 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
                 {t('delete')}
               </Button>
             )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      />
     </Context>
   );
 }

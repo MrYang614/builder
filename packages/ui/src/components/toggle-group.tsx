@@ -1,80 +1,97 @@
-import * as React from 'react';
-import { type VariantProps } from 'class-variance-authority';
-import { cn } from '@building/ui/lib/utils';
-import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
+import { ToggleGroup as Primitive, ToggleGroupItem } from '../primitives/toggle-group';
+import {
+  renderIcon,
+  type ComponentIcon,
+  type ComponentSize,
+  type ComponentWidth,
+} from './component-types';
+import { Tooltip } from './tooltip';
 
-import { toggleVariants } from '@building/ui/components/toggle';
-
-const ToggleGroupContext = React.createContext<
-  VariantProps<typeof toggleVariants> & {
-    spacing?: number;
-  }
->({
-  size: 'default',
-  variant: 'default',
-  spacing: 0,
-});
-
-function ToggleGroup({
-  className,
-  variant,
-  size,
-  spacing = 0,
-  children,
-  ...props
-}: React.ComponentProps<typeof ToggleGroupPrimitive.Root> &
-  VariantProps<typeof toggleVariants> & {
-    spacing?: number;
-  }) {
-  return (
-    <ToggleGroupPrimitive.Root
-      data-slot="toggle-group"
-      data-variant={variant}
-      data-size={size}
-      data-spacing={spacing}
-      style={{ '--gap': spacing } as React.CSSProperties}
-      className={cn(
-        'group/toggle-group flex w-fit items-center gap-[--spacing(var(--gap))] rounded-md data-[spacing=default]:data-[variant=outline]:shadow-xs shadow-shadow',
-        className,
-      )}
-      {...props}
-    >
-      <ToggleGroupContext.Provider value={{ variant, size, spacing }}>
-        {children}
-      </ToggleGroupContext.Provider>
-    </ToggleGroupPrimitive.Root>
-  );
+export interface ToggleOption {
+  value: string;
+  label: string;
+  icon?: ComponentIcon;
+  disabled?: boolean;
+  tooltip?: string;
 }
 
-function ToggleGroupItem({
-  className,
-  children,
-  variant,
-  size,
-  ...props
-}: React.ComponentProps<typeof ToggleGroupPrimitive.Item> & VariantProps<typeof toggleVariants>) {
-  const context = React.useContext(ToggleGroupContext);
-
-  return (
-    <ToggleGroupPrimitive.Item
-      data-slot="toggle-group-item"
-      data-variant={context.variant || variant}
-      data-size={context.size || size}
-      data-spacing={context.spacing}
-      className={cn(
-        toggleVariants({
-          variant: context.variant || variant,
-          size: context.size || size,
-        }),
-        'w-auto min-w-0 shrink-0 px-3 focus:z-10 focus-visible:z-10',
-        'data-[spacing=0]:rounded-none data-[spacing=0]:shadow-none data-[spacing=0]:first:rounded-l-md data-[spacing=0]:last:rounded-r-md data-[spacing=0]:data-[variant=outline]:border-l-0 data-[spacing=0]:data-[variant=outline]:first:border-l',
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </ToggleGroupPrimitive.Item>
-  );
+interface CommonProps {
+  options: readonly ToggleOption[];
+  label?: string;
+  size?: ComponentSize;
+  variant?: 'default' | 'outline';
+  disabled?: boolean;
+  iconOnly?: boolean;
+  tooltip?: boolean;
+  width?: ComponentWidth;
+  orientation?: 'horizontal' | 'vertical';
 }
 
-export { ToggleGroup, ToggleGroupItem };
+export type ToggleGroupProps = CommonProps &
+  (
+    | {
+        type?: 'single';
+        value?: string;
+        defaultValue?: string;
+        onValueChange?: (value: string) => void;
+      }
+    | {
+        type: 'multiple';
+        value?: string[];
+        defaultValue?: string[];
+        onValueChange?: (value: string[]) => void;
+      }
+  );
+
+/** Stable option values and Radix roving focus support single or multiple selection without app assembly. */
+export function ToggleGroup({
+  options,
+  label,
+  size = 'md',
+  variant = 'default',
+  disabled = false,
+  iconOnly = false,
+  tooltip = false,
+  width = 'auto',
+  orientation = 'horizontal',
+  ...selection
+}: ToggleGroupProps) {
+  const content = options.map((option) => {
+    const item = (
+      <ToggleGroupItem
+        key={option.value}
+        value={option.value}
+        disabled={option.disabled}
+        aria-label={iconOnly ? option.label : undefined}
+      >
+        {option.icon && renderIcon(option.icon)}
+        {iconOnly ? <span className="sr-only">{option.label}</span> : option.label}
+      </ToggleGroupItem>
+    );
+    return tooltip || option.tooltip ? (
+      <Tooltip key={option.value} content={option.tooltip ?? option.label}>
+        {item}
+      </Tooltip>
+    ) : (
+      item
+    );
+  });
+  const shared = {
+    'aria-label': label,
+    size: size === 'md' ? ('default' as const) : size,
+    variant,
+    disabled,
+    orientation,
+    spacing: 1,
+    className: width === 'full' ? 'w-full [&_[data-slot=toggle-group-item]]:flex-1' : undefined,
+  };
+  return selection.type === 'multiple' ? (
+    <Primitive {...selection} {...shared}>
+      {content}
+    </Primitive>
+  ) : (
+    <Primitive {...selection} {...shared} type="single">
+      {content}
+    </Primitive>
+  );
+}

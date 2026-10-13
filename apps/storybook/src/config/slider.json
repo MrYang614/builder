@@ -1,0 +1,10 @@
+{
+  "size": "md",
+  "min": 0,
+  "max": 100,
+  "step": 1,
+  "label": "Amount / 数量",
+  "disabled": false,
+  "readOnly": false,
+  "orientation": "horizontal"
+}

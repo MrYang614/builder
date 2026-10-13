@@ -1,5 +1,19 @@
 # 实施记录与恢复入口
 
+## 基础 UI 家族重构与独立 Storybook（2026-10-13）
+
+已完成 `@building/ui` 基础组件体系和正式调用迁移：Input.TextArea / Password / Search、InputNumber、Select、Checkbox.Group、Radio.Group、Switch、Slider、Button.Icon / Group、Form.Item / Group / Section、Tooltip、Popover、DropdownMenu、ContextMenu、Dialog / ConfirmDialog、Tabs、Segmented、Toggle / ToggleGroup、Accordion，以及 Alert、Badge、Card、Separator、Empty、Skeleton、Spinner、Progress。全部公共组件和类型、准确默认值、旧／新 API、调用文件、story／example 与真实验证映射见 [UI-COMPONENTS.md](UI-COMPONENTS.md)。公共封装使用语义 props，不接收内部外观 className/style；旧 IconButton、Field*、Select*、Dialog*、Tooltip* 顶层拼装入口已移出普通调用。低层 Radix/shadcn 置于 `src/primitives`，shadcn CLI 不覆盖公共封装；正式应用没有 primitive 导入，重复外观 CSS 清理约82行，页面布局仍在应用。
+
+新增真实 React/Vite `apps/storybook` 工作区，提供35个组件入口、294个 stories 和35个 docs 条目。根目录 `npm run storybook` 使用独立6006，`npm run build:storybook` 输出 `apps/storybook/dist`，`npm run test:storybook` 独占6007；正式应用1420未被干扰。所有页面直接用同一 UI 实现，包含实际 TSX、JSON schema、props／组件默认值与示例基线、Controls、复制／重置、两主题及窄容器。浏览器 TSX 使用锁定 Sucrase，支持 React 状态／事件、命名空间组件和明确 import；代码／配置／运行错误分别提示并标记旧有效预览。Controls 与 JSON 共用 args，草稿只留页面内存，不写文件或自动存储；本地组件、示例、配置 HMR 更新实现与重置基线，活跃草稿保留。Reset 也恢复未改代码／配置情况下的示例局部 state。6008静态构建另经真实浏览器临时 TSX／JSON 修改、React 点击状态与 Reset 操作验证；记录在 `manual-browser/`。
+
+干净 `npm ci` 安装560包通过；format、lint:fix、check、五套严格类型、374项／41文件单元、Rust25项、桌面前端 build 与 Storybook 静态 build 均通过。最新完整 Storybook64／64通过，无跳过／flaky；HMR验证用修改按原字节恢复，当轮483项源码／配置SHA前后相同。独占实际 GPU Chromium 的正式编辑器同源、同断言60／60通过，耗时约3分钟；覆盖字段／IME／历史、Canvas输入隔离、弹窗、主题／语言与Renderer身份、保存／重开／导出、吸附／拖动及20轮资源检查。浏览器和模拟Tauri窗口结果不作原生验收。命令日志与原报告在 `test-results/ui-foundation-2026-10-13/`，统一入口由 `INDEX.md` 和 `validation.json` 汇总。
+
+独立 Impeccable A／B 审查均读取固定 Skills与当前源码；A在收到B结论前完成，修复前启发式评分31／40，B技术评分16／20。B仅一次 detector，exit0、JSON `[]`；原报告及量测保存于 `review-a/assessment-a.md` 与 `review-b/assessment-b.md`，未将空detector视为无问题或满分。实际修复420px页面462px内容溢出／410px可用宽度、Select搜索键盘焦点、组件默认值与示例基线混淆、复制旧revision仍显示Copied、临时草稿说明位置、Reset局部state、Radio快速keyup选择丢失、Input被Dialog捕获Escape后无法还原、Toggle可访问名称覆盖，以及Dialog footer在mousedown与click之间因blur错误行增减而移位。footer仍在动作执行前确认blur草稿，原A35中英×亮暗四组合严格断言4／4通过。截图核查还发现Storybook标准Controls的Update story／Create new story保存入口；已用官方 `controls.disableSaveFromUI: true` 关闭，两个保存动作absence断言和最终构建通过。最后实际manager刷新还发现临时args未恢复；按当前CSF initialArgs与公开resetArgs恢复各变体基线，同时关闭会把含临时args的返回URL写入sessionStorage的可选Review功能。新增Default／Disabled两条主页面刷新、真实侧栏重进、variant Reset、Controls状态及全localStorage／sessionStorage／IndexedDB不变断言；最终完整64／64和6008最终静态构建人工复验均通过。首次manager失败与storage违规5通过／2失败报告保留。
+
+原始失败全部保留：Storybook初轮窄屏／HMR、输入与事件探针失败，正式编辑器硬件首轮56通过／4个UI探针失败，随后并发58通过／2个GPU严格断言失败。并发资源geometry4而非3、光追首采样10秒内仍0，均未强行归因；`review-b/hardware-failure-analysis.md`只记录可观察事实。最终独占GPU相同源码和断言60／60通过，说明该环境下复验成功，不删除并发失败，也不宣称已证明并发负载是原因。未降低断言、跳过或放宽原超时。
+
+EditorCore正式数据、草稿／预览／历史、导出快照与runtime GPU所有权边界不变，Storybook／Sucrase不进入桌面生产依赖图。原生GUI的历史停止边界继续有效；本轮没有安装／启动／重打包最新Tauri exe／NSIS，旧产物不包含本次基础UI重构。macOS、原生WebView输入／关闭／系统焦点、屏幕阅读器、DPI／多屏、物理触摸／触控板及Q5正式系统／硬件／性能仍按既有限制待验或待确认，不以网页验证补填。
+
 ## 实际操作 UI／UX 审查与修复（2026-10-13）
 
 按最新用户要求完成当前源码的浏览器鼠标／键盘操作、集中问题修复和复验；历史物理 Escape 停止原生 GUI 的边界仍有效，没有操作用户的 1420 工程。实际修复 Canvas 属性键盘编辑后鼠标蓝框、绘制阶段被吸附／尺寸覆盖、草稿空场泛提示、浮点尾数显示、只读预览的历史绕过、纠正有效值后旧错误残留，真实 favicon 404，以及最终截图核查后实际复现的亮色 WebGPU 黑背景、合法小HDR的双后端黑色照明。主入口按明确偏好统一“实时渲染”，关联弹窗配置并启动光追；普通实时预览、暂停／继续／退出／采样／失败恢复／PNG 均保留，环境／后处理／吸附继续在设置。原系统主题条款仍由只保留亮色／暗色的后续决定覆盖。

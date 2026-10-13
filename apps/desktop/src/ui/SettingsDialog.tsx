@@ -1,11 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from '@building/ui';
+import { Button, Dialog } from '@building/ui';
 import { RenderingSettings } from './RenderingSettings';
 import { SnappingSettings } from './SnappingSettings';
 import { useLanguage } from './i18n';
@@ -20,16 +13,17 @@ export function SettingsDialog({
 }) {
   const { t } = useLanguage();
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="settings-dialog" showCloseButton={false}>
-        <DialogTitle>{t('settings')}</DialogTitle>
-        <DialogDescription>{t('render.settingsDescription')}</DialogDescription>
-        <RenderingSettings />
-        <SnappingSettings />
-        <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>{t('close')}</Button>
-        </DialogFooter>
-      </DialogContent>
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t('settings')}
+      description={t('render.settingsDescription')}
+      closeLabel={t('close')}
+      showCloseButton={false}
+      footer={<Button onClick={() => onOpenChange(false)}>{t('close')}</Button>}
+    >
+      <RenderingSettings />
+      <SnappingSettings />
     </Dialog>
   );
 }

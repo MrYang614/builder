@@ -226,3 +226,28 @@ H01–H06 的完整要求、实现、测试、证据来源和限制见 [HEADER-L
 | 正式系统／硬件与性能、冷启动验收条件明确 | 原Q5仍未由本轮自行决定 | cold首次严格10秒超时／21.314秒观测上界与后续相同断言通过均保留；本次相对计时 | 需求待确认 | 需确认Windows／macOS目标系统与硬件、性能／冷启动预算；真实设备丢失与初心者任务未验 |
 
 本轮最终来源、逐命令日志／测试报告、原始失败、截图查看清单及产物哈希见 `uiux-review-validation.json` 与 `.test-artifacts/uiux-20261013/`。Impeccable仅单次静态detector，未发现项不表示完整WCAG或原生验收。原始PRD、固定Skills、生成token CSS与历史证据没有回写。发布状态仍受上表具体缺口阻塞。
+
+## 基础 UI 家族与独立 Storybook 验收补充（2026-10-13）
+
+本节仅新增UF01–UF16，不修改原A01–A42条件、状态或历史证据。证据根目录为 `test-results/ui-foundation-2026-10-13/`；最终命令、环境、输入SHA、图片查看与原始失败由其 `validation.json` / `INDEX.md`汇总。以下“验证通过”只适用于注明的源码、CLI或浏览器条件，不扩展为原生Windows／Tauri／macOS验收。
+
+| 编号 | 本次要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- | --- |
+| UF01 | 完整基础组件家族与严格公共类型 | Input.TextArea/Password/Search、InputNumber、Select、Checkbox/Radio.Group、Switch、Slider、Button.Icon/Group、Form、浮层/菜单/确认、Tabs/Segmented/Toggle/Accordion及全部展示反馈；统一语义props与公开类型 | UI-COMPONENTS.md逐家族旧/新API、调用、story/example、默认值与验证映射；Storybook35入口294stories+35docs及逐family遍历 | 验证通过 | 渲染与指定交互通过，不声称任意props笛卡尔组合、物理辅助技术或原生宿主覆盖。 |
+| UF02 | 正式调用迁移，消除内部外观修正与重复拼装 | App、fields、Floors、Inspector、MaterialFields、HeaderPreferences、ToolOptions、窗口及设置/渲染/确认调用高层UI；约82行重复CSS清理；页面布局保留 | 公开导出与调用盘点、组件外观/依赖架构check；独占GPU完整editor60/60 | 验证通过 | 无应用primitive导入、公共className/style外观透传；样式消除不等同原生DPI/字体测量。 |
+| UF03 | 输入中间态、正式精度、Enter/blur、Escape、IME、拒绝及外部变更保持 | UI拥有可选commit草稿；应用继续负责合法性、EditorCore命令和历史；Escape优先处理所属草稿，Form关联错误且避免重复业务alert | inputs.spec.ts精度/中间态/单次commit/IME/非法与业务拒绝/外部值/Escape；Dialog草稿隔离；正式editor字段与历史路径 | 验证通过 | 浏览器composition事件不冒充所有真实中文IME或macOS硬件；非法值范围仍由领域代码决定。 |
+| UF04 | 独立正式React/Vite Storybook与共享实现 | apps/storybook工作区、配置/preview、CSF、实际TSX/JSON/schema、API文档；6006开发/6007测试、独立静态dist | clean npm ci安装560包；五套TS、架构检查、build:storybook；64/64完整浏览器、35入口294stories+35docs | 验证通过 | Storybook标准iframe仅属于开发工具；不进入正式编辑器单WebView/Canvas，也不带来业务后台。 |
+| UF05 | 浏览器可实际编辑JSX/TSX、多组件、React状态与回调 | Sucrase编译，明确react/@building/ui/lucide映射；当前args传入真实高层组件 | playground代码修改/组合状态与回调；6008静态浏览器实际TSX、组合Password/Input/Button、计数与Reset，manual-browser/static-code-configuration.jpg及.txt | 验证通过 | 浏览器转换不做TypeScript语义类型检查；本地例子由严格tsc验证；受信任代码执行不等同恶意代码沙箱。 |
+| UF06 | JSON格式/类型校验与Controls共用生效状态 | schema生成Controls并验证JSON，应用args单一owner；ReactNode/图标/回调在TSX定义 | playground.spec.ts双向Controls/JSON同步、非法配置/修正、schema与默认值审计；完整64/64 | 验证通过 | 只支持文档列明可序列化props与依赖，不把任意React对象伪装为JSON。 |
+| UF07 | 临时编辑不写回文件、不自动持久化，明确刷新/切换/重置 | React及页面内存draft缓存，实际离开清理；Reset基线和局部state，复制反馈关联源码revision | manager-memory.spec.ts Default/Disabled真实整页reload、sidebar重入、variant Reset、Controls与字段/代码/JSON；全localStorage/sessionStorage/IndexedDB编辑前后相等；可选Review持久化禁用；6008最终静态人工复验 | 验证通过 | 标准manager可暂时把Controls编码到当前URL；fresh story entry从initialArgs恢复，不把URL或缓存作为仓库基线。首次manager失败及Review写sessionStorage的5/2报告保留；标准Controls保存入口见UF14。 |
+| UF08 | 本地组件/示例/JSON HMR与浏览器草稿正确共存，验证改动完整恢复 | 最新组件实现刷新；示例/config更新reset基线、保留活跃草稿并提示；异步编译版本防陈旧完成 | playground.spec.ts真实本地三类文件改动/HMR/reset用例；source-restoration.json：483项源码/配置、changed[]、restoredExactly=true；最新64/64 | 验证通过 | SHA记录对应当轮试改/恢复阶段，不代表整个仓库未产生本次实现或维护文档；最后manager/Review/Controls修复也在最终64/64复验。 |
+| UF09 | 编译/配置/runtime错误独立提示、旧结果明确、改正可恢复，资源按生命周期释放 | 三种错误区分、last-valid标记、每revision错误边界；Blob revoke、监听解绑、observer disconnect、迟到任务抑制 | playground错误/恢复及源级清理检查；ConfirmDialog拒绝/重试/防重/替换关闭后迟到Promise隔离真实浏览器用例 | 验证通过 | 不以源码清理检查证明长期heap/VRAM字节峰值或所有恶意脚本可隔离。 |
+| UF10 | 亮暗、中英文、窄容器与浮层/键盘/焦点可靠 | 语义token共享；可收缩workbench列/表内滚动；Select搜索ring、Tooltip有界文本，Dialog/Menu/Popover借用Radix焦点与定位 | catalog窄420px CJK/浮层、全部家族dark/narrow；inputs/components键盘/禁用/关闭/焦点；原A35四组合4/4 | 验证通过 | 浏览器420px开发工坊与正式编辑器900px最小窗口是不同对象；触摸、200%缩放、原生屏幕阅读器/DPI未验。 |
+| UF11 | 独立Impeccable audit/critique/harden/polish并记录真实问题与截图 | A在收到B前完成；A31/40、B16/20均为修复前评分；单次detector exit0 []；集中修复窄溢出/焦点/默认值/复制/Reset/输入事件/footer | review-a/assessment-a.md、review-b/assessment-b.md；B原JSON/量测/图片；18审查截图已打开，输入4图来源/查看在最终INDEX登记；修复后64/64与A35复验 | 验证通过 | 未重新打满分、未把detector[]当无问题；A未保存本地PNG，其CUA展示不伪写为本地证据；完整WCAG/原生未验。 |
+| UF12 | 正式命令、历史、预览/导出和Renderer身份及GPU所有权保持 | 本次只重构UI；EditorCore正式数据、预览事务、独立导出快照及runtime资源owner保留，无每帧全局React/IPC | editor-exclusive.log：同源同断言独占实际GPU Chromium完整60/60约3分钟，含20资源循环、保存/导出、吸附/拖动、主题/弹窗Renderer身份 | 验证通过 | 仅浏览器独占GPU条件；并发58/2严格失败仍保留，geometry4 vs3及samples0未归因；hardware-failure-analysis.md不证明其根因。 |
+| UF13 | 干净安装与格式/lint/架构/类型/单元/Rust/生产构建 | 锁定依赖，既定Oxfmt/Oxlint门禁、五套TS、500行上限、token/生成/边界；正式生产图无Storybook/Sucrase | npm-ci.log；format/check；374项/41文件unit、Rust25、desktop-build.log、storybook-build-complete.log；最终manager/Review/Controls修复后的check/typecheck/unit/两构建均复验，见validation | 验证通过 | CLI与Rust临时IO不是原生GUI/真实磁盘满；静态build不等同新的exe/NSIS已打包。 |
+| UF14 | 开发工坊编辑不能通过标准Controls保存入口写回story | 截图核查发现Update story/Create new story；官方controls.disableSaveFromUI=true关闭并追加absence断言 | 两个保存动作精确absence断言在最终64/64通过；check-complete.log、storybook-build-complete.log；Controls截图已重新打开审查 | 验证通过 | 关闭标准Controls的保存动作；不添加自定义文件写API。浏览器临时代码仍为受信任JS，不提供通用隔离保证。 |
+| UF15 | 最新Tauri与macOS原生UI、安装/关闭/输入/多屏验证可追溯 | 原架构与历史原生GUI停止边界保持，本轮没有启动新宿主或重打包exe/NSIS；不操作1420用户工程 | 浏览器及模拟Tauri窗口单独记录；旧发布产物保留且不含本次UI更新 | 环境阻塞 | 需授权的最新原生Windows/Tauri冒烟、macOS实机、系统输入/焦点/屏幕阅读器/DPI/触控板；网页结果不补验。 |
+| UF16 | Q5正式目标系统/硬件、性能与冷启动标准明确 | 本轮不自行决定正式系统/设备或达标预算 | 沿原Q5待确认；浏览器/GPU相对耗时仅复现条件，未采正式FPS/P95/显存与冷启动达标数据 | 需求待确认 | 真实设备丢失、物理触摸/触控板、长期资源与参考性能仍需按已确认环境补验。 |
+
+初始Storybook窄屏/HMR及事件失败、正式编辑器硬件56/4和并发58/2报告均原样保留。UI footer修复保持动作前blur草稿确认，原A35中英/两主题4/4通过；独占GPU60/60通过不能反推并发两项失败原因。固定Skills、token生成产物、原PRD和原A01–A42历史条件没有为本次重构改写；最新原生安装包和完整双平台验收仍不在本轮通过范围内。

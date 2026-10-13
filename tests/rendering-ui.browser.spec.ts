@@ -50,9 +50,13 @@ async function focusCycle(page: Page, expectedLabels: string[]) {
     const step = await page.evaluate(() => {
       const active = document.activeElement as HTMLElement;
       const rect = active.getBoundingClientRect();
-      const style = getComputedStyle(active);
+      // Adorned inputs own one shared focus surface around the input and its actions.
+      const focusSurface = active.closest<HTMLElement>('[data-slot="input-group"]') ?? active;
+      const style = getComputedStyle(focusSurface);
       const label =
-        active instanceof HTMLInputElement ? active.labels?.[0]?.textContent : undefined;
+        active instanceof HTMLInputElement || active instanceof HTMLButtonElement
+          ? active.labels?.[0]?.textContent
+          : undefined;
       return {
         tag: active.tagName,
         name:
@@ -65,7 +69,10 @@ async function focusCycle(page: Page, expectedLabels: string[]) {
           rect.left >= 0 &&
           rect.bottom <= innerHeight &&
           rect.right <= innerWidth,
-        focusIndicator: style.outlineStyle !== 'none' || style.boxShadow !== 'none',
+        focusIndicator:
+          focusSurface.contains(active) &&
+          focusSurface.matches(':focus-within') &&
+          (style.outlineStyle !== 'none' || style.boxShadow !== 'none'),
         bounds: { x: rect.x, y: rect.y, right: rect.right, bottom: rect.bottom },
         dialogScrollTop: active.closest('[role="dialog"]')?.scrollTop ?? -1,
       };

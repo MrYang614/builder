@@ -55,3 +55,13 @@ Rust storage 保留公开 IO、设置和原子替换入口；project_schema 验�
 Inspector 的完整面级材质职责在 MaterialFields，资源完成后读取最新正式 binding；Numeric／TextField 只有真实输入才提交，纯聚焦不会覆盖外部动画／撤销结果。App 的 project-close 组合守卫在最后偏好 flush 后核对批准快照身份；等待期间有新修改就重新确认。确认 provider 的替换／卸载结算旧调用者，窗口 listener 只在 active 生命周期内销毁。
 
 scene／export 与 ResourcePool 的释放经过 resource-cleanup：全部资源均尝试释放，正常失败汇总报告；构造／导出已有首因时保留它，清理次因仍记录。部分清理失败不保留已脱离所有权的 lease accounting，重复 dispose 不重复释放。全部生产 TS／Rust 源现受统一500行门禁约束，没有逐文件大小例外。
+
+## 基础 UI 与组件工作台边界（2026-10-13）
+
+`packages/ui/src/components` 导出完整语义 API 和类型，`src/primitives` 承载内部 shadcn/Radix 组合。CLI 的 ui alias 指向 primitives；高级组合只从明确的公开 `@building/ui/primitives` 命名空间进入。公共组件不提供外观 className/style，页面容器仍负责区域布局。命名空间只组织静态成员；Form context 承担字段标签／帮助／错误／禁用关联，不承担建筑业务。
+
+Input／InputNumber 的草稿 owner 属于 UI：输入中间态、IME、Enter／blur 去重和 Escape 取消不直接修改工程。桌面 fields 适配器仍通过同一 services.submit／EditorCore 命令确认数值和文本，领域校验与历史留在应用。Language context 从翻译字典提取，偏好生命周期与 Renderer 分离。
+
+`apps/storybook` 是独立 React/Vite 开发 workspace，标准 iframe 只用于 Storybook。它直接导入公开 UI；不依赖 Core、geometry、Three 或 Tauri。编译器和 Storybook 依赖不进入正式编辑器模块图，真实生产构建的模块图有回归断言。编辑器继续单窗口、单 WebView、单主 Canvas，GPU／后处理／光追 owner 和统一快照导出均未转移。
+
+浏览器代码以 Sucrase 编译可信本地 TSX，通过明确依赖表运行；没有后台或文件写入 API。JSON 与 Controls 共享 Storybook args，错误保留最后有效配置并明确标记旧结果。组件源码 HMR 更新当前实现；示例／配置 HMR 更新恢复基线，页面内存快照协调 Storybook 的异步 remount。真实导航清空草稿；监听、编译任务、Blob URL、观察器分别由 owner 清理。

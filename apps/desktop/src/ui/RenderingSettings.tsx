@@ -1,5 +1,4 @@
-import { useId } from 'react';
-import { Button, FieldSet, FieldLegend, FieldGroup, Input } from '@building/ui';
+import { Button, Checkbox, Form } from '@building/ui';
 import type { Command, EnvironmentSettings } from '@building/editor-core';
 import { useEditor, useDocument, useSession, useSignal } from '../app/services';
 import { importEnvironment } from '../platform';
@@ -13,7 +12,6 @@ const emptyEnvironment = (): EnvironmentSettings => ({
 });
 /** Applies environment edits through Core while preview effects stay owned by the runtime. */
 export function RenderingSettings() {
-  const backgroundId = useId();
   const services = useEditor(),
     doc = useDocument(),
     session = useSession(),
@@ -77,36 +75,29 @@ export function RenderingSettings() {
   return (
     <>
       {state.switching && <output>{t('render.switching')}</output>}
-      <FieldSet disabled={busy || state.mode === 'pathtrace' || !state.postProcessing.available}>
-        <FieldLegend>{t('render.postProcessing')}</FieldLegend>
-        <FieldGroup>
-          <label className="checkbox-label render-check">
-            <Input
-              type="checkbox"
-              checked={state.postProcessing.gtao}
-              onChange={(event) =>
-                services.runtimeRef.current?.setGTAOEnabled(event.target.checked)
-              }
-            />
-            {t('render.gtao')}
-          </label>
-          <label className="checkbox-label render-check">
-            <Input
-              type="checkbox"
-              checked={state.postProcessing.taa}
-              onChange={(event) => services.runtimeRef.current?.setTAAEnabled(event.target.checked)}
-            />
-            {t('render.taa')}
-          </label>
+      <Form.Section
+        title={t('render.postProcessing')}
+        disabled={busy || state.mode === 'pathtrace' || !state.postProcessing.available}
+      >
+        <Form.Group>
+          <Checkbox
+            label={t('render.gtao')}
+            checked={state.postProcessing.gtao}
+            onCheckedChange={(checked) => services.runtimeRef.current?.setGTAOEnabled(checked)}
+          />
+          <Checkbox
+            label={t('render.taa')}
+            checked={state.postProcessing.taa}
+            onCheckedChange={(checked) => services.runtimeRef.current?.setTAAEnabled(checked)}
+          />
           <p className="render-hint">{t('render.postProcessingHint')}</p>
           {!state.postProcessing.available && (
             <output>{t('render.postProcessingUnavailable')}</output>
           )}
-        </FieldGroup>
-      </FieldSet>
-      <FieldSet disabled={busy || session.wholeBuildingPreview}>
-        <FieldLegend>{t('render.environment')}</FieldLegend>
-        <FieldGroup>
+        </Form.Group>
+      </Form.Section>
+      <Form.Section title={t('render.environment')} disabled={busy || session.wholeBuildingPreview}>
+        <Form.Group>
           {(doc.environmentResources?.length ?? 0) > 0 && (
             <Choice
               label={t('render.environment')}
@@ -165,18 +156,14 @@ export function RenderingSettings() {
             value={environment.rotation}
             onCommit={(rotation) => updateEnvironment({ rotation })}
           />
-          <label htmlFor={backgroundId} className="checkbox-label render-check">
-            <Input
-              id={backgroundId}
-              type="checkbox"
-              checked={environment.background}
-              onChange={(event) => updateEnvironment({ background: event.target.checked })}
-            />
-            {t('render.background')}
-          </label>
+          <Checkbox
+            label={t('render.background')}
+            checked={environment.background}
+            onCheckedChange={(checked) => updateEnvironment({ background: checked })}
+          />
           {state.environmentLoading && <output>{t('render.loading')}</output>}
-        </FieldGroup>
-      </FieldSet>
+        </Form.Group>
+      </Form.Section>
       {error && (
         <p role="alert" className="render-error">
           {t(error.key, 'params' in error ? error.params : { reason: '' })}

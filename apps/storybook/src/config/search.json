@@ -1,0 +1,10 @@
+{
+  "size": "md",
+  "width": "full",
+  "placeholder": "Search components / 搜索组件",
+  "allowClear": true,
+  "searchLabel": "Search",
+  "loading": false,
+  "disabled": false,
+  "readOnly": false
+}

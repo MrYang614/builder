@@ -1,0 +1,29 @@
+{
+  "size": "md",
+  "width": "full",
+  "searchable": true,
+  "allowClear": true,
+  "placeholder": "Choose / 请选择",
+  "emptyText": "No results / 没有结果",
+  "searchPlaceholder": "Search options",
+  "disabled": false,
+  "readOnly": false,
+  "options": [
+    {
+      "value": "courtyard",
+      "label": "Courtyard / 庭院",
+      "group": "Residential / 住宅"
+    },
+    {
+      "value": "tower",
+      "label": "Tower / 高层",
+      "group": "Residential / 住宅"
+    },
+    {
+      "value": "public",
+      "label": "Public hall / 公共大厅",
+      "group": "Public / 公共",
+      "disabled": true
+    }
+  ]
+}

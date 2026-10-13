@@ -1,0 +1,10 @@
+{
+  "size": "md",
+  "width": "full",
+  "defaultValue": 3.141592653589793,
+  "step": 0.1,
+  "allowClear": true,
+  "suffix": "m",
+  "disabled": false,
+  "readOnly": false
+}

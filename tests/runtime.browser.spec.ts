@@ -520,7 +520,7 @@ test('two actual UI door playbacks sample independently, finish as commands, kee
   await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
   await number(page, '动画单程时长（s）', '8');
-  await page.locator('.floor-item').nth(1).click();
+  await page.locator('.floor-list button').nth(1).click();
   await page.getByRole('button', { name: '门 7', exact: true }).click();
   await number(page, '动画单程时长（s）', '8');
   const history = await page.evaluate(
@@ -529,10 +529,10 @@ test('two actual UI door playbacks sample independently, finish as commands, kee
   const beforePlayback = await documentOf(page);
   // Configure both doors before playback, then start each through its actual UI.
   // Eight seconds leaves a genuine overlap window on software-rendered CI browsers.
-  await page.locator('.floor-item').nth(0).click();
+  await page.locator('.floor-list button').nth(0).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
   await page.getByRole('button', { name: '打开门', exact: true }).click();
-  await page.locator('.floor-item').nth(1).click();
+  await page.locator('.floor-list button').nth(1).click();
   await page.getByRole('button', { name: '门 7', exact: true }).click();
   await page.getByRole('button', { name: '关闭门', exact: true }).click();
   const active = await diagnostics(page);

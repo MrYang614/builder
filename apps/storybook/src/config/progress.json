@@ -1,0 +1,8 @@
+{
+  "size": "md",
+  "value": 45,
+  "max": 100,
+  "label": "Preparing export / 准备导出",
+  "showValue": true,
+  "status": "default"
+}

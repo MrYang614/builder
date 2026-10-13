@@ -1,15 +1,5 @@
 import { Play, Sparkles } from 'lucide-react';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-  FieldGroup,
-  FieldSet,
-} from '@building/ui';
+import { Button, Dialog, Form } from '@building/ui';
 import { useEditor, useSignal } from '../app/services';
 import { Choice } from './fields';
 import { useLanguage } from './i18n';
@@ -47,52 +37,57 @@ export function RenderDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button size="sm" disabled={busy || starting}>
-          <Sparkles aria-hidden="true" />
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t('render.open')}
+      description={t('render.dialogDescription')}
+      closeLabel={t('close')}
+      showCloseButton={false}
+      trigger={
+        <Button size="sm" icon={Sparkles} disabled={busy || starting}>
           {t('render.open')}
         </Button>
-      </DialogTrigger>
-      <DialogContent className="render-dialog" showCloseButton={false}>
-        <DialogTitle>{t('render.open')}</DialogTitle>
-        <DialogDescription>{t('render.dialogDescription')}</DialogDescription>
-        <FieldSet disabled={busy || starting}>
-          <FieldGroup>
-            <Choice
-              label={t('render.samplesLabel')}
-              value={String(state.targetSamples)}
-              options={[16, 64, 128, 256, 512].map((value) => ({
-                value: String(value),
-                label: String(value),
-              }))}
-              onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
-            />
-            <p className="render-hint">{t('render.pathHint')}</p>
-            {state.environmentLoading && <output>{t('render.loading')}</output>}
-            {starting && <output>{t('render.building')}</output>}
-            {error && (
-              <p role="alert" className="render-error">
-                {t(error, notice.key === error ? notice.params : { reason: '' })}
-              </p>
-            )}
-          </FieldGroup>
-        </FieldSet>
-        <DialogFooter>
+      }
+      footer={
+        <>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t('close')}
           </Button>
           {!pathActive && (
             <Button
+              icon={Play}
               disabled={busy || starting || state.environmentLoading}
+              loading={starting}
               onClick={() => void start()}
             >
-              <Play aria-hidden="true" />
               {t('render.start')}
             </Button>
           )}
-        </DialogFooter>
-      </DialogContent>
+        </>
+      }
+    >
+      <Form.Section disabled={busy || starting}>
+        <Form.Group>
+          <Choice
+            label={t('render.samplesLabel')}
+            value={String(state.targetSamples)}
+            options={[16, 64, 128, 256, 512].map((value) => ({
+              value: String(value),
+              label: String(value),
+            }))}
+            onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
+          />
+          <p className="render-hint">{t('render.pathHint')}</p>
+          {state.environmentLoading && <output>{t('render.loading')}</output>}
+          {starting && <output>{t('render.building')}</output>}
+          {error && (
+            <p role="alert" className="render-error">
+              {t(error, notice.key === error ? notice.params : { reason: '' })}
+            </p>
+          )}
+        </Form.Group>
+      </Form.Section>
     </Dialog>
   );
 }

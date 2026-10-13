@@ -53,10 +53,56 @@ function walk(dir) {
     e.isDirectory() ? walk(`${dir}/${e.name}`) : [`${dir}/${e.name}`],
   );
 }
-for (const file of [...walk('apps/desktop/src'), ...walk('packages')].filter((x) =>
-  /\.(ts|tsx|css)$/.test(x),
+/** Rejects public component appearance overrides while retaining normal page container layout. */
+function checkComponentConsumers(file, text) {
+  const source = ts.createSourceFile(file, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const components = new Set();
+  for (const statement of source.statements) {
+    if (
+      ts.isImportDeclaration(statement) &&
+      ts.isStringLiteral(statement.moduleSpecifier) &&
+      statement.moduleSpecifier.text === '@building/ui'
+    ) {
+      const bindings = statement.importClause?.namedBindings;
+      if (bindings && ts.isNamedImports(bindings)) {
+        for (const binding of bindings.elements) {
+          components.add(binding.name.text);
+        }
+      }
+    }
+  }
+  function visit(node) {
+    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+      const family = node.tagName.getText(source).split('.')[0];
+      if (components.has(family)) {
+        for (const property of node.attributes.properties) {
+          if (
+            ts.isJsxAttribute(property) &&
+            ['className', 'style'].includes(property.name.getText(source))
+          ) {
+            errors.push(
+              `${file}: ${node.tagName.getText(source)} appearance belongs in @building/ui semantic props`,
+            );
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+}
+const storybookSources = [
+  ...walk('apps/storybook/src'),
+  ...walk('apps/storybook/.storybook'),
+  'apps/storybook/vite.config.ts',
+];
+for (const file of [...walk('apps/desktop/src'), ...storybookSources, ...walk('packages')].filter(
+  (x) => /\.(ts|tsx|css)$/.test(x),
 )) {
   const text = readFileSync(new URL(file, root), 'utf8');
+  if (file.startsWith('apps/') && file.endsWith('.tsx')) {
+    checkComponentConsumers(file, text);
+  }
   const restrictions =
     file.startsWith('packages/editor-core/') || file.startsWith('packages/building-geometry/')
       ? /(?:from\s*|import\s*)['"](?:react|three|@tauri|@building\/ui)|(?<![\w.])(?:window|document)\s*\.(?:createElement|querySelector|addEventListener|location|body)/
@@ -72,7 +118,8 @@ for (const file of [...walk('apps/desktop/src'), ...walk('packages')].filter((x)
     for (const dependency of dependencies(file, text)) {
       const pure = /^packages\/(editor-core|building-geometry)\//.test(file),
         ui = file.startsWith('packages/ui/'),
-        runtime = file.startsWith('packages/three-runtime/');
+        runtime = file.startsWith('packages/three-runtime/'),
+        storybook = file.startsWith('apps/storybook/');
       if (
         (pure &&
           /^(react(?:-dom)?(?:\/|$)|three(?:\/|$)|@tauri|@building\/(ui|three-runtime)(?:\/|$))/.test(
@@ -82,7 +129,13 @@ for (const file of [...walk('apps/desktop/src'), ...walk('packages')].filter((x)
           /^(three(?:\/|$)|@tauri|@building\/(editor-core|building-geometry|three-runtime)(?:\/|$))/.test(
             dependency,
           )) ||
-        (runtime && /^(react(?:-dom)?(?:\/|$)|@building\/ui(?:\/|$))/.test(dependency))
+        (runtime && /^(react(?:-dom)?(?:\/|$)|@building\/ui(?:\/|$))/.test(dependency)) ||
+        (storybook &&
+          /^(three(?:\/|$)|@tauri|@building\/(editor-core|building-geometry|three-runtime)(?:\/|$))/.test(
+            dependency,
+          )) ||
+        (file.startsWith('apps/desktop/') &&
+          /^(storybook(?:\/|$)|@storybook\/|sucrase(?:\/|$))/.test(dependency))
       ) {
         errors.push(`${file}: forbidden import ${dependency}`);
       }
@@ -159,13 +212,17 @@ for (const file of [...walk('apps/desktop/src'), ...walk('packages')].filter((x)
       errors.push(`${file}: shadow must consume semantic token`);
     }
   }
-  if (/react-three-fiber|@react-three\/fiber|<iframe/.test(text)) {
+  if (
+    /react-three-fiber|@react-three\/fiber/.test(text) ||
+    (!file.startsWith('apps/storybook/') && /<iframe/.test(text))
+  ) {
     errors.push(`${file}: architecture violation`);
   }
 }
 const handWrittenSources = [
   ...walk('apps/desktop/src'),
   ...walk('apps/desktop/src-tauri/src'),
+  ...storybookSources,
   ...walk('packages'),
 ].filter((file) => /\.(ts|tsx|rs)$/.test(file));
 for (const file of handWrittenSources) {

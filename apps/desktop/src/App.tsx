@@ -16,18 +16,7 @@ import {
   SaveAll,
   Blocks,
 } from 'lucide-react';
-import {
-  Button,
-  IconButton,
-  ToggleGroup,
-  ToggleGroupItem,
-  Alert,
-  AlertTitle,
-  AlertDescription,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from '@building/ui';
+import { Button, ToggleGroup, Alert } from '@building/ui';
 import {
   createEmptyProject,
   createExampleProject,
@@ -306,49 +295,60 @@ export default function App({
       <HeaderWindow
         actions={
           <div className="header-actions">
-            <IconButton label={t('export')} disabled={busy} onClick={() => void exportModel()}>
-              <Download aria-hidden="true" />
-            </IconButton>
+            <Button.Icon
+              label={t('export')}
+              icon={Download}
+              disabled={busy}
+              onClick={() => void exportModel()}
+            />
             <HeaderPreferences />
-            <IconButton label={t('settings')} onClick={() => setSettingsOpen(true)}>
-              <Settings aria-hidden="true" />
-            </IconButton>
+            <Button.Icon
+              label={t('settings')}
+              icon={Settings}
+              onClick={() => setSettingsOpen(true)}
+            />
           </div>
         }
       >
         <div className="header-project-actions">
           <fieldset className="file-actions" aria-label={t('projectActions')}>
-            <IconButton label={t('new')} disabled={busy} onClick={() => void replace()}>
-              <Plus aria-hidden="true" />
-            </IconButton>
-            <IconButton label={t('open')} disabled={busy} onClick={() => void open()}>
-              <FolderOpen aria-hidden="true" />
-            </IconButton>
-            <IconButton
+            <Button.Icon
+              label={t('new')}
+              icon={Plus}
+              disabled={busy}
+              onClick={() => void replace()}
+            />
+            <Button.Icon
+              label={t('open')}
+              icon={FolderOpen}
+              disabled={busy}
+              onClick={() => void open()}
+            />
+            <Button.Icon
               label={t('save')}
+              icon={Save}
               variant="outline"
               disabled={busy}
               onClick={() => void save()}
-            >
-              <Save aria-hidden="true" />
-            </IconButton>
-            <IconButton label={t('saveAs')} disabled={busy} onClick={() => void save(true)}>
-              <SaveAll aria-hidden="true" />
-            </IconButton>
-            <IconButton
+            />
+            <Button.Icon
+              label={t('saveAs')}
+              icon={SaveAll}
+              disabled={busy}
+              onClick={() => void save(true)}
+            />
+            <Button.Icon
               label={t('undo')}
+              icon={Undo2}
               disabled={s.wholeBuildingPreview || !status.canUndo}
               onClick={() => services.core.undo()}
-            >
-              <Undo2 aria-hidden="true" />
-            </IconButton>
-            <IconButton
+            />
+            <Button.Icon
               label={t('redo')}
+              icon={Redo2}
               disabled={s.wholeBuildingPreview || !status.canRedo}
               onClick={() => services.core.redo()}
-            >
-              <Redo2 aria-hidden="true" />
-            </IconButton>
+            />
           </fieldset>
           <span className={status.isDirty ? 'dirty-state' : 'muted'} data-testid="dirty-state">
             {t(status.isDirty ? 'unsaved' : 'saved')}
@@ -360,10 +360,18 @@ export default function App({
       </HeaderWindow>
       <nav className="tools-bar" aria-label={t('select')}>
         <ToggleGroup
-          type="single"
+          label={t('select')}
           value={s.tool}
           size="sm"
           variant="outline"
+          iconOnly
+          tooltip
+          options={tools.map(([tool, icon]) => ({
+            value: tool,
+            label: t(tool),
+            icon,
+            disabled: s.wholeBuildingPreview,
+          }))}
           onValueChange={(v) => {
             if (v) {
               services.session.set({ tool: v as Tool });
@@ -381,29 +389,13 @@ export default function App({
               services.editHint.set(services.notice.get().key);
             }
           }}
-        >
-          {tools.map(([tool, Icon]) => (
-            <Tooltip key={tool}>
-              <TooltipTrigger asChild>
-                <span className="inline-flex">
-                  <ToggleGroupItem
-                    value={tool}
-                    aria-label={t(tool)}
-                    disabled={s.wholeBuildingPreview}
-                  >
-                    <Icon aria-hidden="true" />
-                  </ToggleGroupItem>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={6}>
-                {t(tool)}
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </ToggleGroup>
-        <IconButton label={t('example')} disabled={busy} onClick={() => void replace(true)}>
-          <Blocks aria-hidden="true" />
-        </IconButton>
+        />
+        <Button.Icon
+          label={t('example')}
+          icon={Blocks}
+          disabled={busy}
+          onClick={() => void replace(true)}
+        />
         <span className="muted boundary-hint">{t('boundary')}</span>
       </nav>
       <div className="work-area">
@@ -413,10 +405,10 @@ export default function App({
           <ViewportHost />
           {notice.error && !settingsOpen && !renderOpen && (
             <div className="error-notice">
-              <Alert variant="destructive">
-                <AlertTitle>{t('error')}</AlertTitle>
-                <AlertDescription>
-                  {t(notice.key, notice.params)}
+              <Alert
+                variant="destructive"
+                title={t('error')}
+                action={
                   <Button
                     variant="ghost"
                     size="sm"
@@ -426,7 +418,9 @@ export default function App({
                   >
                     {t('dismiss')}
                   </Button>
-                </AlertDescription>
+                }
+              >
+                {t(notice.key, notice.params)}
               </Alert>
             </div>
           )}

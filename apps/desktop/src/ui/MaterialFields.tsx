@@ -1,5 +1,5 @@
-import { useId, useState } from 'react';
-import { Button, Input, Field, FieldGroup, FieldLabel } from '@building/ui';
+import { useState } from 'react';
+import { Button, Checkbox, Input, Form } from '@building/ui';
 import {
   defaultSurface,
   createId,
@@ -22,7 +22,6 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
     doc = useDocument(),
     s = useSession(),
     { t } = useLanguage(),
-    id = useId(),
     [group, setGroup] = useState(false),
     busyFlag = useSignal(busy);
   const sides = 'polygon' in object ? ['top', 'bottom', 'edge'] : ['A', 'B', 'edge'];
@@ -169,22 +168,16 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
   return (
     <section className="property-section">
       <h3>{t('material')}</h3>
-      <FieldGroup>
+      <Form.Group>
         <Choice
           label={t('surface')}
           value={side}
           options={sides.map((value) => ({ value, label: t(value) }))}
           onChange={(v) => session.set({ selectedSurface: v as 'A' })}
         />
-        <Field>
-          <FieldLabel htmlFor={id}>{t('color')}</FieldLabel>
-          <Input
-            id={id}
-            type="color"
-            value={binding.color}
-            onChange={(e) => change({ color: e.target.value })}
-          />
-        </Field>
+        <Form.Item label={t('color')}>
+          <Input type="color" value={binding.color} onValueChange={(color) => change({ color })} />
+        </Form.Item>
         {!isEdge && (
           <>
             <Choice
@@ -244,14 +237,7 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
             </Button>
             {'start' in object && (
               <>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={group}
-                    onChange={(e) => setGroup(e.target.checked)}
-                  />
-                  {t('group')}
-                </label>
+                <Checkbox label={t('group')} checked={group} onCheckedChange={setGroup} />
                 <Button variant="outline" onClick={continuity}>
                   {t('seam')}
                 </Button>
@@ -272,7 +258,7 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
             )}
           </>
         )}
-      </FieldGroup>
+      </Form.Group>
     </section>
   );
 }

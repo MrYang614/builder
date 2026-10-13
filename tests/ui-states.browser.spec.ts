@@ -17,7 +17,8 @@ const tokenSource = JSON.parse(
 ) as Record<'light' | 'dark', Record<string, string>>;
 const appSource =
   readFileSync('apps/desktop/src/App.tsx', 'utf8') +
-  readFileSync('apps/desktop/src/ui/Inspector.tsx', 'utf8');
+  readFileSync('apps/desktop/src/ui/Inspector.tsx', 'utf8') +
+  readFileSync('packages/ui/src/components/button.tsx', 'utf8');
 const customTooltipUsed = /<Tooltip(?:Trigger|Content|\s|>)/.test(appSource);
 const toastUsed = /\b(?:toast\(|<Toaster\b|<Toast\b)/.test(appSource);
 const labels = {
@@ -282,11 +283,13 @@ for (const language of ['zh-CN', 'en'] as const) {
       const menu = page.getByRole('listbox');
       await expect(menu).toBeVisible();
       await expect(page.getByRole('option')).toHaveText(['English', '简体中文']);
-      const menuColor = await semantic(page, menu, 'backgroundRGBA', palette.popover!);
+      const menuSurface = menu.locator('xpath=..');
+      await expect(menuSurface).toHaveAttribute('data-slot', 'select-content');
+      const menuColor = await semantic(page, menuSurface, 'backgroundRGBA', palette.popover!);
       await semantic(page, menu, 'colorRGBA', palette['popover-foreground']!);
       expect(menuColor.portalOutsideRoot).toBe(true);
       await page.keyboard.press('ArrowUp');
-      const highlighted = page.locator('[data-slot="select-item"][data-highlighted]');
+      const highlighted = page.getByRole('option').and(page.locator('[data-active=true]'));
       await expect(highlighted).toHaveCount(1);
       const optionColor = await semantic(page, highlighted, 'backgroundRGBA', palette.accent!);
       await semantic(page, highlighted, 'colorRGBA', palette['accent-foreground']!);
@@ -320,26 +323,30 @@ for (const language of ['zh-CN', 'en'] as const) {
       await input.click();
       await input.press('Tab');
       await page.keyboard.press('Shift+Tab');
-      await semantic(page, input, 'borderRGBA', palette.ring!);
+      // Adorned inputs own the visible border/ring on their shared group; focus stays on the native input.
+      const inputSurface = input.locator('xpath=..');
+      await expect(inputSurface).toHaveAttribute('data-slot', 'input-group');
+      await expect(input).toBeFocused();
+      await semantic(page, inputSurface, 'borderRGBA', palette.ring!);
       const validFocus = await semantic(
         page,
-        input,
+        inputSurface,
         'ringRGBA',
         `color-mix(in oklab, ${palette.ring} 50%, transparent)`,
       );
-      expect(validFocus.focusVisible).toBe(true);
+      expect(await input.evaluate((element) => element.matches(':focus-visible'))).toBe(true);
       expect(validFocus.boxShadow).not.toBe('none');
       await input.fill('-');
       await input.press('Enter');
       await expect(input).toHaveAttribute('aria-invalid', 'true');
-      await semantic(page, input, 'borderRGBA', palette.destructive!);
+      await semantic(page, inputSurface, 'borderRGBA', palette.destructive!);
       const invalidFocus = await semantic(
         page,
-        input,
+        inputSurface,
         'ringRGBA',
         `color-mix(in oklab, ${palette.destructive} ${theme === 'dark' ? 40 : 20}%, transparent)`,
       );
-      expect(invalidFocus.focusVisible).toBe(true);
+      expect(await input.evaluate((element) => element.matches(':focus-visible'))).toBe(true);
       expect(invalidFocus.boxShadow).not.toBe('none');
       expect(await documentOf(page)).toEqual(baseline);
       await input.fill('0');
@@ -369,7 +376,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       await expect(page.getByRole('option', { name: t.plaster, exact: true })).toBeVisible();
       const materialMenuColor = await semantic(
         page,
-        page.getByRole('listbox'),
+        page.getByRole('listbox').locator('xpath=..'),
         'backgroundRGBA',
         palette.popover!,
       );

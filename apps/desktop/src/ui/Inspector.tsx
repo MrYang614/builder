@@ -1,4 +1,4 @@
-import { Button, FieldGroup } from '@building/ui';
+import { Button, Form } from '@building/ui';
 import { wallLength, type Wall, type Slab, type Opening } from '@building/editor-core';
 import { useEditor, useDocument, useSession } from '../app/services';
 import { MaterialFields } from './MaterialFields';
@@ -13,7 +13,7 @@ function WallFields({ wall }: { wall: Wall }) {
   const length = wallLength(wall);
   const update = (patch: Partial<Wall>) => submit({ type: 'update-wall', id: wall.id, patch });
   return (
-    <FieldGroup>
+    <Form.Group>
       <Numeric
         label={t('length')}
         value={length}
@@ -52,7 +52,7 @@ function WallFields({ wall }: { wall: Wall }) {
           })
         }
       />
-    </FieldGroup>
+    </Form.Group>
   );
 }
 function SlabFields({ slab }: { slab: Slab }) {
@@ -66,7 +66,7 @@ function SlabFields({ slab }: { slab: Slab }) {
     depth = Math.max(...zs) - z;
   const update = (patch: Partial<Slab>) => submit({ type: 'update-slab', id: slab.id, patch });
   return (
-    <FieldGroup>
+    <Form.Group>
       <Choice
         label={t('purpose')}
         value={slab.purpose}
@@ -122,7 +122,7 @@ function SlabFields({ slab }: { slab: Slab }) {
           {t(session.getSnapshot().hiddenIds.includes(slab.id) ? 'showRoof' : 'hideRoof')}
         </Button>
       )}
-    </FieldGroup>
+    </Form.Group>
   );
 }
 function OpeningFields({ opening }: { opening: Opening }) {
@@ -131,7 +131,7 @@ function OpeningFields({ opening }: { opening: Opening }) {
   const update = (patch: Partial<Opening>) =>
     submit({ type: 'update-opening', id: opening.id, patch });
   return (
-    <FieldGroup>
+    <Form.Group>
       <Numeric label={t('offset')} value={opening.offset} onCommit={(v) => update({ offset: v })} />
       <Numeric
         label={t('holeWidth')}
@@ -198,7 +198,7 @@ function OpeningFields({ opening }: { opening: Opening }) {
           </div>
         </>
       )}
-    </FieldGroup>
+    </Form.Group>
   );
 }
 

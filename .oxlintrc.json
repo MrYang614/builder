@@ -49,7 +49,7 @@
   },
   "overrides": [
     {
-      "files": ["apps/desktop/src/**/*.{ts,tsx}", "packages/*/src/**/*.{ts,tsx}"],
+      "files": ["apps/*/src/**/*.{ts,tsx}", "packages/*/src/**/*.{ts,tsx}"],
       "rules": {
         "typescript/no-explicit-any": "error",
         "eslint/no-console": [

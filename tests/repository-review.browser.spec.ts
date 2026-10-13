@@ -18,7 +18,7 @@ test('focusing a precise numeric field preserves the formal value and history', 
   await elevation.fill('0.123456789');
   await elevation.press('Enter');
   await page.getByRole('button', { name: '新增楼层', exact: true }).click();
-  await page.locator('.floor-item').first().click();
+  await page.locator('.floor-list button').first().click();
   const before = await documentOf(page);
   await elevation.focus();
   await elevation.press('Tab');

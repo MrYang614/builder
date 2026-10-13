@@ -1,5 +1,50 @@
 # UI 与组合模式审查
 
+## 基础 UI 家族与 Storybook 独立双路审查（2026-10-13）
+
+对象是统一基础组件、正式应用调用迁移与新的组件开发工坊。保留紧凑离线编辑器的 Operate 身份，工坊采用 Operate／Read 信息顺序：目录 → 真实预览 → TSX／JSON → props／键盘说明；没有另建 mock 样式或把开发工具放进正式Canvas。实际应用固定 frontend-design、Composition Patterns、React／shadcn 与 Impeccable 的 audit、critique、harden、polish；底层 primitives 继续负责成熟焦点／键盘／定位，命名空间仅组织静态家族，只有字段关联等共享状态才使用context。
+
+### 独立 A／B：修复前的原始评估
+
+A在未收到B结论前完成自己的源码和真实浏览器审查；B独立读取源码并观察目录、Input、Dialog、Select及亮暗／窄容器，再收集DOM量测。两路原文、不同采样范围和限制完整保留，未合并成虚假的修复后新评分。
+
+| 审查                     | 原始结果                                              | 方法、实际发现与证据                                                                                                                                                                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A：设计／可用性 critique | Nielsen十项31／40；认知负荷中等                       | 1440×1000、420×1000的真实浏览器操作；目录与双语建筑内容特异性通过。发现窄屏溢出、默认值混入示例、复制旧revision仍显示Copied、草稿寿命说明过晚。`review-a/assessment-a.md`；A通过CUA展示图片，没有自行写本地PNG，不虚构A本地截图。                                                                               |
+| B：technical audit       | 16／20：可访问性3、性能3、响应式2、主题4、实现一致性4 | 独立1280×720／420×1000浏览器与源码检查；确认工坊溢出和Select搜索焦点缺乏明显ring。原始量测、主题对比、错误恢复及焦点记录在 `review-b/assessment-b.md` 和其同目录图片／JSON。                                                                                                                                    |
+| B：机械 detector         | 单次exit0；JSON `[]`，无规则／位置／误报              | `.agents/skills/impeccable/scripts/impeccable.cmd detect --json packages/ui/src/components apps/storybook/src apps/desktop/src/ui apps/desktop/src/App.tsx`；原始输出 `review-b/detector-output.json` / `detector-exit.txt`。无live脚本注入或可见detector overlay；遵守只读DOM契约，使用截图／DOM／控制台证据。 |
+
+B量测的语义颜色样本：亮色正文14.19:1、次级文字对background5.64:1／card6.05:1；暗色正文13.47:1、次级文字8.50:1／7.72:1。它们只证明所采样色对，不宣称所有状态WCAG认证。Blob URL、HMR监听和TextArea observer的源码清理责任已检查；这不等同长期heap／VRAM性能验收。B曾使用不存在的story URL产生NoStoryMatchError，随后从真实目录修正；该调查失误和第三方manager警告保留，不列为产品缺陷。
+
+### 集中 harden／polish 与复验
+
+| 实际问题                                                               | 修复与消费变化                                                                                                   | 本次证据／范围                                                                                                                                                  |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 420px页面可用410px、scrollWidth462px；grid直接子项约446px              | 外层grid改为可收缩列，子项min-width:0；仅props表内保留横向滚动，组件本身继续使用语义width                        | A/B原始量测与截图保留；`catalog.spec.ts`窄CJK／浮层用例在最新完整64／64中通过。                                                                                 |
+| Select的Search options虽focus-visible但outline／shadow均none           | 搜索输入使用共享ring语义token，不覆盖active option提示；Input.Search还移除原生清空与共享动作重叠                 | `inputs.spec.ts`精确focus-visible/ring与当前搜索值断言；`manual-browser/search-cancel-hit-area.json`保留原生／共享命中观察。                                    |
+| props默认值混入当前示例，部分props重复                                 | Component default与Example baseline分列；required／not set／库默认明确区别，schema与文档默认值审计               | `playground.spec.ts`默认值／基线／重复props专项，最新完整通过；源码类型仍是最终契约。                                                                           |
+| 复制后继续改TSX仍显示Copied                                            | copied反馈关联所复制的源码revision，编辑后恢复可复制动作状态                                                     | A原始问题保留；Playground源码修复，完整代码／配置／错误恢复及重置浏览器用例通过。未冒充系统剪贴板跨应用验收。                                                   |
+| 草稿寿命提示只在长props表之后                                          | 操作区域增加简短页面内存／离开／刷新／重置说明，底部仍有完整边界                                                 | manual静态快照显示提示紧邻操作和预览；不把提示当作存储测试替代品。                                                                                              |
+| Reset在代码／配置都未改时不能恢复示例内部state                         | 显式reset revision令同一基线重新挂载；Controls／JSON保持单一args                                                 | `reset restores baseline component state without code or configuration edits`真实React计数专项通过。                                                            |
+| Radix延迟焦点时快速keyup可能丢Radio／Segmented选择                     | 共用同步导航helper，保留Radix roving focus／disabled／loop／RTL；按每个gesture去重发布                           | Radio组快速箭头、禁用跳过／环回／修饰键与一次回调，Segmented一次回调均在最新输入／组织用例通过。没有给测试加按键延时掩盖问题。                                  |
+| Dialog捕获Escape阻止dismiss后，Input提前因defaultPrevented返回         | 草稿拥有的Escape在IME保护之后、一般prevented返回之前处理；只还原草稿，不误关闭弹窗                               | `components.spec.ts`真实输入草稿Escape、Tab trap与opener焦点；输入精度／拒绝／IME／外部值专项通过。                                                             |
+| Toggle label未指定时覆盖已有aria-label                                 | 显式label与原可访问名称按优先级合并，保留图标开关名字                                                            | 正式应用吸附／相机与原A35中英×亮暗状态路径复验；不删除原可访问名称断言。                                                                                        |
+| 错误行在footer动作mousedown到click之间因blur提交增减，动作移位         | 仅普通按钮的指针focus延到click capture；动作回调之前仍使先前字段blur并确认草稿，键盘路径保持                     | 原A35严格四组合4／4通过；来源 `editor-state-repair3.log`／同名结果JSON。没有屏蔽blur提交或降低原关闭断言。                                                      |
+| Storybook标准Controls提供Update story／Create new story保存入口        | 官方 `controls.disableSaveFromUI: true` 关闭；不添加写文件API，不仅靠“没有自动保存”文案                          | 精确absence断言在最终完整64／64通过；check、类型、两生产构建通过，标准保存动作不再出现。                                                                        |
+| Storybook manager刷新保留临时args，Reset误用Default而非当前variant基线 | 首次进入用公开resetArgs恢复context.initialArgs；HMR恢复跳过初始化重置，Controls更新仍即时生效                    | manager-memory.spec.ts Default／Disabled两项全页面reload、实际侧栏Large→返回、variant Reset及Controls／字段／代码／JSON一致通过；6008最终静态构建人工复验通过。 |
+| 可选ReviewProvider把含临时args的URL写入sessionStorage                  | 核对锁定10.6.2源码与官方typed feature，显式features.experimentalReview=false关闭可选ReviewUI                     | 首轮5通过／2失败存储报告完整保留；同7项严格复验7／7、最终64／64，全localStorage／sessionStorage／IndexedDB编辑前后相等；未过滤第三方key或放宽断言。             |
+| 消费层重复修正基础外观与低层拼装                                       | 全部基础家族高层封装，约82行重复CSS删除；Form字段语义、Button.Icon提示、Select options、Dialog内容与footer进入UI | `UI-COMPONENTS.md`35家族矩阵、公开导出／架构门禁；应用没有primitive引用或公共className/style外观透传。                                                          |
+
+新增确认对话框保留拒绝后的可修正错误、pending防重和迟到请求隔离；字段错误默认可播报，业务已有全局alert时用Form.Item announceError=false避免同一错误重复。窄／长文本通过显式Button.wrap和有界Tooltip，不把任意CSS换名为配置。portal与预览文档共用双主题token，减少动画偏好使用motion-safe／motion-reduce处理。没有引入新的UI原始颜色、独立样式副本或GPU owner。
+
+### 交付复验、图片查看与仍然成立的限制
+
+完整Storybook64／64通过，35家族294stories／35docs；编译／非法JSON／runtime异常分别隔离、改正后恢复、Controls／JSON一致、页面内存草稿、HMR和reset均有真实用例。干净npm ci、format／lint:fix／check、五套TS、374／41文件单元、Rust25、桌面前端及Storybook静态build通过。6008静态构建另经实际TSX／JSON修改、多组件／React状态及Reset操作，截图和DOM文本在 `manual-browser/`。根任务逐张打开18张审查截图及输入4图、菜单2图、manager两变体与正式编辑器代表截图；实际已查看清单及SHA在最终 `INDEX.md`／`screenshots-index.json` 登记，不把所有自动图片一律算作已审。
+
+正式编辑器同源同断言独占GPU60／60通过，约3分钟，含Renderer身份、字段／历史、保存／导出和资源循环；原56／4、并发58／2的严格失败仍保留。`review-b/hardware-failure-analysis.md`对并发geometry4／预期3以及首采样10秒仍0只给事实，不能从独占通过反推原因。机械检测没有重跑凑零问题，A/B也没有人为升为修复后满分。
+
+证据统一目录为 `test-results/ui-foundation-2026-10-13/`，最终 `validation.json` / `INDEX.md`汇总命令、环境、SHA、原始失败、图片和Controls保存入口最后复验。浏览器样本不是Windows原生／macOS、屏幕阅读器、DPI多屏、物理触摸／触控板、200%缩放、长期内存或Q5基准。原生GUI停止边界和不干扰1420继续有效；最新exe／NSIS未重打包，旧二进制不包含本轮UI。编译器执行受信任本地示例，不是隔离不可信JavaScript的安全沙箱。
+
 ## 全仓代码审查的 UI 修复（2026-10-11）
 
 对象是主编辑器、楼层／属性与设置弹窗。先读取固定 frontend-design、Composition Patterns、Impeccable context／audit／harden／craft-floor，保持现有 Operate 界面。没有替换设计风格或引入颜色。detector 最终运行 exit0、无标准输出；这不替代实际浏览器交互和截图检查。

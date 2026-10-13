@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent, type ReactNode } from 'react';
 import { Copy, Square, Minus, X } from 'lucide-react';
-import { IconButton } from '@building/ui';
+import { Button } from '@building/ui';
 import { createWindowControls, type WindowControls as NativeWindowControls } from '../platform';
 import { useEditor } from '../app/services';
 import { useLanguage } from './i18n';
@@ -93,28 +93,25 @@ export function HeaderWindow({ children, actions }: { children: ReactNode; actio
         {actions}
         {controls && (
           <fieldset className="window-controls" aria-label={t('app')}>
-            <IconButton
+            <Button.Icon
               label={t('windowMinimize')}
+              icon={Minus}
               disabled={pending}
               onClick={() => void act(() => controls.minimize())}
-            >
-              <Minus aria-hidden="true" />
-            </IconButton>
-            <IconButton
+            />
+            <Button.Icon
               label={t(maximized ? 'windowRestore' : 'windowMaximize')}
+              icon={maximized ? Copy : Square}
               disabled={pending}
               onClick={() => void act(() => controls.toggleMaximize())}
-            >
-              {maximized ? <Copy aria-hidden="true" /> : <Square aria-hidden="true" />}
-            </IconButton>
-            <IconButton
+            />
+            <Button.Icon
               label={t('windowClose')}
-              className="window-close"
+              icon={X}
+              variant="danger-ghost"
               disabled={pending}
               onClick={() => void act(() => controls.close())}
-            >
-              <X aria-hidden="true" />
-            </IconButton>
+            />
           </fieldset>
         )}
       </div>
