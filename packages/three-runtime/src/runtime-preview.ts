@@ -17,8 +17,6 @@ export class RuntimePreview {
   private revision = -1;
   private valid = true;
   private error = '';
-  private lengthSignature = '';
-  private lastStatus = 0;
   private disposed = false;
 
   constructor(
@@ -71,6 +69,15 @@ export class RuntimePreview {
     }
     if (result.ok && this.error) {
       this.snapping.restoreFeedback();
+      this.options.status(
+        command.type.startsWith('update-')
+          ? 'hintSelect'
+          : 'start' in data
+            ? 'hint.end'
+            : 'polygon' in data
+              ? 'hint.slabEnd'
+              : 'hintPlace',
+      );
     }
     this.error = error;
     (this.mesh.material as THREE.MeshBasicMaterial).color.set(
@@ -85,17 +92,7 @@ export class RuntimePreview {
         (data.start.z + data.end.z) / 2,
       );
       this.mesh.rotation.y = -Math.atan2(data.end.z - data.start.z, data.end.x - data.start.x);
-      const signature = `${document.revision}:${length.toFixed(2)}`;
-      if (
-        result.ok &&
-        !this.snapping.hasTarget() &&
-        signature !== this.lengthSignature &&
-        performance.now() - this.lastStatus > 100
-      ) {
-        this.options.status('hint.length', { length: length.toFixed(2) });
-        this.lastStatus = performance.now();
-        this.lengthSignature = signature;
-      }
+      this.snapping.setDimensions(`${length.toFixed(2)} m`);
     } else if ('polygon' in data) {
       const xs = data.polygon.map((point) => point.x);
       const zs = data.polygon.map((point) => point.z);
@@ -106,6 +103,7 @@ export class RuntimePreview {
       this.mesh.scale.set(x1 - x0, data.thickness, z1 - z0);
       this.mesh.position.set((x0 + x1) / 2, data.elevation - data.thickness / 2, (z0 + z1) / 2);
       this.mesh.rotation.y = 0;
+      this.snapping.setDimensions(`${(x1 - x0).toFixed(2)} × ${(z1 - z0).toFixed(2)} m`);
     } else {
       const wall = document.walls.find((candidate) => candidate.id === data.wallId);
       if (!wall) {
@@ -121,6 +119,7 @@ export class RuntimePreview {
         wall.start.z + (wall.end.z - wall.start.z) * t,
       );
       this.mesh.rotation.y = -Math.atan2(wall.end.z - wall.start.z, wall.end.x - wall.start.x);
+      this.snapping.setDimensions(`${data.width.toFixed(2)} × ${data.height.toFixed(2)} m`);
     }
     this.mesh.visible = true;
     return result;
@@ -133,7 +132,7 @@ export class RuntimePreview {
     }
     this.token = null;
     this.revision = -1;
-    this.lengthSignature = '';
+    this.snapping.setDimensions('');
     this.error = '';
   }
 

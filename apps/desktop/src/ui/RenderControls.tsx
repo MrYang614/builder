@@ -1,11 +1,18 @@
-import { ImageDown, Pause, Play, Sparkles, Square } from 'lucide-react';
+import { ImageDown, Pause, Play, Square } from 'lucide-react';
 import { Button } from '@building/ui';
 import { useEditor, useSignal } from '../app/services';
 import { savePNG } from '../platform';
 import { useLanguage } from './i18n';
+import { RenderDialog } from './RenderDialog';
 
 // RenderControls exposes path tracing lifecycle actions and sample progress.
-export function RenderControls() {
+export function RenderControls({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const { runtimeRef, busy, renderState, notice } = useEditor();
   const state = useSignal(renderState),
     isBusy = useSignal(busy),
@@ -37,22 +44,11 @@ export function RenderControls() {
   const transitionBusy = state.switching || state.pathStatus === 'building';
   return (
     <div className="render-controls" aria-label={t('render.title')}>
-      <span className="render-mode-label">
-        <Sparkles aria-hidden="true" />
-        {pathActive ? t(`render.${state.pathStatus}`) : t('render.idle')}
-      </span>
-      <Button
-        size="sm"
-        variant={pathActive ? 'outline' : 'default'}
-        disabled={isBusy || state.switching || (!pathActive && state.pathStatus === 'building')}
-        onClick={() => void runtimeRef.current?.setPathTracing(!pathActive)}
-      >
-        {pathActive ? <Square aria-hidden="true" /> : <Play aria-hidden="true" />}
-        {t(pathActive ? 'render.raster' : 'render.start')}
-      </Button>
+      <RenderDialog open={open} onOpenChange={onOpenChange} />
       {pathActive && (
         <>
-          <output className="render-sample-readout">
+          <output className="render-sample-readout" aria-live="off">
+            {t(`render.${state.pathStatus}`)} ·{' '}
             {t('render.samples', {
               samples: Math.floor(state.samples),
               target: state.targetSamples,
@@ -64,8 +60,21 @@ export function RenderControls() {
             disabled={transitionBusy}
             onClick={() => runtimeRef.current?.pausePathTracing(state.pathStatus !== 'paused')}
           >
-            <Pause aria-hidden="true" />
+            {state.pathStatus === 'paused' ? (
+              <Play aria-hidden="true" />
+            ) : (
+              <Pause aria-hidden="true" />
+            )}
             {t(state.pathStatus === 'paused' ? 'render.resume' : 'render.pause')}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isBusy || state.switching}
+            onClick={() => void runtimeRef.current?.setPathTracing(false)}
+          >
+            <Square aria-hidden="true" />
+            {t('render.raster')}
           </Button>
           <Button
             size="sm"

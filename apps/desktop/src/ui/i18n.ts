@@ -1,6 +1,7 @@
 import { createContext, use, useEffect, useState, type ReactNode, createElement } from 'react';
 import { extraMessages } from './errors';
 import { renderMessages } from './render-messages';
+import { editingMessages } from './editing-messages';
 export type Language = 'en' | 'zh-CN';
 const en = {
   app: 'Building editor',
@@ -137,11 +138,7 @@ const en = {
   snapWallEdge: 'Snapped to a wall edge',
   snapSlabEdge: 'Snapped to a slab edge',
   snapGrid: 'Snapped to the grid',
-  hintStart: 'Click a start point. Right drag rotates, Shift + right drag pans.',
   hintEnd: 'Click the end point. Esc cancels the draft.',
-  hintSelect: 'Click to select. Drag a wall endpoint, a slab or a door/window to edit.',
-  hintPlace: 'Move over a wall on the current level, then click to place.',
-  hintMaterial: 'Click a wall or slab surface, then edit its material.',
   hintLength: 'Length: {length} m',
   geometryFailed: 'Geometry generation failed: {reason}',
   resourceFailed: 'Image loading failed: {reason}',
@@ -332,11 +329,7 @@ const zh: Record<Key, string> = {
   snapWallEdge: '已吸附到墙边线',
   snapSlabEdge: '已吸附到楼板边线',
   snapGrid: '已吸附到网格',
-  hintStart: '点击起点。右键拖动旋转，Shift＋右键拖动平移。',
   hintEnd: '点击终点。Esc 取消当前草稿。',
-  hintSelect: '点击选择，拖动墙端点、楼板或门窗进行编辑。',
-  hintPlace: '移到当前层墙面预览，然后点击放置。',
-  hintMaterial: '点击墙体或楼板表面，再设置对应材质。',
   hintLength: '长度：{length} m',
   geometryFailed: '几何生成失败：{reason}',
   resourceFailed: '图片加载失败：{reason}',
@@ -440,6 +433,7 @@ export function translate(
   let text =
     renderMessages[lang][key] ??
     extraMessages[lang][key] ??
+    editingMessages[lang][key] ??
     map[(codes[key] ?? key) as Key] ??
     map.error;
   for (const [k, v] of Object.entries(params)) {
@@ -490,10 +484,16 @@ export function useLanguage() {
   return c;
 }
 export const languageKeys = {
-  en: [...Object.keys(en), ...Object.keys(extraMessages.en), ...Object.keys(renderMessages.en)],
+  en: [
+    ...Object.keys(en),
+    ...Object.keys(extraMessages.en),
+    ...Object.keys(renderMessages.en),
+    ...Object.keys(editingMessages.en),
+  ],
   zh: [
     ...Object.keys(zh),
     ...Object.keys(extraMessages['zh-CN']),
     ...Object.keys(renderMessages['zh-CN']),
+    ...Object.keys(editingMessages['zh-CN']),
   ],
 };

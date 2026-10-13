@@ -1267,6 +1267,31 @@ describe('production render owners with owned allocation fakes (no GPU claim)', 
     expect(requestFrame).toHaveBeenCalledTimes(1);
   });
 
+  test('an asynchronously accepted panorama invalidates temporal history after the prior view has settled', async () => {
+    const value = runtime();
+    const invalidateHistory = vi.fn();
+    value.postProcessing = {
+      state: { ...value.renderState.postProcessing, history: 'stable' },
+      render: vi.fn(() => false),
+      update: vi.fn(),
+      setSize: vi.fn(),
+      invalidateHistory,
+      dispose: vi.fn(),
+    };
+    const delayed = deferred<THREE.Texture>();
+    loadTexture.mockReturnValueOnce(delayed.promise);
+    const document = project(panorama('late-panorama'));
+    value.previous = document;
+    const accepting = value.applyEnvironment(document);
+    expect(invalidateHistory).not.toHaveBeenCalled();
+    const original = new THREE.Texture();
+    delayed.resolve(original);
+    await accepting;
+    expect(value.scene.environment).toBe(original);
+    expect(invalidateHistory).toHaveBeenCalledOnce();
+    value.dispose();
+  });
+
   test('old version-one documents keep absent environment fields and defaults do not mutate the project', () => {
     const document = project();
     delete document.environment;

@@ -204,3 +204,25 @@ H01–H06 的完整要求、实现、测试、证据来源和限制见 [HEADER-L
 | 大型工程真实循环与导出保持资源、几何和动画 | 原50循环／5下载／GPU计数／独立Validator断言保持；同一测试在软件和实际GPU分别执行 | 软件SwiftShader原600秒限时失败，完成20轮／2导出；实际RTX4070 SUPER完整50轮／5导出通过、Validator错误／警告均0；最终资源20轮另通过 | 验证通过 | 通过范围为硬件Chromium WebGL业务回归；软件GPU项仍验证失败，原trace保留；不是原生或Q5正式FPS／P95验收 |
 
 没有将浏览器／模拟IPC结果标为桌面验收；未启动新原生GUI或执行安装。固定Skills、生成token CSS、原PRD及历史验收行未修改。首次完整浏览器执行的export-samples刷新了共享最新输出，已保存到隔离目录并修正后续输出路径；具体原始记录及去重方式见本轮验证JSON。
+
+## 实际操作 UI／UX 审查验收补充（2026-10-13）
+
+本表仅增加本轮要求／实现／测试／证据／限制，不改原 A01–A42 条件或历史状态。最新明确决定仍是只保留亮色和暗色。所有浏览器行为状态只适用于本列明的前端环境，不补填 Tauri／macOS 或真实系统窗口验收。
+
+| 要求 | 实现 | 测试与本次证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 鼠标点击／绘制／拖动 Canvas 不留下键盘蓝框，键盘仍有清楚焦点 | 容器捕获来源、仅Canvas pointer outline屏蔽、blur清理及键盘恢复 | uiux.browser 的 Enter→鼠标／Tab／Shift+Tab／Canvas键盘；UI-REVIEW UX01前后与键盘截图 | 验证通过 | Chromium真实合成鼠标／键盘；原生OS焦点／屏幕阅读器仍未验 |
+| 实时渲染入口、关联采样配置、状态与操作路径清楚 | 公开DialogTrigger＋关联Dialog；保留普通预览与渐进光追、暂停／继续／退出／进度／错误重试／PNG；移除重复Canvas进度 | rendering-ui四组合／两尺寸与focus return；rendering真实16采样／PNG／三次释放；WebGPU6／6、背景／小HDR／环境PNG/JPEG／模式切换／真实WGSL故障恢复 | 验证通过 | GPU证据是浏览器，不是WebView2或macOS；首次冷编译严格超时保留，不承诺启动时间 |
+| 绘制提示不被吸附／尺寸覆盖，取消和连续绘制保持可靠 | editHint与snapFeedback分层；runtime局部尺寸／坐标；草稿隐藏empty；拒绝终点／dismiss恢复阶段 | uiux stage／snap／camera／连续墙／Esc／undo；snapping7项和runtime7项完整回归；UI-REVIEW UX03 | 验证通过 | 有完整行为断言；旧草稿没有同视角截图，不伪造视觉差异 |
+| 数值可读且不隐式改变正式精度或历史 | 15位有效数字仅作显示，edited gate保护原值与精确输入 | numeric-display单元2项／真实浏览器；未编辑Enter／blur、极小值、拒绝／取消／undo／redo | 验证通过 | 米制十进制输入保持；显示不是工程精度或测量误差承诺 |
+| 整栋只读预览不能用历史入口更改工程 | 顶部Undo／Redo禁用，场景Ctrl／Cmd历史快捷键阻断，文本作用域优先 | uiux readonly UI／Ctrl+Z／Y／Shift+Z 精确文档＋history比较，退出后恢复 | 验证通过 | 浏览器输入保护；实际macOS Command硬件未验 |
+| 纠正命令后旧错误消失且不会污染草稿或历史 | 成功submit清旧error，Alert正文单处，状态栏／dismiss使用最近阶段 | height0拒绝→2.9接受一条历史；非法重叠终点→dismiss→同草稿继续；UX06同保存工程前后截图 | 验证通过 | 真实非法输入复现，不注入异常正式状态 |
+| 当前源码无遗漏图标404，等待完整GPU工作才认定idle | native32PNG公开引用；pendingFrame包含in-flight／requested工作并保持原shape | 首套十项favicon404 trace→补齐；scheduler deferred单元；原八帧严格稳定断言WebGPU final通过 | 验证通过 | 正常ANGLE编译／上游deprecation警告与受控故障日志保留，没有过滤错误制造通过 |
+| WebGPU普通预览与语义背景、全景策略一致 | runtime在TRAA临时reset前固定beauty MRT清屏色／alpha；Scene Color优先，环境仍由原场景绘制，法线／速度附件不变 | 真实菜单复现黑Canvas；原硬件像素回归失败保留；六项pinned状态／pass单元、亮暗／四AO×AA／lighting-only／panorama硬件回归通过，主题不换Renderer或改工程／history；UX08前后截图 | 验证通过 | 实际Chromium WebGPU像素证明；不代替原生WebView2或macOS，首80项未覆盖画面差异的通过报告保留 |
+| 合法小全景图在两后端正常照明且不污染原图／工程 | runtime独立照明派生纹理满足PMREM最低尺寸；原图供背景／光追，异步提交清后处理历史、双owner逐项释放并保留首因 | 原4×2 HDR真实导入两后端黑墙／64×32对照和before像素失败保留；after真实墙面5×5像素／原embedded字节通过；原PNG/JPEG32×16／source身份／16samples精确断言全部保留，observer对齐原背景与独立IBL；helper／owner迟到、clear、replace、unmount及cleanup故障矩阵 | 验证通过 | 新的派生纹理是runtime实现，不修改正式资源尺寸／数据或输出；浏览器照明不代替原生GPU或全部可能全景图认证 |
+| 修复后核心编辑、保存重开、导出和资源所有权保持 | Core统一命令与不可变快照；无UI GPU owner；Renderer不因主题／语言／弹窗重建 | 当前源码单元369／40文件、Rust25、四套TS、check／build；完整浏览器80／80与WebGPU6／6；20资源循环／50大型工程循环／5导出；实际GLB Validator零错零警告、独立门动画 | 验证通过 | 保存文件／选择器使用浏览器开发适配器；Rust IO临时目录不冒充真实磁盘满或原生GUI |
+| 最新Windows源码可构建与打包，产物可追溯 | Tauri release＋NSIS，176项构建输入前后SHA一致，17项dist资源及图标核对 | validation/tauri-build.log、frontend-assets.json、release/artifacts.json；exe／NSIS当前哈希 | 验证通过 | 仅构建／打包通过，未签名、未安装、未启动 |
+| 最新桌面产物冒烟及双平台完整验收 | 当前1600×900／min900×600配置与平台边界保留 | 历史用户物理Escape停止仍有效，本轮无新原生GUI；生产网页4组另列 | 环境阻塞 | 需最新Tauri安装／启动／关闭／WebView输入GPU与macOS实机、迁移、触控板／DPI等验证；网页不代替桌面 |
+| 正式系统／硬件与性能、冷启动验收条件明确 | 原Q5仍未由本轮自行决定 | cold首次严格10秒超时／21.314秒观测上界与后续相同断言通过均保留；本次相对计时 | 需求待确认 | 需确认Windows／macOS目标系统与硬件、性能／冷启动预算；真实设备丢失与初心者任务未验 |
+
+本轮最终来源、逐命令日志／测试报告、原始失败、截图查看清单及产物哈希见 `uiux-review-validation.json` 与 `.test-artifacts/uiux-20261013/`。Impeccable仅单次静态detector，未发现项不表示完整WCAG或原生验收。原始PRD、固定Skills、生成token CSS与历史证据没有回写。发布状态仍受上表具体缺口阻塞。

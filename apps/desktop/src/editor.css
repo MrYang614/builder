@@ -298,6 +298,9 @@ input[type='checkbox'] {
   outline: 2px solid var(--ring);
   outline-offset: -2px;
 }
+.viewport canvas[data-focus-origin='pointer']:focus-visible {
+  outline: none;
+}
 .viewport-empty {
   position: absolute;
   top: 25px;
@@ -313,6 +316,9 @@ input[type='checkbox'] {
   border-radius: 6px;
   padding: 12px;
   z-index: 1;
+}
+.viewport:has([data-draft-active='true']) .viewport-empty {
+  display: none;
 }
 .viewport-mode {
   position: absolute;
@@ -379,7 +385,8 @@ input[type='color'] {
   right: 14px;
   max-width: 600px;
 }
-.settings-dialog {
+.settings-dialog,
+.render-dialog {
   max-height: calc(100dvh - 48px);
   overflow-y: auto;
 }
@@ -402,18 +409,6 @@ input[type='color'] {
   height: 16px;
   accent-color: var(--primary);
 }
-.viewport-render-state {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  padding: 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--foreground);
-  background: var(--card);
-  pointer-events: none;
-  font-size: 12px;
-}
 .status-bar {
   display: flex;
   justify-content: space-between;
@@ -434,6 +429,10 @@ input[type='color'] {
 }
 .status-bar > span:last-child {
   white-space: nowrap;
+}
+.status-bar [data-testid='snap-feedback'] {
+  margin-left: auto;
+  flex-shrink: 0;
 }
 [data-slot='dialog-content'],
 [data-slot='select-content'] {

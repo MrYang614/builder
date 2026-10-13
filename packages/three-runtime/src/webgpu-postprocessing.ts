@@ -1,3 +1,4 @@
+import { Color } from 'three';
 import type { Camera, Scene } from 'three';
 import { Node, RenderPipeline } from 'three/webgpu';
 import { builtinAOContext, mrt, normalView, output, pass, screenUV, velocity } from 'three/tsl';
@@ -35,6 +36,8 @@ export class WebGPURasterPostProcessing implements RasterPostProcessor {
   private readonly pipeline: RenderPipeline;
   private readonly prePass;
   private readonly scenePass;
+  private readonly sceneMRT;
+  private readonly clearColor = new Color();
   private readonly aoPass;
   private readonly taaPass;
   private options: PostProcessingOptions;
@@ -43,8 +46,8 @@ export class WebGPURasterPostProcessing implements RasterPostProcessor {
   private disposed = false;
 
   constructor(
-    renderer: WebGPURenderer,
-    scene: Scene,
+    private readonly renderer: WebGPURenderer,
+    private readonly scene: Scene,
     camera: Camera,
     options: PostProcessingOptions,
   ) {
@@ -57,7 +60,8 @@ export class WebGPURasterPostProcessing implements RasterPostProcessor {
     const prePassNormal = this.prePass.getTextureNode('output');
 
     this.scenePass = pass(scene, camera);
-    this.scenePass.setMRT(mrt({ output, normal: normalView, velocity }));
+    this.sceneMRT = mrt({ output, normal: normalView, velocity });
+    this.scenePass.setMRT(this.sceneMRT);
     this.aoPass = ao(prePassDepth, prePassNormal, camera);
     this.aoPass.resolutionScale = 0.75;
     this.aoPass.radius.value = 0.65;
@@ -118,7 +122,16 @@ export class WebGPURasterPostProcessing implements RasterPostProcessor {
     this.history = 'invalid';
   }
 
+  /** Pins the beauty clear before nested effects reset renderer state; scene backgrounds stay borrowed. */
   render(): boolean {
+    const background = this.scene.background;
+    // TRAA resets renderer clear to black before lazily evaluating scenePass. The beauty
+    // attachment must retain the viewport color independently of normal/velocity clears.
+    this.sceneMRT.setClearColor(
+      'output',
+      background instanceof Color ? background : this.renderer.getClearColor(this.clearColor),
+      background instanceof Color ? 1 : this.renderer.getClearAlpha(),
+    );
     this.pipeline.render();
     if (this.options.taa && this.framesRemaining > 0) {
       this.framesRemaining -= 1;

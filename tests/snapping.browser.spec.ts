@@ -1,4 +1,5 @@
 import { evidencePath } from './evidence-path';
+import { startPathTracing } from './render-controls';
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -327,7 +328,7 @@ test('disabled and Alt input remain raw; repeated toggles preserve history and l
   expect((await diagnostics(page)).snap.markerVisible).toBe(false);
   await page.getByRole('checkbox', { name: '整栋预览（只读）', exact: true }).uncheck();
   await moveWorld(page, 2.04, -1.04);
-  await page.getByRole('button', { name: '开始光追', exact: true }).click();
+  await startPathTracing(page);
   await expect.poll(async () => (await diagnostics(page)).render.mode).toBe('pathtrace');
   await expect(page.getByRole('button', { name: '吸附', exact: true })).toBeDisabled();
   expect((await diagnostics(page)).snap.markerVisible).toBe(false);

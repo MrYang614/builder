@@ -10,7 +10,13 @@ import {
   SelectGroup,
   SelectItem,
 } from '@building/ui';
-/** Keeps exact formal precision; focus and blur without edits never create a command. */
+/** Removes binary arithmetic tails only in the display; tiny values never round to zero. */
+function numericDisplay(value: number): string {
+  const rounded = Number(value.toPrecision(15));
+  return String(Number.isFinite(rounded) && (rounded !== 0 || value === 0) ? rounded : value);
+}
+
+/** Keeps exact formal precision; untouched display formatting never creates a command. */
 export function Numeric({
   label,
   value,
@@ -22,19 +28,19 @@ export function Numeric({
 }) {
   const id = useId(),
     ref = useRef<HTMLInputElement>(null),
-    [draft, setDraft] = useState(String(value)),
+    [draft, setDraft] = useState(numericDisplay(value)),
     [invalid, setInvalid] = useState(false),
     [edited, setEdited] = useState(false);
   useEffect(() => {
     if (document.activeElement !== ref.current) {
-      setDraft(String(value));
+      setDraft(numericDisplay(value));
       setInvalid(false);
       setEdited(false);
     }
   }, [value]);
   const commit = () => {
     if (!edited) {
-      setDraft(String(value));
+      setDraft(numericDisplay(value));
       setInvalid(false);
       return;
     }
@@ -75,7 +81,7 @@ export function Numeric({
             commit();
           }
           if (e.key === 'Escape') {
-            setDraft(String(value));
+            setDraft(numericDisplay(value));
             setEdited(false);
             setInvalid(false);
             e.stopPropagation();

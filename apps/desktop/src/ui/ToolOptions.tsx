@@ -14,7 +14,13 @@ import { RenderControls } from './RenderControls';
 import { useLanguage } from './i18n';
 
 // ToolOptions groups camera, editing, preview, and slab controls.
-export function ToolOptions() {
+export function ToolOptions({
+  renderOpen,
+  onRenderOpenChange,
+}: {
+  renderOpen: boolean;
+  onRenderOpenChange: (open: boolean) => void;
+}) {
   const { session, camera, runtimeRef, renderState } = useEditor(),
     s = useSession(),
     doc = useDocument(),
@@ -44,7 +50,7 @@ export function ToolOptions() {
           {t('topView')}
         </Button>
       </div>
-      <RenderControls />
+      <RenderControls open={renderOpen} onOpenChange={onRenderOpenChange} />
       <Tooltip>
         <TooltipTrigger asChild>
           <span className="inline-flex">

@@ -20,6 +20,7 @@ export class RuntimeSnapping {
   private readonly hit = new THREE.Vector3();
   private readonly output = document.createElement('output');
   private result: SnapResult | null = null;
+  private dimensions = '';
 
   constructor(
     container: HTMLElement,
@@ -93,7 +94,7 @@ export class RuntimeSnapping {
     );
     this.index.publishFeedback(this.result, this.status);
     this.feedback.update(this.result, y);
-    this.output.textContent = `X ${this.result.point.x.toFixed(3)} · Z ${this.result.point.z.toFixed(3)} m`;
+    this.updateReadout();
     this.output.hidden = !applySnap;
     return this.result.point;
   }
@@ -104,16 +105,24 @@ export class RuntimeSnapping {
     this.clear();
   }
 
-  /** Keeps target feedback visible when a tool would otherwise replace it with a length hint. */
-  hasTarget(): boolean {
-    return !!this.result?.labelKey;
-  }
-
   /** Restores the current target once a previously invalid draft becomes valid. */
   restoreFeedback(): void {
     this.index.clearFeedback();
     if (this.result) {
       this.index.publishFeedback(this.result, this.status);
+    }
+  }
+
+  /** Keeps live dimensions beside coordinates locally, without publishing pointer frames to React. */
+  setDimensions(dimensions: string): void {
+    this.dimensions = dimensions;
+    this.output.dataset.draftActive = String(!!dimensions);
+    this.updateReadout();
+  }
+
+  private updateReadout(): void {
+    if (this.result) {
+      this.output.textContent = `${this.dimensions ? `${this.dimensions} · ` : ''}X ${this.result.point.x.toFixed(3)} · Z ${this.result.point.z.toFixed(3)} m`;
     }
   }
 
@@ -123,6 +132,8 @@ export class RuntimeSnapping {
     this.index.clearFeedback(this.status);
     this.output.hidden = true;
     this.result = null;
+    this.dimensions = '';
+    this.output.dataset.draftActive = 'false';
   }
 
   /** Updates semantic colors and clears feedback whose screen position may have changed. */

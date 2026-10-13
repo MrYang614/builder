@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { startPathTracing } from './render-controls';
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import type { ProjectDocument } from '@building/editor-core';
@@ -145,11 +146,7 @@ test('a real invalid WebGPU environment shader stops sampling, preserves its fir
       return !state.render.switching;
     });
     expect((await diagnostics(page)).actualBackend).toBe('webgpu');
-    await page.getByRole('button', { name: '设置', exact: true }).click();
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await choose(page, '目标采样数', '16');
-    await page.getByRole('button', { name: '关闭', exact: true }).click();
-    await page.getByRole('button', { name: '开始光追', exact: true }).click();
+    await startPathTracing(page, 16);
     await page.waitForFunction(
       () => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();
@@ -209,7 +206,7 @@ test('a real invalid WebGPU environment shader stops sampling, preserves its fir
       () => (window as unknown as Instrumented).__gpuErrorProof.errors.length,
     );
 
-    await page.getByRole('button', { name: '开始光追', exact: true }).click();
+    await startPathTracing(page);
     await page.waitForFunction(
       () => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();

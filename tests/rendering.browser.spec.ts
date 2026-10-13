@@ -1,4 +1,5 @@
 import { evidencePath } from './evidence-path';
+import { startPathTracing } from './render-controls';
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -425,7 +426,6 @@ test('real WebGL path tracing reaches 16 samples pauses resumes downloads a nonu
     background: false,
   });
   expect(initial.environment.resourceId).toBe(document.environment!.resourceId);
-  await choose(page, '目标采样数', '16');
   await page.getByRole('button', { name: '关闭', exact: true }).click();
   const cycles: {
     start: Diagnostics;
@@ -446,7 +446,7 @@ test('real WebGL path tracing reaches 16 samples pauses resumes downloads a nonu
     | undefined;
   for (let index = 0; index < 3; index++) {
     const started = Date.now();
-    await page.getByRole('button', { name: '开始光追', exact: true }).click();
+    await startPathTracing(page, 16);
     await page.waitForFunction(
       () => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();

@@ -40,7 +40,9 @@ export function makeServices(initialError?: string) {
     ),
   );
   const session = new SessionStore(core.getSnapshot().levels[0]!.id);
-  const notice = new Signal<Notice>({ key: initialError ?? 'hintStart', error: !!initialError });
+  const notice = new Signal<Notice>({ key: initialError ?? 'hintSelect', error: !!initialError });
+  const snapFeedback = new Signal('');
+  const editHint = new Signal('hintSelect');
   const busy = new Signal(false);
   const renderState = new Signal(initialRenderState());
   const rendererPreference = new Signal<RendererBackend>(
@@ -88,6 +90,10 @@ export function makeServices(initialError?: string) {
       return false;
     }
     session.reconcile(core.getSnapshot());
+    // A successful correction supersedes the previous command error without losing the tool stage.
+    if (notice.get().error) {
+      notice.set({ key: editHint.get(), error: false });
+    }
     if (result.warnings?.length) {
       notice.set({
         key: result.warnings[0]!.code,
@@ -126,6 +132,8 @@ export function makeServices(initialError?: string) {
     core,
     session,
     notice,
+    snapFeedback,
+    editHint,
     busy,
     renderState,
     rendererPreference,

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { startPathTracing } from './render-controls';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import type { ProjectDocument } from '@building/editor-core';
 import type { ThreeRuntime } from '@building/three-runtime';
@@ -143,7 +144,6 @@ test('actual WebGPU default environment compiles samples and exports PNG without
     await choose(page, '实时渲染器', 'WebGPU');
     await expect.poll(async () => (await diagnostics(page)).actualBackend).toBe('webgpu');
     await page.getByRole('button', { name: '设置', exact: true }).click();
-    await choose(page, '目标采样数', '16');
     const gtao = page.getByRole('checkbox', { name: '接触阴影（GTAO）', exact: true });
     const taa = page.getByRole('checkbox', { name: '时间抗锯齿（TAA / TRAA）', exact: true });
     await gtao.uncheck();
@@ -153,7 +153,7 @@ test('actual WebGPU default environment compiles samples and exports PNG without
     await expect.poll(async () => (await diagnostics(page)).render.postProcessing.taa).toBe(false);
     await taa.check();
     await page.getByRole('button', { name: '关闭', exact: true }).click();
-    await page.getByRole('button', { name: '开始光追', exact: true }).click();
+    await startPathTracing(page, 16);
     await page.waitForFunction(
       () => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();
@@ -231,7 +231,7 @@ test('actual WebGPU default environment compiles samples and exports PNG without
     const baseline = await diagnostics(page);
     const releasedCycles = [baseline];
     for (let cycle = 0; cycle < 2; cycle++) {
-      await page.getByRole('button', { name: '开始光追', exact: true }).click();
+      await startPathTracing(page, 16);
       await page.waitForFunction(() => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();
         return state.pathTracing.stats?.complete || state.render.error;

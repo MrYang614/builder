@@ -11,6 +11,7 @@ const emptyEnvironment = (): EnvironmentSettings => ({
   rotation: 0,
   background: false,
 });
+/** Applies environment edits through Core while preview effects stay owned by the runtime. */
 export function RenderingSettings() {
   const backgroundId = useId();
   const services = useEditor(),
@@ -75,22 +76,7 @@ export function RenderingSettings() {
   };
   return (
     <>
-      <FieldSet disabled={state.switching || busy}>
-        <FieldLegend>{t('render.title')}</FieldLegend>
-        <FieldGroup>
-          {state.switching && <output>{t('render.switching')}</output>}
-          <Choice
-            label={t('render.samplesLabel')}
-            value={String(state.targetSamples)}
-            options={[16, 64, 128, 256, 512].map((value) => ({
-              value: String(value),
-              label: String(value),
-            }))}
-            onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
-          />
-          <p className="render-hint">{t('render.settingsHint')}</p>
-        </FieldGroup>
-      </FieldSet>
+      {state.switching && <output>{t('render.switching')}</output>}
       <FieldSet disabled={busy || state.mode === 'pathtrace' || !state.postProcessing.available}>
         <FieldLegend>{t('render.postProcessing')}</FieldLegend>
         <FieldGroup>

@@ -1,6 +1,11 @@
 const en = {
   'render.title': 'Rendering',
-  'render.settingsDescription': 'Path tracing, render output and environment panorama.',
+  'render.settingsDescription': 'Real-time preview, environment lighting and snapping.',
+  'render.open': 'Real-time rendering',
+  'render.dialogDescription':
+    'Real-time preview updates automatically while you edit. Start progressive path tracing for a higher quality view of the whole building.',
+  'render.pathHint':
+    'More samples reduce noise and take longer. Camera movement or building edits restart accumulation; pause or save the current PNG from the viewport.',
   'render.backend': 'Real-time renderer',
   'render.webgl': 'WebGL',
   'render.webgpu': 'WebGPU',
@@ -65,7 +70,11 @@ const en = {
   invalid_png: 'The rendered output is not a valid PNG.',
 };
 const zh: Record<keyof typeof en, string> = {
-  'render.settingsDescription': '光线追踪、渲染输出和环境全景贴图。',
+  'render.settingsDescription': '实时画面增强、环境光照和吸附设置。',
+  'render.open': '实时渲染',
+  'render.dialogDescription': '编辑时自动更新实时预览。需要更高质量的整栋画面时，可启动渐进光追。',
+  'render.pathHint':
+    '采样越多，噪点越少、耗时越长。移动相机或修改建筑后重新累计；可在视口暂停或保存当前 PNG。',
   'environment.invalid': '环境强度须为 0–10，旋转须为 0–360°。原设置已保留。',
   'environment.invalidAsset': '请选择有效的等距柱状 HDR、EXR、PNG 或 JPEG 全景贴图。',
   'environment.assetTooLarge': '环境贴图超过 64 MiB、单边 8192 像素或 33,554,432 像素限制。',

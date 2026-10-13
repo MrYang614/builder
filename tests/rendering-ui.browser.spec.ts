@@ -1,5 +1,6 @@
 import { evidencePath } from './evidence-path';
 import { choose } from './browser-controls';
+import { openRenderDialog } from './render-controls';
 import { test, expect, type Page, type TestInfo } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -83,7 +84,7 @@ async function focusCycle(page: Page, expectedLabels: string[]) {
   return steps;
 }
 
-test('render settings remain localized focusable and contained in four language theme combinations and a 900x600 viewport', async ({
+test('settings and the viewport render dialog remain localized focusable and contained in four language theme combinations and a 900x600 viewport', async ({
   page,
 }, testInfo) => {
   test.setTimeout(90000);
@@ -97,6 +98,8 @@ test('render settings remain localized focusable and contained in four language 
     theme: string;
     screenshot: string;
     focus: Awaited<ReturnType<typeof focusCycle>>;
+    renderScreenshot: string;
+    renderFocus: Awaited<ReturnType<typeof focusCycle>>;
   }[] = [];
   for (const language of ['zh-CN', 'en'] as const) {
     if (language === 'en') {
@@ -116,6 +119,8 @@ test('render settings remain localized focusable and contained in four language 
             background: 'Show panorama as background',
             import: 'Import panorama',
             start: 'Start path tracing',
+            entry: 'Real-time rendering',
+            gtao: 'Grounded shadows (GTAO)',
             close: 'Close',
             settings: 'Settings',
           }
@@ -131,6 +136,8 @@ test('render settings remain localized focusable and contained in four language 
             background: '将全景显示为背景',
             import: '导入全景贴图',
             start: '开始光追',
+            entry: '实时渲染',
+            gtao: '接触阴影（GTAO）',
             close: '关闭',
             settings: '设置',
           };
@@ -142,8 +149,8 @@ test('render settings remain localized focusable and contained in four language 
         'WebGL',
       );
       await page.getByRole('button', { name: labels.settings, exact: true }).click();
-      await expect(page.getByRole('combobox', { name: labels.samples, exact: true })).toHaveText(
-        '128',
+      await expect(page.getByRole('combobox', { name: labels.samples, exact: true })).toHaveCount(
+        0,
       );
       await expect(page.getByLabel(labels.intensity, { exact: true })).toBeVisible();
       await expect(page.getByLabel(labels.rotation, { exact: true })).toBeVisible();
@@ -151,7 +158,6 @@ test('render settings remain localized focusable and contained in four language 
         page.getByRole('checkbox', { name: labels.background, exact: true }),
       ).toBeVisible();
       const focus = await focusCycle(page, [
-        labels.samples,
         labels.intensity,
         labels.rotation,
         labels.background,
@@ -159,12 +165,30 @@ test('render settings remain localized focusable and contained in four language 
         labels.close,
       ]);
       // Focus the first remaining setting to scroll the modal's beginning into view.
-      await page.getByRole('combobox', { name: labels.samples, exact: true }).focus();
+      await page.getByRole('checkbox', { name: labels.gtao, exact: true }).focus();
       const name = `render-settings-${language === 'en' ? 'en' : 'zh'}-${theme}.png`;
       await page.screenshot({ path: resolve(screenshotDirectory, name) });
-      variants.push({ language, theme, screenshot: resolve(screenshotDirectory, name), focus });
       await page.getByRole('button', { name: labels.close, exact: true }).click();
-      await expect(page.getByRole('button', { name: labels.start, exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: labels.entry, exact: true })).toBeVisible();
+      await expect(page.getByRole('button', { name: labels.start, exact: true })).toHaveCount(0);
+      await openRenderDialog(page);
+      await expect(page.getByRole('combobox', { name: labels.samples, exact: true })).toHaveText(
+        '128',
+      );
+      const renderFocus = await focusCycle(page, [labels.samples, labels.start, labels.close]);
+      await page.getByRole('combobox', { name: labels.samples, exact: true }).focus();
+      const renderName = `realtime-render-${language === 'en' ? 'en' : 'zh'}-${theme}.png`;
+      await page.screenshot({ path: resolve(screenshotDirectory, renderName) });
+      variants.push({
+        language,
+        theme,
+        screenshot: resolve(screenshotDirectory, name),
+        focus,
+        renderScreenshot: resolve(screenshotDirectory, renderName),
+        renderFocus,
+      });
+      await page.getByRole('button', { name: labels.close, exact: true }).click();
+      await expect(page.getByRole('button', { name: labels.entry, exact: true })).toBeFocused();
       await idle(page);
       const current = await diagnostics(page);
       expect(current.sceneId).toBe(initial.sceneId);
@@ -242,21 +266,49 @@ test('render settings remain localized focusable and contained in four language 
     'Show panorama as background',
     'Close',
   ]);
-  await page.getByRole('combobox', { name: 'Target samples', exact: true }).focus();
+  await page.getByRole('checkbox', { name: 'Grounded shadows (GTAO)', exact: true }).focus();
   await page.screenshot({
     path: resolve(screenshotDirectory, 'render-settings-en-dark-900x600.png'),
   });
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(dialog).toHaveCount(0);
+  await openRenderDialog(page);
+  const compactRenderFocus = await focusCycle(page, [
+    'Target samples',
+    'Start path tracing',
+    'Close',
+  ]);
+  const compactRenderLayout = await dialog.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { x: rect.x, y: rect.y, right: rect.right, bottom: rect.bottom };
+  });
+  expect(compactRenderLayout.x).toBeGreaterThanOrEqual(0);
+  expect(compactRenderLayout.y).toBeGreaterThanOrEqual(0);
+  expect(compactRenderLayout.right).toBeLessThanOrEqual(900);
+  expect(compactRenderLayout.bottom).toBeLessThanOrEqual(600);
+  await page.getByRole('combobox', { name: 'Target samples', exact: true }).focus();
+  await page.screenshot({
+    path: resolve(screenshotDirectory, 'realtime-render-en-dark-900x600.png'),
+  });
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Real-time rendering', exact: true }),
+  ).toBeFocused();
   expect(await snapshot(page)).toEqual(document);
   await evidence(
     'rendering-ui-validation',
     {
       measuredAt: new Date().toISOString(),
       scope:
-        'Actual browser Settings dialog, keyboard Tab paths and viewport screenshots; no native desktop or WebGPU hardware claim',
+        'Actual browser Settings and viewport render dialogs, keyboard Tab paths and viewport screenshots; no native desktop or WebGPU hardware claim',
       variants,
-      compact: { ...layout, resizeFrames, focus: compactFocus },
+      compact: {
+        ...layout,
+        resizeFrames,
+        focus: compactFocus,
+        renderLayout: compactRenderLayout,
+        renderFocus: compactRenderFocus,
+      },
       unchangedDocument: true,
       unchangedSceneCameraRenderer: true,
     },

@@ -42,8 +42,10 @@ test('multiple inputs coalesce before rendering and during one awaited GPU frame
   expect(request).toHaveBeenCalledTimes(1);
   const running = run();
   expect(render).toHaveBeenCalledTimes(1);
+  expect(scheduler.diagnostics()).toEqual({ frameCount: 0, pendingFrame: true });
   scheduler.invalidate();
   scheduler.invalidate();
+  expect(scheduler.diagnostics()).toEqual({ frameCount: 0, pendingFrame: true });
   expect(request).toHaveBeenCalledTimes(1);
   pending.resolve({ rendered: true, continueRendering: false });
   await running;

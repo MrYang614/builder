@@ -47,8 +47,13 @@ export class RuntimeScheduler {
     }
   };
 
+  /** Reports awaited GPU work as pending too; a null RAF handle alone does not establish idle. */
   diagnostics() {
-    return { frameCount: this.frameCount, pendingFrame: this.raf !== null };
+    return {
+      frameCount: this.frameCount,
+      pendingFrame:
+        !this.disposed && (this.raf !== null || this.frameInProgress || this.frameRequested),
+    };
   }
 
   /** Cancels queued work; an in-flight frame may finish but cannot schedule another frame. */

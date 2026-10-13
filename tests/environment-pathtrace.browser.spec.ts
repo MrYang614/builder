@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { startPathTracing } from './render-controls';
 import { writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import type { ProjectDocument } from '@building/editor-core';
@@ -27,6 +28,7 @@ type Instrumented = {
     project(point: { x: number; y: number; z: number }): { x: number; y: number };
   };
   __borrowedEnvironment(): BorrowedEnvironment | null;
+  __lightingEnvironment(): { textureId: string; width: number; height: number } | null;
 };
 const snapshot = (page: Page) =>
   page.evaluate(() => (window as unknown as Instrumented).__editor.document());
@@ -34,6 +36,8 @@ const diagnostics = (page: Page) =>
   page.evaluate(() => (window as unknown as Instrumented).__editor.diagnostics());
 const borrowed = (page: Page) =>
   page.evaluate(() => (window as unknown as Instrumented).__borrowedEnvironment());
+const lighting = (page: Page) =>
+  page.evaluate(() => (window as unknown as Instrumented).__lightingEnvironment());
 async function choose(page: Page, label: string, option: string) {
   await page.getByRole('combobox', { name: label, exact: true }).click();
   await page.getByRole('option', { name: option, exact: true }).click();
@@ -53,8 +57,8 @@ async function clickWorld(page: Page, x: number, z: number) {
 }
 
 async function observeBorrowedEnvironment(page: Page) {
-  // Observe the actual rendered scene and original texture's real dispose event. The renderer,
-  // image decoder, path tracer, formal commands and texture pixels are never replaced.
+  // Background retains the original decoded image; raster lighting independently owns a
+  // PMREM-compatible derivative. Observe both real scene textures without replacing pixels.
   await page.evaluate(async () => {
     const moduleUrl = performance
       .getEntriesByType('resource')
@@ -66,6 +70,7 @@ async function observeBorrowedEnvironment(page: Page) {
     const THREE = await import(moduleUrl);
     const original = THREE.Scene.prototype.onBeforeRender;
     let texture: import('three').Texture | null = null;
+    let lightingTexture: import('three').Texture | null = null;
     let disposed = 0;
     THREE.Scene.prototype.onBeforeRender = function (
       this: import('three').Scene,
@@ -75,15 +80,14 @@ async function observeBorrowedEnvironment(page: Page) {
       ...rest: unknown[]
     ) {
       original.call(this, renderer, scene, camera, ...rest);
-      if (
-        !texture &&
-        scene.uuid === (window as unknown as Instrumented).__editor.diagnostics().sceneId &&
-        scene.environment
-      ) {
-        texture = scene.environment;
-        texture.addEventListener('dispose', () => {
-          disposed++;
-        });
+      if (scene.uuid === (window as unknown as Instrumented).__editor.diagnostics().sceneId) {
+        lightingTexture = scene.environment;
+        if (!texture && scene.background instanceof THREE.Texture) {
+          texture = scene.background as import('three').Texture;
+          texture.addEventListener('dispose', () => {
+            disposed++;
+          });
+        }
       }
     };
     Object.assign(window, {
@@ -107,6 +111,13 @@ async function observeBorrowedEnvironment(page: Page) {
           flipY: texture.flipY,
           disposed,
         };
+      },
+      __lightingEnvironment: () => {
+        if (!lightingTexture) {
+          return null;
+        }
+        const image = lightingTexture.image as { width: number; height: number };
+        return { textureId: lightingTexture.uuid, width: image.width, height: image.height };
       },
     });
   });
@@ -181,22 +192,30 @@ for (const format of [
       const state = (window as unknown as Instrumented).__editor.diagnostics();
       return !state.render.environmentLoading && !!state.environment.textureId;
     });
+    // A real UI command exposes the preserved original image separately from raster IBL.
+    await page.getByRole('checkbox', { name: '将全景显示为背景', exact: true }).check();
     await idle(page);
     await expect.poll(() => borrowed(page)).not.toBeNull();
     const document = await snapshot(page);
     const original = await borrowed(page);
+    const rasterLighting = await lighting(page);
     const initial = await diagnostics(page);
     expect(original).toMatchObject({ width: 32, height: 16, disposed: 0 });
     expect(initial.actualBackend).toBe(backend);
     expect(initial.render.error).toBeUndefined();
     expect(original!.textureId).toBe(initial.environment.textureId);
+    expect(rasterLighting!.textureId).not.toBe(original!.textureId);
+    expect(rasterLighting!.width).toBeGreaterThanOrEqual(64);
+    expect(rasterLighting!.height).toBeGreaterThanOrEqual(32);
+    expect(initial.environment.lightingTextureId).toBe(rasterLighting!.textureId);
+    expect(initial.environment.lightingWidth).toBe(rasterLighting!.width);
+    expect(initial.environment.lightingHeight).toBe(rasterLighting!.height);
     const resource = document.environmentResources![0]!;
     expect(resource.mime).toBe(format.mime);
     expect(Buffer.from(resource.dataUrl.split(',')[1]!, 'base64')).toEqual(bytes);
-    await choose(page, '目标采样数', '16');
     await page.getByRole('button', { name: '关闭', exact: true }).click();
     const started = Date.now();
-    await page.getByRole('button', { name: '开始光追', exact: true }).click();
+    await startPathTracing(page, 16);
     await page.waitForFunction(
       () => {
         const state = (window as unknown as Instrumented).__editor.diagnostics();
@@ -219,6 +238,7 @@ for (const format of [
     expect(complete.pathTracing.stats!.samples).toBeGreaterThanOrEqual(16);
     expect(complete.pathTracing.auxiliaryObjects).toBe(0);
     expect(await borrowed(page)).toEqual(original);
+    expect(await lighting(page)).toEqual(rasterLighting);
     expect(await snapshot(page)).toEqual(document);
     await page.getByRole('button', { name: '返回实时编辑', exact: true }).click();
     await idle(page);
@@ -234,6 +254,7 @@ for (const format of [
     expect(released.sceneId).toBe(initial.sceneId);
     expect(released.cameraId).toBe(initial.cameraId);
     expect(await borrowed(page)).toEqual(original);
+    expect(await lighting(page)).toEqual(rasterLighting);
     expect(await snapshot(page)).toEqual(document);
     expect(errors).toEqual([]);
     const report = {
@@ -254,6 +275,7 @@ for (const format of [
       complete,
       released,
       borrowedEnvironment: original,
+      independentRasterLighting: rasterLighting,
       borrowedTextureAndSourceUnchanged: true,
       projectAndEmbeddedBytesUnchanged: true,
       decoderAndShaderUnmocked: true,

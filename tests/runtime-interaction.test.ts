@@ -62,6 +62,7 @@ function fixture(tool: RuntimeSession['tool'] = 'select') {
     clear: vi.fn(),
     hasTarget: () => false,
     restoreFeedback: vi.fn(),
+    setDimensions: vi.fn(),
   } as unknown as RuntimeSnapping;
   const status = vi.fn();
   const command = vi.fn((value: Command) => core.execute(value).ok);

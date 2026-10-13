@@ -206,8 +206,8 @@ export class RuntimeInteraction {
     if (session.tool === 'wall' || session.tool === 'slab') {
       const intent = this.tools.handle({ type: 'click', point });
       if (!intent) {
-        if (this.tools.getState().kind === 'start' && !this.snapping.hasTarget()) {
-          this.hooks.status('hint.end');
+        if (this.tools.getState().kind === 'start') {
+          this.hooks.status(session.tool === 'wall' ? 'hint.end' : 'hint.slabEnd');
         }
         this.hooks.invalidate();
         return;
@@ -231,6 +231,7 @@ export class RuntimeInteraction {
         } else {
           this.preview.mesh.visible = false;
           this.preview.objectId = null;
+          this.hooks.status(session.tool === 'wall' ? 'hint.continue' : 'hintStart');
         }
       }
       this.hooks.invalidate();
@@ -445,6 +446,18 @@ export class RuntimeInteraction {
       this.hooks.activateTool('select');
     } else if (this.tools.getState().tool !== this.hooks.getSession().tool) {
       this.tools.handle({ type: 'activate', tool: this.hooks.getSession().tool });
+    }
+    if (exitTool === true) {
+      const tool = this.hooks.getSession().tool;
+      this.hooks.status(
+        tool === 'select'
+          ? 'hintSelect'
+          : tool === 'material'
+            ? 'hintMaterial'
+            : tool === 'door' || tool === 'window'
+              ? 'hintPlace'
+              : 'hintStart',
+      );
     }
     this.hooks.invalidate();
   };

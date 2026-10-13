@@ -66,7 +66,10 @@ export default function App({
   const notice = useSignal(services.notice),
     busy = useSignal(services.busy),
     [settingsOpen, setSettingsOpen] = useState(false),
+    [renderOpen, setRenderOpen] = useState(false),
     [path, setPath] = useState<string | undefined>();
+  const snapFeedback = useSignal(services.snapFeedback);
+  const editHint = useSignal(services.editHint);
   const status = useStatus();
   const failure = (error: unknown) => {
     services.notice.set({
@@ -236,6 +239,12 @@ export default function App({
         return;
       }
       e.preventDefault();
+      if (
+        (intent === 'undo' || intent === 'redo') &&
+        services.session.getSnapshot().wholeBuildingPreview
+      ) {
+        return;
+      }
       if (intent === 'save') {
         void callbacks.current.save();
       } else if (intent === 'undo') {
@@ -328,14 +337,14 @@ export default function App({
             </IconButton>
             <IconButton
               label={t('undo')}
-              disabled={!status.canUndo}
+              disabled={s.wholeBuildingPreview || !status.canUndo}
               onClick={() => services.core.undo()}
             >
               <Undo2 aria-hidden="true" />
             </IconButton>
             <IconButton
               label={t('redo')}
-              disabled={!status.canRedo}
+              disabled={s.wholeBuildingPreview || !status.canRedo}
               onClick={() => services.core.redo()}
             >
               <Redo2 aria-hidden="true" />
@@ -369,6 +378,7 @@ export default function App({
                         : 'hintStart',
                 error: false,
               });
+              services.editHint.set(services.notice.get().key);
             }
           }}
         >
@@ -399,9 +409,9 @@ export default function App({
       <div className="work-area">
         <Floors />
         <section className="viewport-region">
-          <ToolOptions />
+          <ToolOptions renderOpen={renderOpen} onRenderOpenChange={setRenderOpen} />
           <ViewportHost />
-          {notice.error && !settingsOpen && (
+          {notice.error && !settingsOpen && !renderOpen && (
             <div className="error-notice">
               <Alert variant="destructive">
                 <AlertTitle>{t('error')}</AlertTitle>
@@ -410,7 +420,9 @@ export default function App({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => services.notice.set({ key: 'hintSelect', error: false })}
+                    onClick={() =>
+                      services.notice.set({ key: services.editHint.get(), error: false })
+                    }
                   >
                     {t('dismiss')}
                   </Button>
@@ -422,7 +434,8 @@ export default function App({
         <Inspector />
       </div>
       <output className="status-bar">
-        <span>{busy ? t('busy') : t(notice.key, notice.params)}</span>
+        <span>{busy ? t('busy') : notice.error ? t(editHint) : t(notice.key, notice.params)}</span>
+        {snapFeedback && <span data-testid="snap-feedback">{t(snapFeedback)}</span>}
         <span>
           {doc.levels.find((l) => l.id === s.currentLevelId)?.name} / {t('meters')}
         </span>

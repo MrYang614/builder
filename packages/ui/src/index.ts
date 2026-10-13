@@ -13,6 +13,7 @@ export {
 } from './components/select';
 export {
   Dialog,
+  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,

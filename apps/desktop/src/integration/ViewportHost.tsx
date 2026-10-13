@@ -3,7 +3,7 @@ import { ThreeRuntime, isRenderErrorStatus } from '@building/three-runtime';
 import type { Command } from '@building/editor-core';
 import { viewportTokens } from '@building/ui/tokens';
 import { useTheme } from '@building/ui/theme';
-import { useEditor, useDocument, useSession, useSignal } from '../app/services';
+import { useEditor, useDocument, useSession } from '../app/services';
 import { useLanguage } from '../ui/i18n';
 export function ViewportHost() {
   const container = useRef<HTMLDivElement>(null);
@@ -11,8 +11,7 @@ export function ViewportHost() {
   const { resolved } = useTheme();
   const { t } = useLanguage();
   const doc = useDocument(),
-    session = useSession(),
-    rendering = useSignal(services.renderState);
+    session = useSession();
   const themeRef = useRef(resolved);
   useLayoutEffect(() => {
     themeRef.current = resolved;
@@ -35,12 +34,24 @@ export function ViewportHost() {
           activateTool: (tool) => services.session.set({ tool }),
           select: services.select,
           renderState: (state) => services.renderState.set(state),
-          status: (key, params) =>
-            services.notice.set({
-              key,
-              params,
-              error: key.endsWith('.failed') || isRenderErrorStatus(key),
-            }),
+          status: (key, params) => {
+            // Snap transitions supplement the editing stage; pointer frames stay in runtime DOM.
+            if (key.startsWith('snap.')) {
+              const next = key === 'snap.none' ? '' : key;
+              if (services.snapFeedback.get() !== next) {
+                services.snapFeedback.set(next);
+              }
+              return;
+            }
+            const error = key.endsWith('.failed') || isRenderErrorStatus(key);
+            if (key.startsWith('hint') && services.editHint.get() !== key) {
+              services.editHint.set(key);
+            }
+            const previous = services.notice.get();
+            if (previous.key !== key || previous.error !== error || params) {
+              services.notice.set({ key, params, error });
+            }
+          },
         },
         viewportTokens(themeRef.current),
       );
@@ -95,20 +106,31 @@ export function ViewportHost() {
     services.runtimeRef.current?.setSession();
   }, [t, services]);
   return (
-    <div className="viewport" ref={container} data-testid="viewport-host" aria-label={t('app')}>
+    <div
+      className="viewport"
+      ref={container}
+      data-testid="viewport-host"
+      aria-label={t('app')}
+      onPointerDownCapture={(event) => {
+        if (event.target instanceof HTMLCanvasElement) {
+          event.target.dataset.focusOrigin = 'pointer';
+        }
+      }}
+      onKeyDownCapture={(event) => {
+        if (event.target instanceof HTMLCanvasElement) {
+          event.target.dataset.focusOrigin = 'keyboard';
+        }
+      }}
+      onBlurCapture={(event) => {
+        if (event.target instanceof HTMLCanvasElement) {
+          delete event.target.dataset.focusOrigin;
+        }
+      }}
+    >
       {doc.walls.length === 0 && doc.slabs.length === 0 && (
         <div className="viewport-empty">{t('empty')}</div>
       )}
       {session.wholeBuildingPreview && <div className="viewport-mode">{t('preview')}</div>}
-      {rendering.mode === 'pathtrace' && (
-        <output className="viewport-render-state" aria-live="off">
-          {t('render.samples', {
-            samples: Math.floor(rendering.samples),
-            target: rendering.targetSamples,
-          })}{' '}
-          · {t(`render.${rendering.pathStatus}`)}
-        </output>
-      )}
     </div>
   );
 }

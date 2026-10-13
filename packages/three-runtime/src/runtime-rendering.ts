@@ -91,7 +91,11 @@ export class RuntimeRendering {
       document: hooks.document,
       publish: this.publish,
       beforeReplace: () => this.path.stop(),
-      changed: () => this.path.markDirty(),
+      changed: () => {
+        // Decoding can finish after the old view's finite refinement has settled.
+        this.invalidateHistory();
+        this.path.markDirty();
+      },
       invalidate: this.invalidate,
       status: hooks.status,
     });
