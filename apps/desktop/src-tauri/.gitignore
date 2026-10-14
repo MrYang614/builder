@@ -8,3 +8,5 @@
 
 # Native desktop test drivers downloaded for this machine
 /.webdriver/
+# Sidecar binaries are produced by npm run build:cli for bundling.
+/bin/

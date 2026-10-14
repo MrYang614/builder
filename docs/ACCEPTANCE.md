@@ -251,3 +251,14 @@ H01–H06 的完整要求、实现、测试、证据来源和限制见 [HEADER-L
 | UF16 | Q5正式目标系统/硬件、性能与冷启动标准明确 | 本轮不自行决定正式系统/设备或达标预算 | 沿原Q5待确认；浏览器/GPU相对耗时仅复现条件，未采正式FPS/P95/显存与冷启动达标数据 | 需求待确认 | 真实设备丢失、物理触摸/触控板、长期资源与参考性能仍需按已确认环境补验。 |
 
 初始Storybook窄屏/HMR及事件失败、正式编辑器硬件56/4和并发58/2报告均原样保留。UI footer修复保持动作前blur草稿确认，原A35中英/两主题4/4通过；独占GPU60/60通过不能反推并发两项失败原因。固定Skills、token生成产物、原PRD和原A01–A42历史条件没有为本次重构改写；最新原生安装包和完整双平台验收仍不在本轮通过范围内。
+
+## CLI 控制面增量（2026-10-14）
+
+| 要求 | 实现 | 测试／证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| CLI01：版本化 JSONL envelope、未知字段／版本／大小拒绝 | `rust/crates/control-protocol` 的 `Request`、`Response`、bounded `read_frame`、`parse_request`、`encode_line`；TS 校验保持同一字段集 | `cargo test --workspace`（9 项）；TS protocol tests（5 项）；`npm run check` | 已实现未验证 | 尚未在安装后的 Windows/macOS sibling 路径运行 |
+| CLI02：requestId 幂等和有界缓存 | `IdempotencyCache` 按 `clientSessionId + requestId + payload fingerprint` 缓存；Tauri host 使用相同缓存 API | Rust cache 容量、跨 session、不同 payload 冲突单元 | 已实现未验证 | 尚未进行断线重连和跨进程故障注入 |
+| CLI03：独立 Rust CLI 版本／能力清单／stdio loop／人类子命令参数 | `rust/apps/cli`，`building --version`、`capabilities`、`run --stdio`、inspect/validate/apply/export/connect/attach/render/window 参数解析 | CLI 单元测试；release CLI 构建；version/capabilities/ping/host-not-attached smoke | 已实现未验证 | 没有 sibling desktop host 时正式工程子命令明确返回 `host.notAttached` |
+| CLI04：automation host handshake、超时和 unknown outcome 边界 | Tauri `src/control/mod.rs`、`host.handshake`、`control_ready`、`control_respond`、超时与断线响应；握手转发到真实 TS handler | Tauri debug build、Rust 编译和 26 项 Tauri tests | 已实现未验证 | 协议层 `controller_ready` / `runtime_ready` 当前按请求获取；尚未启动 WebView2/WKWebView automation host，非零 Canvas、真实 PNG/GPU 仍未验证 |
+| CLI05：UI／CLI／pointer 共用 CommandGateway | `ProjectController`、`CommandGateway`、`RuntimeGateway` 接入 services、ViewportHost、App 和 Tauri control bridge；open/new/save/saveAs/close/session/render/有限编辑经过同一 owner | `command-gateway`、`project-controller`、`handler` 新增 11 项测试；`npm test` 395 项；typecheck/check/build | 已实现未验证 | 尚未完成所有高级编辑、camera/window/PNG 和原生交错会话证据 |
+| CLI06：安装根 sibling CLI 与签名 | `build:cli` 构建 target-triple sidecar；Tauri `externalBin` 配置；debug NSIS/MSI 可生成 | `npm run tauri -- build --debug`：MSI 与 NSIS 均生成，CLI sidecar 已复制到 Tauri 输入目录 | 已实现未验证 | 尚未安装后检查 `$INSTDIR` sibling 路径、签名、卸载和 macOS App Bundle |

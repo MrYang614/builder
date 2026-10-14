@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": { "script": "npm run dev", "cwd": "../../.." },
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": { "script": "npm run build", "cwd": "../../.." },
+    "beforeBuildCommand": { "script": "npm run build && npm run build:cli", "cwd": "../../.." },
     "frontendDist": "../dist"
   },
   "app": {
@@ -28,6 +28,7 @@
   },
   "bundle": {
     "active": true,
+    "externalBin": ["bin/building"],
     "targets": "all",
     "icon": [
       "icons/32x32.png",

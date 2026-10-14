@@ -28,9 +28,9 @@ export function ViewportHost() {
           getDocument: services.core.getSnapshot,
           getSession: services.runtimeSession,
           command: (c) => services.submit(c as Command),
-          beginPreview: () => services.core.beginPreview(),
-          preview: (token, c) => services.core.preview(token, c),
-          cancelPreview: (token) => services.core.cancelPreview(token),
+          beginPreview: () => services.commands.beginPreview(),
+          preview: (token, c) => services.commands.preview(token, c),
+          cancelPreview: (token) => services.commands.cancelPreview(token),
           activateTool: (tool) => services.session.set({ tool }),
           select: services.select,
           renderState: (state) => services.renderState.set(state),
@@ -89,12 +89,8 @@ export function ViewportHost() {
       unsub();
       unsubSession();
       unsubCamera();
-      try {
-        runtime.dispose();
-      } finally {
-        // Detach the disposed owner even when a GPU disposer reports a cleanup failure.
-        detachRuntime();
-      }
+      // RuntimeGateway owns disposal and clears the active runtime even when disposal throws.
+      detachRuntime();
     };
   }, [services]);
   useEffect(

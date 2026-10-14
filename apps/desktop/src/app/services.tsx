@@ -13,6 +13,9 @@ import {
   type RendererBackend,
 } from '@building/three-runtime';
 import { translate } from '../ui/i18n';
+import { CommandGateway } from './command-gateway';
+import { ProjectController } from './project-controller';
+import { RuntimeGateway } from './runtime-gateway';
 type Notice = { key: string; params?: Record<string, string | number>; error: boolean };
 export class Signal<T> {
   private listeners = new Set<() => void>();
@@ -39,6 +42,9 @@ export function makeServices(initialError?: string) {
       translate(localStorage.getItem('building-language') === 'en' ? 'en' : 'zh-CN', 'untitled'),
     ),
   );
+  const commands = new CommandGateway(core);
+  const project = new ProjectController(core, commands);
+  const runtimeGateway = new RuntimeGateway();
   const session = new SessionStore(core.getSnapshot().levels[0]!.id);
   const notice = new Signal<Notice>({ key: initialError ?? 'hintSelect', error: !!initialError });
   const snapFeedback = new Signal('');
@@ -56,10 +62,12 @@ export function makeServices(initialError?: string) {
   };
   const attachRuntime = (next: ThreeRuntime) => {
     runtime = next;
+    const detach = runtimeGateway.attach(next);
     return () => {
       if (runtime === next) {
         runtime = null;
       }
+      detach();
     };
   };
   const camera = new Signal<RuntimeSession['cameraMode']>('edit');
@@ -73,7 +81,7 @@ export function makeServices(initialError?: string) {
       notice.set({ key: 'previewError', error: true });
       return false;
     }
-    const result = core.execute(command);
+    const result = commands.execute(command);
     if (!result.ok) {
       notice.set({
         key: result.error.code,
@@ -130,6 +138,9 @@ export function makeServices(initialError?: string) {
   };
   return {
     core,
+    commands,
+    project,
+    runtimeGateway,
     session,
     notice,
     snapFeedback,

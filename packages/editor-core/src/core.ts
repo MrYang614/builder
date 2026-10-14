@@ -152,6 +152,30 @@ export class EditorCore {
     this.publish(changeSet);
     return { ok: true, changeSet, warnings: documentWarnings(next) };
   }
+  /** Validates a detached command without replacing an active pointer preview or publishing state. */
+  dryRun(command: Command): CommandResult {
+    let next: ProjectDocument | DomainError;
+    try {
+      next = applyCommand(this.document, copy(command));
+    } catch {
+      return rejected('command.invalid');
+    }
+    if ('code' in next) {
+      return { ok: false, error: next };
+    }
+    const result = validateDocument(next);
+    if (!result.ok) {
+      return result;
+    }
+    if (!equivalentDocuments(this.document, next) && !Number.isSafeInteger(this.clock + 1)) {
+      return rejected('command.invalid');
+    }
+    return {
+      ok: true,
+      changeSet: calculateChangeSet(this.document, next, 'dryRun'),
+      warnings: documentWarnings(next),
+    };
+  }
   /** Restores an entire transaction under a fresh revision, including all dependent objects. */
   undo(): CommandResult {
     if (this.undoStack.length && !Number.isSafeInteger(this.clock + 1)) {

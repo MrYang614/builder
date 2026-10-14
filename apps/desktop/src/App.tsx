@@ -55,8 +55,7 @@ export default function App({
   const notice = useSignal(services.notice),
     busy = useSignal(services.busy),
     [settingsOpen, setSettingsOpen] = useState(false),
-    [renderOpen, setRenderOpen] = useState(false),
-    [path, setPath] = useState<string | undefined>();
+    [renderOpen, setRenderOpen] = useState(false);
   const snapFeedback = useSignal(services.snapFeedback);
   const editHint = useSignal(services.editHint);
   const status = useStatus();
@@ -72,14 +71,17 @@ export default function App({
     }
     services.busy.set(true);
     try {
-      const snapshot = services.runtimeRef.current?.snapshot() ?? services.core.getSnapshot();
-      const result = await saveProject(snapshot, asNew ? undefined : path);
+      const captured = services.project.captureSave();
+      const result = await saveProject(
+        captured.snapshot,
+        asNew ? undefined : services.project.getPath(),
+      );
       if (!result) {
         return false;
       }
-      if (services.core.getSnapshot().id === snapshot.id) {
-        setPath(result);
-        services.core.markSaved(snapshot.revision);
+      if (!services.project.completeSave(captured.cursor, result)) {
+        services.notice.set({ key: 'openChanged', error: true });
+        return false;
       }
       services.notice.set({ key: 'savedMessage', error: false });
       return true;
@@ -115,7 +117,7 @@ export default function App({
         b.materials.top.resourceId = 'builtin_wood';
       });
     }
-    const result = services.core.replace(next);
+    const result = services.project.replace(next);
     if (!result.ok) {
       failure(result.error);
       return;
@@ -127,7 +129,6 @@ export default function App({
       wholeBuildingPreview: false,
       hiddenIds: [],
     });
-    setPath(undefined);
     services.runtimeRef.current?.focus('all');
   };
   const open = async () => {
@@ -137,19 +138,18 @@ export default function App({
     services.busy.set(true);
     try {
       // File decoding yields to live edits; approval only covers this immutable snapshot.
-      const approved = services.core.getSnapshot();
+      const approved = services.project.captureSave();
       const result = await openProject();
       if (result) {
-        if (services.core.getSnapshot() !== approved) {
+        if (!services.project.matches(approved.cursor)) {
           services.notice.set({ key: 'openChanged', error: true });
           return;
         }
-        const replaced = services.core.replace(result.doc);
+        const replaced = services.project.replace(result.doc, result.path);
         if (!replaced.ok) {
           failure(replaced.error);
           return;
         }
-        setPath(result.path);
         services.session.set({
           currentLevelId: result.doc.levels[0]!.id,
           selectedId: undefined,
@@ -237,9 +237,9 @@ export default function App({
       if (intent === 'save') {
         void callbacks.current.save();
       } else if (intent === 'undo') {
-        services.core.undo();
+        services.commands.undo();
       } else if (intent === 'redo') {
-        services.core.redo();
+        services.commands.redo();
       } else if (intent === 'delete') {
         callbacks.current.remove();
       } else {
@@ -341,13 +341,13 @@ export default function App({
               label={t('undo')}
               icon={Undo2}
               disabled={s.wholeBuildingPreview || !status.canUndo}
-              onClick={() => services.core.undo()}
+              onClick={() => services.commands.undo()}
             />
             <Button.Icon
               label={t('redo')}
               icon={Redo2}
               disabled={s.wholeBuildingPreview || !status.canRedo}
-              onClick={() => services.core.redo()}
+              onClick={() => services.commands.redo()}
             />
           </fieldset>
           <span className={status.isDirty ? 'dirty-state' : 'muted'} data-testid="dirty-state">

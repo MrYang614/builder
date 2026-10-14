@@ -1,5 +1,11 @@
 # 实施记录与恢复入口
 
+## CLI 控制面首轮骨架（2026-10-14）
+
+按 `docs/CLI-IMPLEMENTATION-PROMPT.md` 从 G0/G1 边界重新建立 CLI 源码，而不把历史 Rust/浏览器证据扩大为新验收。新增 `rust/` virtual workspace：`building-control-protocol` 负责 protocolVersion=1 JSONL envelope、未知字段/版本/大小检查、游标和有界幂等缓存；`rust/apps/cli` 提供 `building --version`、`capabilities`、`run --stdio` 及人类子命令参数校验。Tauri 增加 automation host stdio 控制线程、真实前端握手转发、超时、响应缓存和 `unknown_outcome` 边界。TypeScript `ProjectController`、`CommandGateway`、`RuntimeGateway` 已接入 services、ViewportHost、App 和 Tauri control bridge；文件生命周期与 session/render 查询、有限编辑操作复用同一 Core owner。
+
+决策、协议与限制记录在 `docs/CLI-IMPLEMENTATION-DECISIONS.md`；`docs/ACCEPTANCE.md` 新增 CLI01–CLI06。当前已运行 `npm test`（395 项）、`npm run check`、`npm run typecheck`、`npm run test:rust`（26 项）、Rust workspace（9 项）、`npm run build` 和 `npm run tauri -- build --debug`（MSI/NSIS 均生成）。尚未在安装后的 Windows WebView2 或 macOS WKWebView automation host 中验证非零 Canvas、真实 PNG、Named Pipe/UDS、安装根 sibling 路径、签名、外部文件修改检测和锁；这些不以浏览器或模拟 IPC 结果替代。
+
 ## 基础 UI 家族重构与独立 Storybook（2026-10-13）
 
 已完成 `@building/ui` 基础组件体系和正式调用迁移：Input.TextArea / Password / Search、InputNumber、Select、Checkbox.Group、Radio.Group、Switch、Slider、Button.Icon / Group、Form.Item / Group / Section、Tooltip、Popover、DropdownMenu、ContextMenu、Dialog / ConfirmDialog、Tabs、Segmented、Toggle / ToggleGroup、Accordion，以及 Alert、Badge、Card、Separator、Empty、Skeleton、Spinner、Progress。全部公共组件和类型、准确默认值、旧／新 API、调用文件、story／example 与真实验证映射见 [UI-COMPONENTS.md](UI-COMPONENTS.md)。公共封装使用语义 props，不接收内部外观 className/style；旧 IconButton、Field*、Select*、Dialog*、Tooltip* 顶层拼装入口已移出普通调用。低层 Radix/shadcn 置于 `src/primitives`，shadcn CLI 不覆盖公共封装；正式应用没有 primitive 导入，重复外观 CSS 清理约82行，页面布局仍在应用。

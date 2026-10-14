@@ -122,6 +122,23 @@ export async function openProject(): Promise<{ doc: ProjectDocument; path: strin
     path: file.name,
   };
 }
+
+/** Opens a known path for automation without presenting a native file dialog. */
+export async function openProjectAtPath(
+  path: string,
+): Promise<{ doc: ProjectDocument; path: string }> {
+  if (!isDesktop()) {
+    throw {
+      code: 'capability.unsupported',
+      details: 'Path-based project IO requires the desktop host',
+    };
+  }
+  const bytes = await invoke<ArrayBuffer>('open_project', { path });
+  const doc = await decodeProjectContainer(new Uint8Array(bytes));
+  assertDocument(doc);
+  return { doc, path };
+}
+
 /** Captures the revision before dialogs or IO so concurrent edits cannot alter this save. */
 export async function saveProject(
   document: ProjectDocument,
@@ -150,6 +167,27 @@ export async function saveProject(
   const name = `${safeName(snapshot.name)}.building`;
   download(await encodeProjectContainer(snapshot), name, 'application/zip');
   return name;
+}
+
+/** Saves a detached snapshot to an explicit automation path through native atomic IO. */
+export async function saveProjectAtPath(
+  document: ProjectDocument,
+  requestedPath: string,
+): Promise<string> {
+  if (!isDesktop()) {
+    throw {
+      code: 'capability.unsupported',
+      details: 'Path-based project IO requires the desktop host',
+    };
+  }
+  const snapshot = structuredClone(document);
+  assertDocument(snapshot);
+  const path = extension(requestedPath, 'building');
+  const bytes = await encodeProjectContainer(snapshot);
+  await invoke<void>('save_project', bytes, {
+    headers: { 'X-File-Path': encodeURIComponent(path) },
+  });
+  return path;
 }
 /** Saves an independently built model through native atomic IO or a browser download. */
 export async function saveGLB(buffer: ArrayBuffer): Promise<string | null> {

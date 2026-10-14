@@ -31,6 +31,7 @@
     "examples/*.source.json",
     "docs/*.json",
     "docs/PRD-v0.3.md",
+    "docs/CLI-IMPLEMENTATION-PROMPT.md",
     "docs/ACCEPTANCE.md"
   ]
 }

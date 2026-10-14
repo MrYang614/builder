@@ -14,6 +14,7 @@
     "build:storybook": "npm run check && npm run typecheck --workspace @building/storybook && npm run build --workspace @building/storybook",
     "test:storybook": "playwright test --config playwright.storybook.config.ts",
     "build": "npm run check && tsc --noEmit && vite build --config apps/desktop/vite.config.ts",
+    "build:cli": "node scripts/build-cli.mjs",
     "check": "npm run format:check && npm run lint && npm run check:architecture",
     "check:architecture": "node scripts/check.mjs",
     "format": "oxfmt --write -c .oxfmtrc.json .",
@@ -31,7 +32,7 @@
     "preview": "vite preview --config apps/desktop/vite.config.ts",
     "tauri": "cd apps/desktop && tauri",
     "test:rust": "cargo test --manifest-path apps/desktop/src-tauri/Cargo.toml",
-    "verify": "npm run check && npm run typecheck && npm test && npm run build"
+    "verify": "npm run check && npm run typecheck && npm test && npm run test:rust && cargo test --manifest-path rust/Cargo.toml --workspace && npm run build"
   },
   "dependencies": {
     "@tailwindcss/vite": "4.3.3",
