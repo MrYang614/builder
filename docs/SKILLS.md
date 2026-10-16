@@ -45,3 +45,21 @@ context 已实际运行一次并加载 PRODUCT.md／DESIGN.md；它报告 PRODUC
 本轮沿用已安装的 frontend-design 编辑器方向，没有重新设计界面。实际读取全局 webgpu-threejs-tsl 正文，API仍以锁定Three／pathtracer源码与官方资料核对；阅读项目Composition Patterns正文，修改前复核Impeccable主文、harden及craft-floor。应用结果包括保留第一条GPU错误并恢复可编辑状态、按实例清理回调与拥有资源、补齐非交互Tooltip的鼠标穿透。真实鼠标失败及修复验证在UI-REVIEW.md与webgpu-fix-validation.json，不将源代码存在或Skill读取当成验收通过。
 
 没有安装新Skill、启用hook或重复初始化设计上下文。用户确认另一任务并行调整UI，本轮保留它的产品修改；仅增加已复现Tooltip问题的共享输入修复。硬件浏览器验证与原生／macOS范围分别记录。
+
+## Tauri 2 / Rust 专项增量（2026-10-13）
+
+按项目请求新增两项固定上游资料和一项项目策略 skill。Rust 采用 [Apollo GraphQL rust-best-practices](https://github.com/apollographql/skills/tree/1ee2bddb80c9777d958f3e0a77560ffe58b291a7/skills/rust-best-practices)，提交 `1ee2bddb80c9777d958f3e0a77560ffe58b291a7`、MIT、正文版本 1.1.2；其手册覆盖借用／所有权、Result 错误、Clippy、性能、测试、泛型／指针和文档，并有约 1.6 万次安装信号。Tauri 采用 [nodnarbnitram/claude-code-extensions tauri-v2](https://github.com/nodnarbnitram/claude-code-extensions/tree/35e7f7deae689e12b94f9c242b8f59efe0f66476/.claude/skills/tauri-v2)，提交 `35e7f7deae689e12b94f9c242b8f59efe0f66476`、MIT、正文版本 1.0.1；其 60 次仓库提交包含 capabilities、IPC、窗口、分发和官方插件引用资料。两个目录都保留上游 LICENSE。来源、版本和 SHA-256 见 `docs/skills-manifest.json`，工程检查现在同时校验六个 skill 的 `name` 与正文哈希。
+
+项目策略入口是 `.agents/skills/building-tauri-rust/SKILL.md`，人类可读规则是 [TAURI-RUST-RULES.md](TAURI-RUST-RULES.md)。它把上游通用示例限制到本项目实际约束：`main.rs` 薄入口、`lib.rs` 注册命令、EditorCore 独占正式数据、二进制低频 IPC、受限绝对路径／资源预算、临时文件同步后重开校验再原子替换、最小 capability、`spawn_blocking` 和旧文件保护。上游资料保持原文，不在 vendored skill 中写本地例外；项目 skill 明确排除新增插件、sidecar、网络服务、额外窗口和移动目标的隐式授权。
+
+安装由固定的 `skill-installer` 脚本完成，命令和读取证据如下；没有注册 hooks、MCP、运行时依赖或自动外部操作：
+
+```powershell
+$skillPython = 'C:/Users/52683/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe'
+$installer = 'C:/Users/52683/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py'
+& $skillPython $installer --repo apollographql/skills --path skills/rust-best-practices --ref 1ee2bddb80c9777d958f3e0a77560ffe58b291a7 --dest D:/Code/builder/.agents/skills
+& $skillPython $installer --repo nodnarbnitram/claude-code-extensions --path .claude/skills/tauri-v2 --ref 35e7f7deae689e12b94f9c242b8f59efe0f66476 --name tauri-v2 --dest D:/Code/builder/.agents/skills
+Get-Content -Raw .agents/skills/rust-best-practices/SKILL.md
+Get-Content -Raw .agents/skills/tauri-v2/SKILL.md
+Get-Content -Raw .agents/skills/building-tauri-rust/SKILL.md
+```

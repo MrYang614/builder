@@ -56,11 +56,19 @@ async function start() {
 function AutomationBridge() {
   const services = useEditor();
   React.useEffect(() => {
+    let disposed = false;
     let cleanup: (() => void) | undefined;
-    void startTauriControlBridge(services).then((dispose) => {
-      cleanup = dispose;
+    void startTauriControlBridge(services, () => !disposed).then((dispose) => {
+      if (disposed) {
+        dispose();
+      } else {
+        cleanup = dispose;
+      }
     });
-    return () => cleanup?.();
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, [services]);
   return null;
 }

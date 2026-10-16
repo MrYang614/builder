@@ -102,6 +102,7 @@ const HANDSHAKE_OPERATIONS: ReadonlySet<Operation> = new Set([
   'runtime_ready',
   'host.handshake',
 ]);
+const REPLACEMENTS = new Set<Operation>(['project.new', 'project.open', 'project.close']);
 
 export interface ProjectCursor {
   projectId: string;
@@ -322,10 +323,9 @@ export function isWriteOperation(operation: Operation): boolean {
 export function isReadOperation(operation: Operation): boolean {
   return READ_OPERATIONS.has(operation) || HANDSHAKE_OPERATIONS.has(operation);
 }
-
 /** Whether a command must carry the current project revision and document epoch. */
 export function requiresProject(operation: Operation): boolean {
-  return !isReadOperation(operation);
+  return !isReadOperation(operation) && !REPLACEMENTS.has(operation);
 }
 /** Validates an in-memory request and returns the same typed envelope. */
 export function validateControlRequest<TArgs>(request: unknown): ControlRequest<TArgs> {

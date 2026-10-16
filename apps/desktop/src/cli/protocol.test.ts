@@ -43,12 +43,15 @@ describe('control protocol validation', () => {
     expect(() => validateControlRequest(request({ project: undefined }))).toThrow(
       /requires a project cursor/,
     );
-    expect(() =>
+    expect(
       validateControlRequest(request({ operation: 'project.new', project: undefined })),
-    ).toThrow(/requires a project cursor/);
-    expect(() =>
+    ).toMatchObject({ operation: 'project.new' });
+    expect(
       validateControlRequest(request({ operation: 'project.open', project: undefined })),
-    ).toThrow(/requires a project cursor/);
+    ).toMatchObject({ operation: 'project.open' });
+    expect(
+      validateControlRequest(request({ operation: 'project.close', project: undefined })),
+    ).toMatchObject({ operation: 'project.close' });
     expect(() => validateControlRequest(request({ options: { timeoutMs: 600001 } }))).toThrow(
       /600000/,
     );
@@ -59,7 +62,10 @@ describe('control protocol validation', () => {
     expect(isReadOperation('project.inspect')).toBe(true);
     expect(isReadOperation('host.handshake')).toBe(true);
     expect(isWriteOperation('project.new')).toBe(true);
-    expect(requiresProject('project.new')).toBe(true);
+    expect(requiresProject('project.new')).toBe(false);
+    expect(requiresProject('project.open')).toBe(false);
+    expect(requiresProject('project.close')).toBe(false);
+    expect(requiresProject('project.save')).toBe(true);
     expect(requiresProject('session.get')).toBe(false);
   });
 

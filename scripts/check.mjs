@@ -248,7 +248,14 @@ if (
   errors.push('Generated tokens stale');
 }
 const skillManifest = JSON.parse(readFileSync(new URL('docs/skills-manifest.json', root), 'utf8'));
-for (const name of ['frontend-design', 'vercel-composition-patterns', 'impeccable']) {
+for (const name of [
+  'frontend-design',
+  'vercel-composition-patterns',
+  'impeccable',
+  'rust-best-practices',
+  'tauri-v2',
+  'building-tauri-rust',
+]) {
   try {
     const contents = readFileSync(new URL(`.agents/skills/${name}/SKILL.md`, root));
     if (!new RegExp(`^name:\\s*${name}\\s*$`, 'm').test(contents.toString())) {

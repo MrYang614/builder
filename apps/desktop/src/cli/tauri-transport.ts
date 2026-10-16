@@ -5,15 +5,18 @@ import { handleControlRequest } from './handler';
 import type { ControlRequest } from './protocol';
 
 /** Connects the one Tauri automation event channel to the shared TypeScript command handler. */
-export async function startTauriControlBridge(services: Services): Promise<() => void> {
+export async function startTauriControlBridge(
+  services: Services,
+  isActive: () => boolean = () => true,
+): Promise<() => void> {
   if (!isTauri()) {
     return () => {};
   }
   let active = true;
   const unlisten = await listen<ControlRequest>(
-    'control.request',
+    'control/request',
     (event: Event<ControlRequest>) => {
-      if (!active) {
+      if (!active || !isActive()) {
         return;
       }
       void services.commands
@@ -25,8 +28,18 @@ export async function startTauriControlBridge(services: Services): Promise<() =>
         });
     },
   );
+  if (!isActive()) {
+    active = false;
+    await unlisten();
+    return () => {};
+  }
   try {
     await invoke('control_ready');
+    if (!isActive()) {
+      active = false;
+      await unlisten();
+      return () => {};
+    }
   } catch (error) {
     active = false;
     await unlisten();

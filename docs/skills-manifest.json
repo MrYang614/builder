@@ -25,6 +25,30 @@
       "version": "plugin4.5.0/engine0.1.11",
       "path": ".agents/skills/impeccable/SKILL.md",
       "sha256": "8db3982ac3e44f500f7533c571752474f4995e68e46eb1f44b93bb7c3af6a4bd"
+    },
+    {
+      "name": "rust-best-practices",
+      "source": "https://github.com/apollographql/skills",
+      "revision": "1ee2bddb80c9777d958f3e0a77560ffe58b291a7",
+      "version": "1.1.2",
+      "path": ".agents/skills/rust-best-practices/SKILL.md",
+      "sha256": "b1651a95a2c36a8350c033449f52d07eebfdbf08e3bd1d5b22c4b7f55f7aa17c"
+    },
+    {
+      "name": "tauri-v2",
+      "source": "https://github.com/nodnarbnitram/claude-code-extensions",
+      "revision": "35e7f7deae689e12b94f9c242b8f59efe0f66476",
+      "version": "1.0.1",
+      "path": ".agents/skills/tauri-v2/SKILL.md",
+      "sha256": "86b21fe8d43992247891f28249c615cd2284307b0ca539f7a2a3b82698974bb9"
+    },
+    {
+      "name": "building-tauri-rust",
+      "source": "project-local",
+      "revision": "project-local",
+      "version": "1.0.0",
+      "path": ".agents/skills/building-tauri-rust/SKILL.md",
+      "sha256": "9afc2bcb9cd96efb5d05129d13ffc36c6c0502203577f884cd8879cc82525b0d"
     }
   ]
 }

@@ -1,13 +1,14 @@
 //! `building` is the local control-plane executable. Domain edits stay in the desktop host.
 
-use building_control_protocol::{
-    encode_line, parse_request, read_frame, Request, Response, DEFAULT_MAX_FRAME_BYTES,
-    PROTOCOL_VERSION,
-};
+mod host;
+
+use building_control_protocol::{ProjectCursor, RequestOptions, Response, PROTOCOL_VERSION};
+use host::{HostError, HostSession};
 use serde_json::{json, Value};
 use std::{
     env,
     io::{self, Write},
+    path::PathBuf,
     process::ExitCode,
 };
 
@@ -23,27 +24,42 @@ struct HumanCommand {
 #[derive(Debug, PartialEq)]
 enum CliError {
     Arguments(String),
-    Host(String),
+    Host { code: String, message: String },
 }
 
 impl CliError {
-    fn code(&self) -> &'static str {
+    fn from_host(error: HostError) -> Self {
+        Self::Host {
+            code: error.code.to_owned(),
+            message: error.message,
+        }
+    }
+
+    fn response(code: impl Into<String>, message: impl Into<String>) -> Self {
+        Self::Host {
+            code: code.into(),
+            message: message.into(),
+        }
+    }
+
+    fn code(&self) -> &str {
         match self {
             Self::Arguments(_) => "arguments.invalid",
-            Self::Host(_) => "host.notAttached",
+            Self::Host { code, .. } => code,
         }
     }
 
     fn message(&self) -> &str {
         match self {
-            Self::Arguments(message) | Self::Host(message) => message,
+            Self::Arguments(message) => message,
+            Self::Host { message, .. } => message,
         }
     }
 
     fn exit_code(&self) -> u8 {
         match self {
             Self::Arguments(_) => 2,
-            Self::Host(_) => 8,
+            Self::Host { .. } => 8,
         }
     }
 }
@@ -52,16 +68,22 @@ fn capabilities() -> Value {
     json!({
         "protocolVersion": PROTOCOL_VERSION,
         "version": VERSION,
-        "transport": ["stdio", "named-pipe", "unix-socket"],
-        "modes": ["file", "realtime"],
+        "transport": ["stdio"],
+        "modes": ["file"],
         "operations": [
             "project.new", "project.open", "project.save", "project.saveAs", "project.close",
-            "project.inspect", "project.validate", "edit.apply", "edit.batch", "edit.dryRun",
-            "history.undo", "history.redo", "export.glb", "export.gltf", "render.capturePng",
-            "camera.get", "camera.set", "window.getState"
+            "project.inspect", "project.validate", "project.rename", "edit.apply", "edit.batch",
+            "edit.dryRun", "history.undo", "history.redo", "wall.create", "slab.createRectangle",
+            "session.get", "session.setLevel", "session.setTool", "session.select",
+            "session.setHidden", "session.setWholeBuildingPreview", "session.setSnapSettings",
+            "render.getState", "render.setBackend", "render.setMode", "render.setSamples",
+            "render.pause", "render.resume", "render.setPostProcessing", "render.diagnostics"
         ],
-        "status": "control-plane-ready",
-        "limitations": ["formal commands require an attached desktop automation host"]
+        "status": "sibling-host-proxy-ready",
+        "limitations": [
+            "Named Pipe, Unix socket and realtime discovery are not implemented",
+            "GLB/GLTF, PNG, camera and window commands are not wired in the shared handler"
+        ]
     })
 }
 
@@ -187,8 +209,7 @@ fn parse_human_command(command: &str, args: &[String]) -> Result<HumanCommand, C
             let session = required_flag(args, "--session")?;
             let operation = args
                 .iter()
-                .filter(|arg| !arg.starts_with('-'))
-                .last()
+                .rfind(|arg| !arg.starts_with('-'))
                 .cloned()
                 .ok_or_else(|| CliError::Arguments("attach requires an operation".to_owned()))?;
             Ok(HumanCommand {
@@ -214,75 +235,99 @@ fn human_error(error: CliError) -> io::Result<()> {
     print_json(&serde_json::to_value(response).map_err(io::Error::other)?)
 }
 
+fn response_cursor(response: &Response<Value>) -> Option<ProjectCursor> {
+    Some(ProjectCursor {
+        project_id: response.project_id.clone()?,
+        revision: response.revision?,
+        document_epoch: response.document_epoch?,
+        runtime_epoch: response.runtime_epoch,
+    })
+}
+
+fn absolute_path(path: &str) -> String {
+    let candidate = PathBuf::from(path);
+    if candidate.is_absolute() {
+        return candidate.to_string_lossy().into_owned();
+    }
+    env::current_dir()
+        .map(|directory| directory.join(candidate))
+        .unwrap_or_else(|_| PathBuf::from(path))
+        .to_string_lossy()
+        .into_owned()
+}
+
 fn dispatch_human(command: HumanCommand) -> Result<(), CliError> {
-    let project = command.project.as_deref().unwrap_or("<none>");
-    Err(CliError::Host(format!(
-        "{} requires a desktop automation host (project: {project})",
-        command.operation
-    )))
+    let mut host = HostSession::start().map_err(CliError::from_host)?;
+    let mut cursor = None;
+    if let Some(path) = command.project.as_deref() {
+        let path = absolute_path(path);
+        let opened = host
+            .request(
+                "project.open",
+                json!({ "path": path }),
+                None,
+                RequestOptions {
+                    if_dirty: "discard".to_owned(),
+                    ..RequestOptions::default()
+                },
+            )
+            .map_err(CliError::from_host)?;
+        if !opened.ok {
+            return Err(response_error(&opened));
+        }
+        cursor = response_cursor(&opened);
+    }
+
+    let mut operation = command.operation;
+    let mut args = command.args;
+    let save_after =
+        operation == "edit.batch" && args.get("save").and_then(Value::as_bool).unwrap_or(false);
+    if let Some(object) = args.as_object_mut() {
+        object.remove("path");
+        object.remove("save");
+    }
+    if operation == "host.start" {
+        operation = "host.handshake".to_owned();
+        args = json!({});
+    }
+    let mut response = host
+        .request(operation, args, cursor.clone(), RequestOptions::default())
+        .map_err(CliError::from_host)?;
+    if response.ok && save_after {
+        cursor = response_cursor(&response).or(cursor);
+        response = host
+            .request("project.save", json!({}), cursor, RequestOptions::default())
+            .map_err(CliError::from_host)?;
+    }
+    if !response.ok {
+        return Err(response_error(&response));
+    }
+    let value = serde_json::to_value(response)
+        .map_err(|error| CliError::response("host.serializationFailed", error.to_string()))?;
+    print_json(&value)
+        .map_err(|error| CliError::response("host.writeFailed", error.to_string()))?;
+    Ok(())
+}
+
+fn response_error(response: &Response<Value>) -> CliError {
+    let error = response.error.as_ref();
+    CliError::response(
+        error
+            .map(|value| value.code.as_str())
+            .unwrap_or("host.requestFailed"),
+        error
+            .map(|value| value.message.as_str())
+            .unwrap_or("Desktop host rejected the request"),
+    )
 }
 
 fn run_stdio() -> i32 {
-    let stdin = io::stdin();
-    let mut reader = stdin.lock();
-    let mut stdout = io::BufWriter::new(io::stdout().lock());
-    loop {
-        let line = match read_frame(&mut reader, DEFAULT_MAX_FRAME_BYTES) {
-            Ok(Some(value)) => value,
-            Ok(None) => break,
-            Err(error) => {
-                let response: Response<Value> =
-                    Response::failure("unknown", "protocol.invalid", error.to_string());
-                if write_response(&mut stdout, &response).is_err() {
-                    return 8;
-                }
-                continue;
-            }
-        };
-        if line.iter().all(u8::is_ascii_whitespace) {
-            continue;
+    match HostSession::start().and_then(|mut host| host.proxy_stdio()) {
+        Ok(code) => code,
+        Err(error) => {
+            let _ = human_error(CliError::from_host(error));
+            8
         }
-        let request = match parse_request::<Value>(&line, DEFAULT_MAX_FRAME_BYTES) {
-            Ok(value) => value,
-            Err(error) => {
-                let response: Response<Value> =
-                    Response::failure("unknown", "protocol.invalid", error.to_string());
-                if write_response(&mut stdout, &response).is_err() {
-                    return 8;
-                }
-                continue;
-            }
-        };
-        let response = dispatch_request(request);
-        if write_response(&mut stdout, &response).is_err() {
-            return 8;
-        }
-    }
-    0
-}
-
-fn write_response<W: Write, T: serde::Serialize>(
-    writer: &mut W,
-    response: &Response<T>,
-) -> io::Result<()> {
-    let line = encode_line(response, DEFAULT_MAX_FRAME_BYTES).map_err(io::Error::other)?;
-    writer.write_all(&line)?;
-    writer.flush()
-}
-
-fn dispatch_request(request: Request<Value>) -> Response<Value> {
-    match request.operation.as_str() {
-        "capabilities" => {
-            let mut response = Response::success(request.request_id, capabilities());
-            response.capabilities = Some(capabilities());
-            response
-        }
-        "ping" => Response::success(request.request_id, json!({ "status": "ready" })),
-        _ => Response::failure(
-            request.request_id,
-            "host.notAttached",
-            "Formal project operations require a desktop automation host",
-        ),
     }
 }
 
@@ -295,8 +340,7 @@ fn print_help() -> io::Result<()> {
             "building run --stdio",
             "building apply --project <path> --commands <json> --save",
             "building inspect --project <path> --json",
-            "building validate --project <path> --json",
-            "building export --project <path> --format glb --out <path>"
+            "building validate --project <path> --json"
         ],
         "protocolVersion": PROTOCOL_VERSION
     }))

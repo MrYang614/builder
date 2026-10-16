@@ -151,9 +151,11 @@ fn run_stdio(app: AppHandle, state: ControlState) {
         }
     }
     let _ = app.emit(
-        "control.disconnected",
+        "control/disconnected",
         json!({ "protocolVersion": PROTOCOL_VERSION }),
     );
+    // Automation hosts are short-lived; EOF means the owning CLI has closed its session.
+    app.exit(0);
 }
 
 fn dispatch(app: AppHandle, state: ControlState, request: Request<Value>) -> Response<Value> {
@@ -177,7 +179,7 @@ fn dispatch(app: AppHandle, state: ControlState, request: Request<Value>) -> Res
             "Control state unavailable",
         );
     }
-    if app.emit("control.request", &request).is_err() {
+    if app.emit("control/request", &request).is_err() {
         let _ = state
             .pending
             .lock()
@@ -209,6 +211,15 @@ fn dispatch(app: AppHandle, state: ControlState, request: Request<Value>) -> Res
     }
 }
 
+fn write_response<W: Write, T: serde::Serialize>(
+    writer: &mut W,
+    response: &Response<T>,
+) -> io::Result<()> {
+    let line = encode_line(response, DEFAULT_MAX_FRAME_BYTES).map_err(io::Error::other)?;
+    writer.write_all(&line)?;
+    writer.flush()
+}
+
 #[cfg(test)]
 mod tests {
     use super::ControlState;
@@ -220,13 +231,4 @@ mod tests {
         state.mark_bridge_ready();
         assert!(state.is_bridge_ready());
     }
-}
-
-fn write_response<W: Write, T: serde::Serialize>(
-    writer: &mut W,
-    response: &Response<T>,
-) -> io::Result<()> {
-    let line = encode_line(response, DEFAULT_MAX_FRAME_BYTES).map_err(io::Error::other)?;
-    writer.write_all(&line)?;
-    writer.flush()
 }

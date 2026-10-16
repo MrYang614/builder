@@ -98,7 +98,7 @@ apps/desktop/src-tauri/src/control/
   lifecycle.rs                        # automation host startup/shutdown
 
 apps/desktop/src/cli/
-  bridge.ts                           # control.request/control.respond
+  bridge.ts                           # control/request/control_respond
   protocol.ts                         # 前端协议类型和校验
   capabilities.ts                     # 能力协商
 

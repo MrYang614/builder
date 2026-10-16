@@ -249,7 +249,7 @@ pub fn validate_glb(bytes: &[u8]) -> Result<()> {
             .checked_add(8)
             .and_then(|v| v.checked_add(length))
             .ok_or_else(|| AppError::new("invalid_glb", "GLB length overflow"))?;
-        if length % 4 != 0 || end > bytes.len() {
+        if !length.is_multiple_of(4) || end > bytes.len() {
             return Err(AppError::new(
                 "invalid_glb",
                 "Invalid GLB chunk alignment or length",

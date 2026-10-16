@@ -16,7 +16,7 @@ fn png() -> Vec<u8> {
 }
 fn glb() -> Vec<u8> {
     let mut json = br#"{"asset":{"version":"2.0"}}"#.to_vec();
-    while json.len() % 4 != 0 {
+    while !json.len().is_multiple_of(4) {
         json.push(b' ');
     }
     let mut bytes = Vec::from(*b"glTF");
@@ -446,6 +446,10 @@ fn windows_read_only_save_failure_retains_previous_project() {
     doc["name"] = serde_json::json!("Must not be saved");
     let result = save_project(&path, &doc);
     let mut permissions = fs::metadata(&path).unwrap().permissions();
+    #[expect(
+        clippy::permissions_set_readonly_false,
+        reason = "Windows-only test cleanup restores the file after checking read-only behavior"
+    )]
     permissions.set_readonly(false);
     fs::set_permissions(&path, permissions).unwrap();
     assert_eq!(result.unwrap_err().code, "permission_denied");

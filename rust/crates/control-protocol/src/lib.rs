@@ -86,10 +86,14 @@ pub struct Request<T = serde_json::Value> {
     pub client_session_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<ControlMode>,
-    #[serde(rename = "hostInstanceId", default)]
+    #[serde(
+        rename = "hostInstanceId",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     pub host_instance_id: Option<String>,
     pub operation: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<ProjectCursor>,
     pub args: T,
     #[serde(default)]
@@ -115,25 +119,33 @@ pub struct Response<T = serde_json::Value> {
     #[serde(rename = "requestId")]
     pub request_id: String,
     pub ok: bool,
-    #[serde(rename = "projectId", default)]
+    #[serde(rename = "projectId", default, skip_serializing_if = "Option::is_none")]
     pub project_id: Option<String>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub revision: Option<u64>,
-    #[serde(rename = "documentEpoch", default)]
+    #[serde(
+        rename = "documentEpoch",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     pub document_epoch: Option<u64>,
-    #[serde(rename = "runtimeEpoch", default)]
+    #[serde(
+        rename = "runtimeEpoch",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     pub runtime_epoch: Option<u64>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub result: Option<T>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub change_set: Option<serde_json::Value>,
     #[serde(default)]
     pub warnings: Vec<serde_json::Value>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<ErrorBody>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<serde_json::Value>,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<serde_json::Value>,
 }
 
@@ -356,6 +368,7 @@ pub fn is_write_operation(operation: &str) -> bool {
 /// Returns true when the request must carry the current project revision and epoch.
 pub fn requires_project_cursor(operation: &str) -> bool {
     !is_read_operation(operation)
+        && !matches!(operation, "project.new" | "project.open" | "project.close")
 }
 
 pub fn encode_line<T: Serialize>(value: &T, max_bytes: usize) -> Result<Vec<u8>, ProtocolError> {

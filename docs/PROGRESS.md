@@ -1,5 +1,13 @@
 # 实施记录与恢复入口
 
+## CLI 控制面可用性修复（2026-10-16）
+
+针对“CLI 无法使用”完成源码审查和真实 sibling host 复测。原始问题不是单一参数错误：Rust CLI 的人类命令和 stdio loop 曾把所有正式请求硬编码为 `host.notAttached`；Tauri bridge 使用了 Tauri 2 不接受的 `control.request` 点号事件名；可选 IPC 字段被 Rust 序列化为 `null`，被 TypeScript schema 拒绝；React StrictMode 下异步 listener cleanup 竞态会留下重复 listener，使一次 `project.open` 消费两次并造成 `documentEpoch`／`revision.conflict`。
+
+现在 CLI 会启动并拥有 sibling `builder` automation host，等待 `host.handshake`，转发同一 JSONL envelope；人类 `inspect`／`validate`／`apply --save` 会先 `project.open` 获取 cursor，再通过同一 TypeScript EditorCore／CommandGateway 执行。`run --stdio` 代理正式请求，生命周期操作允许首次没有 cursor，路径参数自动转为绝对路径；请求超时、响应版本／requestId 错误和 host EOF 均有结构化失败与清理。Tauri 事件统一为 `control/request` 与 `control/disconnected`，automation host 在 stdio EOF 后退出。
+
+最新证据：Rust workspace 4 个 CLI + 7 个 protocol 测试、Tauri 26 项、workspace/Tauri Clippy `-D warnings`、fmt、前端 395 项测试、lint/typecheck/架构检查通过；用新 debug Tauri host（非零 Canvas、runtimeReady）实际执行相对路径 `inspect`、`validate`、临时工程 `apply --save`，均返回 `ok: true`，原 examples 文件未改。当前仍未宣称安装后 sibling 路径、签名、macOS、Named Pipe/UDS 或 GLB/GLTF、PNG、camera/window 未接入命令已验收；这些继续按 `docs/ACCEPTANCE.md` 记录。
+
 ## CLI 控制面首轮骨架（2026-10-14）
 
 按 `docs/CLI-IMPLEMENTATION-PROMPT.md` 从 G0/G1 边界重新建立 CLI 源码，而不把历史 Rust/浏览器证据扩大为新验收。新增 `rust/` virtual workspace：`building-control-protocol` 负责 protocolVersion=1 JSONL envelope、未知字段/版本/大小检查、游标和有界幂等缓存；`rust/apps/cli` 提供 `building --version`、`capabilities`、`run --stdio` 及人类子命令参数校验。Tauri 增加 automation host stdio 控制线程、真实前端握手转发、超时、响应缓存和 `unknown_outcome` 边界。TypeScript `ProjectController`、`CommandGateway`、`RuntimeGateway` 已接入 services、ViewportHost、App 和 Tauri control bridge；文件生命周期与 session/render 查询、有限编辑操作复用同一 Core owner。

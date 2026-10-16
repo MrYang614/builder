@@ -19,7 +19,7 @@ fn rejects_unknown_fields_and_version() {
         parse_request::<serde_json::Value>(unknown, 4096),
         Err(ProtocolError::Json(_))
     ));
-    let version = request().iter().map(|byte| *byte).collect::<Vec<_>>();
+    let version = request().to_vec();
     let mut value: serde_json::Value = serde_json::from_slice(&version).expect("json");
     value["protocolVersion"] = serde_json::json!(2);
     let encoded = serde_json::to_vec(&value).expect("json");
@@ -100,13 +100,23 @@ fn operation_classifier_requires_cursors_for_formal_writes() {
     assert!(is_read_operation("project.inspect"));
     assert!(is_read_operation("host.handshake"));
     assert!(is_write_operation("project.new"));
-    assert!(requires_project_cursor("project.open"));
+    assert!(!requires_project_cursor("project.new"));
+    assert!(!requires_project_cursor("project.open"));
+    assert!(!requires_project_cursor("project.close"));
+    assert!(requires_project_cursor("project.save"));
     let mut request: Request = serde_json::from_slice(&request()).expect("request");
     request.operation = "project.new".to_owned();
-    assert!(matches!(
-        parse_request::<Value>(&serde_json::to_vec(&request).expect("json"), 4096),
-        Err(ProtocolError::MissingProjectCursor { .. })
-    ));
+    assert!(parse_request::<Value>(&serde_json::to_vec(&request).expect("json"), 4096).is_ok());
+}
+
+#[test]
+fn optional_envelope_fields_are_omitted_in_jsonl() {
+    let response: Response<Value> = Response::success("r", serde_json::json!({"status": "ready"}));
+    let encoded = encode_line(&response, DEFAULT_MAX_FRAME_BYTES).expect("response");
+    let json = String::from_utf8(encoded).expect("utf8");
+    assert!(!json.contains(":null"));
+    assert!(!json.contains("\"projectId\""));
+    assert!(!json.contains("\"error\""));
 }
 
 #[test]
