@@ -1,6 +1,7 @@
 //! `building` is the local control-plane executable. Domain edits stay in the desktop host.
 
 mod host;
+mod realtime;
 
 use building_control_protocol::{ProjectCursor, RequestOptions, Response, PROTOCOL_VERSION};
 use host::{HostError, HostSession};
@@ -68,8 +69,8 @@ fn capabilities() -> Value {
     json!({
         "protocolVersion": PROTOCOL_VERSION,
         "version": VERSION,
-        "transport": ["stdio"],
-        "modes": ["file"],
+        "transport": ["stdio", "named-pipe"],
+        "modes": ["file", "realtime"],
         "operations": [
             "project.new", "project.open", "project.save", "project.saveAs", "project.close",
             "project.inspect", "project.validate", "project.rename", "edit.apply", "edit.batch",
@@ -81,7 +82,8 @@ fn capabilities() -> Value {
         ],
         "status": "sibling-host-proxy-ready",
         "limitations": [
-            "Named Pipe, Unix socket and realtime discovery are not implemented",
+            "Unix socket discovery is not implemented on macOS",
+            "GUI realtime descriptors currently omit independent process-start-time validation",
             "GLB/GLTF, PNG, camera and window commands are not wired in the shared handler"
         ]
     })
@@ -196,12 +198,12 @@ fn parse_human_command(command: &str, args: &[String]) -> Result<HumanCommand, C
             })
         }
         "connect" => {
-            ensure_known_flags(args, &["--pid"])?;
+            ensure_known_flags(args, &["--pid", "--stdio"])?;
             let pid = required_flag(args, "--pid")?;
             Ok(HumanCommand {
                 operation: "host.connect".to_owned(),
                 project: None,
-                args: json!({ "pid": pid }),
+                args: json!({ "pid": pid, "stdio": args.iter().any(|arg| arg == "--stdio") }),
             })
         }
         "attach" => {
@@ -257,7 +259,26 @@ fn absolute_path(path: &str) -> String {
 }
 
 fn dispatch_human(command: HumanCommand) -> Result<(), CliError> {
-    let mut host = HostSession::start().map_err(CliError::from_host)?;
+    let mut host = if command.operation == "host.connect" {
+        let pid = command
+            .args
+            .get("pid")
+            .and_then(Value::as_str)
+            .ok_or_else(|| CliError::response("arguments.invalid", "connect requires --pid"))?;
+        HostSession::connect(pid).map_err(CliError::from_host)?
+    } else {
+        HostSession::start().map_err(CliError::from_host)?
+    };
+    if command.operation == "host.connect"
+        && command
+            .args
+            .get("stdio")
+            .and_then(Value::as_bool)
+            .unwrap_or(false)
+    {
+        host.proxy_stdio().map_err(CliError::from_host)?;
+        return Ok(());
+    }
     let mut cursor = None;
     if let Some(path) = command.project.as_deref() {
         let path = absolute_path(path);
@@ -286,7 +307,7 @@ fn dispatch_human(command: HumanCommand) -> Result<(), CliError> {
         object.remove("path");
         object.remove("save");
     }
-    if operation == "host.start" {
+    if operation == "host.start" || operation == "host.connect" {
         operation = "host.handshake".to_owned();
         args = json!({});
     }
@@ -338,6 +359,7 @@ fn print_help() -> io::Result<()> {
             "building --version",
             "building capabilities --json",
             "building run --stdio",
+            "building connect --pid <pid> --stdio",
             "building apply --project <path> --commands <json> --save",
             "building inspect --project <path> --json",
             "building validate --project <path> --json"

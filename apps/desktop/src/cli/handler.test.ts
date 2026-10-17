@@ -97,6 +97,42 @@ describe('CLI control handler', () => {
     expect(result.documentEpoch).toBe(current.project.getCursor().documentEpoch);
   });
 
+  it('creates the validated courtyard template through project.new', async () => {
+    const current = services();
+    const result = await handleControlRequest(
+      request(
+        current,
+        'project.new',
+        { name: 'CLI Courtyard House', template: 'courtyard' },
+        { project: undefined, options: { ifDirty: 'discard' } },
+      ),
+      current,
+    );
+    expect(result.ok).toBe(true);
+    const snapshot = current.core.getSnapshot();
+    expect(snapshot.name).toBe('CLI Courtyard House');
+    expect(snapshot.levels).toHaveLength(2);
+    expect(snapshot.walls).toHaveLength(16);
+    expect(snapshot.slabs).toHaveLength(13);
+    expect(snapshot.openings).toHaveLength(16);
+    expect(snapshot.resources).toHaveLength(4);
+  });
+
+  it('rejects an unknown project template without replacing the current document', async () => {
+    const current = services();
+    const result = await handleControlRequest(
+      request(
+        current,
+        'project.new',
+        { name: 'Unknown', template: 'castle' },
+        { project: undefined, options: { ifDirty: 'discard' } },
+      ),
+      current,
+    );
+    expect(result.error?.code).toBe('template.unsupported');
+    expect(current.core.getSnapshot().name).toBe('Untitled');
+  });
+
   it('dry-runs without consuming a pointer preview', async () => {
     const current = services();
     const levelId = current.core.getSnapshot().levels[0]!.id;

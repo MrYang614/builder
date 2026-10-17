@@ -1,5 +1,7 @@
 //! Local automation-host control plane. Formal commands remain in the TypeScript bridge.
 
+mod realtime;
+
 use building_control_protocol::{
     encode_line, parse_request, read_frame, IdempotencyCache, Request, Response,
     DEFAULT_MAX_FRAME_BYTES, PROTOCOL_VERSION,
@@ -77,6 +79,11 @@ pub fn start_stdio(app: AppHandle, state: ControlState) {
         .name("building-automation-stdio".to_owned())
         .spawn(move || run_stdio(app, state))
         .expect("automation stdio thread must start");
+}
+
+/// Publishes a per-user endpoint for CLI connections to the already-running GUI.
+pub fn start_realtime(app: AppHandle, state: ControlState) {
+    realtime::start(app, state);
 }
 
 fn run_stdio(app: AppHandle, state: ControlState) {

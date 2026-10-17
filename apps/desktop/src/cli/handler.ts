@@ -1,13 +1,8 @@
-import {
-  createEmptyProject,
-  createSlab,
-  createWall,
-  validateDocument,
-  type Command,
-} from '@building/editor-core';
+import { createSlab, createWall, validateDocument, type Command } from '@building/editor-core';
 import type { Services } from '../app/services';
 import { openProjectAtPath, saveProjectAtPath } from '../platform';
 import { sessionPatch } from './handler-session';
+import { createProjectTemplate } from './templates';
 import {
   errorResponse,
   PROTOCOL_VERSION,
@@ -392,7 +387,12 @@ async function handleControlRequestImpl(
     if (blocked) {
       return blocked;
     }
-    const result = services.project.replace(createEmptyProject(String(args.name ?? 'Untitled')));
+    if (args.template !== undefined && args.template !== 'courtyard') {
+      return failure(request, 'template.unsupported', 'Unknown project template', services);
+    }
+    const result = services.project.replace(
+      createProjectTemplate(String(args.name ?? 'Untitled'), args.template),
+    );
     return result.ok
       ? success(request, services, { projectId: cursor(services).projectId }, result.changeSet)
       : failure(request, result.error.code, 'Project creation failed', services);

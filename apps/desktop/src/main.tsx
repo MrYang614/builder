@@ -58,13 +58,17 @@ function AutomationBridge() {
   React.useEffect(() => {
     let disposed = false;
     let cleanup: (() => void) | undefined;
-    void startTauriControlBridge(services, () => !disposed).then((dispose) => {
-      if (disposed) {
-        dispose();
-      } else {
-        cleanup = dispose;
-      }
-    });
+    void startTauriControlBridge(services, () => !disposed)
+      .then((dispose) => {
+        if (disposed) {
+          dispose();
+        } else {
+          cleanup = dispose;
+        }
+      })
+      .catch((error: unknown) => {
+        console.error('[automation] bridge start failed', error);
+      });
     return () => {
       disposed = true;
       cleanup?.();

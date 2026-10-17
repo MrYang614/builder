@@ -36,6 +36,9 @@ pub fn run() {
             if automation_host && std::env::args().any(|arg| arg == "--stdio") {
                 let state = app.state::<control::ControlState>().inner().clone();
                 control::start_stdio(app.handle().clone(), state);
+            } else if !automation_host {
+                let state = app.state::<control::ControlState>().inner().clone();
+                control::start_realtime(app.handle().clone(), state);
             }
             Ok(())
         })

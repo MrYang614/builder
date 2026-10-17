@@ -7,10 +7,13 @@ use building_control_protocol::{
 use serde_json::{json, Value};
 use std::{
     env, fmt,
-    io::{self, BufReader, BufWriter, Write},
+    io::{self, BufReader, BufWriter, Read, Write},
     path::PathBuf,
-    process::{Child, ChildStdin, ChildStdout, Command, Stdio},
-    sync::mpsc::{self, Receiver},
+    process::{Child, Command, Stdio},
+    sync::{
+        mpsc::{self, Receiver},
+        Arc,
+    },
     thread,
     time::{Duration, Instant},
 };
@@ -43,12 +46,16 @@ impl std::error::Error for HostError {}
 
 /// Owns one short-lived Tauri automation host and serializes all requests to it.
 pub struct HostSession {
-    child: Child,
-    stdin: BufWriter<ChildStdin>,
+    child: Option<Child>,
+    stdin: BufWriter<Box<dyn Write + Send>>,
     stdout: Receiver<Result<Vec<u8>, String>>,
+    #[cfg(windows)]
+    realtime_pipe: Option<SharedPipe>,
     client_session_id: String,
     request_counter: u64,
     failed: bool,
+    mode: ControlMode,
+    host_instance_id: Option<String>,
 }
 
 impl HostSession {
@@ -80,15 +87,67 @@ impl HostSession {
         };
         let stdout = start_reader(stdout);
         let mut session = Self {
-            child,
-            stdin: BufWriter::new(stdin),
+            child: Some(child),
+            stdin: BufWriter::new(Box::new(stdin)),
             stdout,
+            #[cfg(windows)]
+            realtime_pipe: None,
             client_session_id: format!("cli-{}", std::process::id()),
             request_counter: 0,
             failed: false,
+            mode: ControlMode::File,
+            host_instance_id: None,
         };
         session.wait_until_ready()?;
         Ok(session)
+    }
+
+    /// Connects to the named-pipe endpoint published by an existing GUI process.
+    pub fn connect(pid: &str) -> Result<Self, HostError> {
+        let (descriptor, _numeric_pid) = crate::realtime::descriptor_for_pid(pid)
+            .map_err(|message| HostError::new("host.notFound", message))?;
+        let pipe = crate::realtime::connect_named_pipe(&descriptor.endpoint)
+            .map_err(|message| HostError::new("host.connectFailed", message))?;
+        let shared_pipe = Arc::new(pipe);
+        let (_sender, stdout) = mpsc::channel();
+        let mut session = Self {
+            child: None,
+            stdin: BufWriter::new(Box::new(SharedPipe(shared_pipe.clone()))),
+            stdout,
+            realtime_pipe: Some(SharedPipe(shared_pipe)),
+            client_session_id: format!("cli-{}", std::process::id()),
+            request_counter: 0,
+            failed: false,
+            mode: ControlMode::Realtime,
+            host_instance_id: Some(descriptor.host_instance_id),
+        };
+        let deadline = Instant::now() + HANDSHAKE_TIMEOUT;
+        let mut include_token = true;
+        loop {
+            let response = session.request(
+                "host.handshake",
+                if include_token {
+                    json!({ "token": descriptor.token })
+                } else {
+                    json!({})
+                },
+                None,
+                RequestOptions::default(),
+            )?;
+            if response.ok {
+                return Ok(session);
+            }
+            let code = response.error.as_ref().map(|error| error.code.as_str());
+            if code != Some("host.notReady") || Instant::now() >= deadline {
+                let message = response
+                    .error
+                    .map(|error| error.message)
+                    .unwrap_or_else(|| "Desktop host rejected the realtime handshake".to_owned());
+                return Err(HostError::new("host.handshakeFailed", message));
+            }
+            include_token = false;
+            thread::sleep(HANDSHAKE_RETRY);
+        }
     }
 
     /// Sends one typed request and waits for the matching response line.
@@ -104,8 +163,8 @@ impl HostSession {
             protocol_version: PROTOCOL_VERSION,
             request_id: format!("{}-{}", self.client_session_id, self.request_counter),
             client_session_id: self.client_session_id.clone(),
-            mode: Some(ControlMode::File),
-            host_instance_id: None,
+            mode: Some(self.mode),
+            host_instance_id: self.host_instance_id.clone(),
             operation: operation.into(),
             project,
             args,
@@ -129,7 +188,7 @@ impl HostSession {
             if frame.iter().all(u8::is_ascii_whitespace) {
                 continue;
             }
-            let request = match parse_request::<Value>(&frame, DEFAULT_MAX_FRAME_BYTES) {
+            let mut request = match parse_request::<Value>(&frame, DEFAULT_MAX_FRAME_BYTES) {
                 Ok(request) => request,
                 Err(error) => {
                     let response: Response<Value> =
@@ -138,6 +197,10 @@ impl HostSession {
                     continue;
                 }
             };
+            if self.mode == ControlMode::Realtime {
+                request.mode = Some(ControlMode::Realtime);
+                request.host_instance_id = self.host_instance_id.clone();
+            }
             let response = self.request_raw(request)?;
             write_response(&mut writer, &response)?;
         }
@@ -158,27 +221,7 @@ impl HostSession {
             .write_all(&encoded)
             .and_then(|_| self.stdin.flush())
             .map_err(|error| HostError::new("host.writeFailed", error.to_string()))?;
-        let frame = match self.stdout.recv_timeout(Duration::from_millis(timeout_ms)) {
-            Ok(Ok(frame)) => frame,
-            Ok(Err(error)) => {
-                self.failed = true;
-                return Err(HostError::new("host.readFailed", error));
-            }
-            Err(mpsc::RecvTimeoutError::Timeout) => {
-                self.failed = true;
-                return Err(HostError::new(
-                    "host.timeout",
-                    format!("Desktop host did not respond within {timeout_ms} ms"),
-                ));
-            }
-            Err(mpsc::RecvTimeoutError::Disconnected) => {
-                self.failed = true;
-                return Err(HostError::new(
-                    "host.disconnected",
-                    "Desktop host closed its control stream",
-                ));
-            }
-        };
+        let frame = self.read_response_frame(timeout_ms)?;
         let response: Response<Value> = serde_json::from_slice(&frame)
             .map_err(|error| HostError::new("protocol.invalid", error.to_string()))?;
         if response.protocol_version != PROTOCOL_VERSION {
@@ -200,6 +243,34 @@ impl HostSession {
             ));
         }
         Ok(response)
+    }
+
+    fn read_response_frame(&mut self, timeout_ms: u64) -> Result<Vec<u8>, HostError> {
+        #[cfg(windows)]
+        if let Some(pipe) = self.realtime_pipe.as_mut() {
+            return read_pipe_frame(pipe, timeout_ms);
+        }
+        match self.stdout.recv_timeout(Duration::from_millis(timeout_ms)) {
+            Ok(Ok(frame)) => Ok(frame),
+            Ok(Err(error)) => {
+                self.failed = true;
+                Err(HostError::new("host.readFailed", error))
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                self.failed = true;
+                Err(HostError::new(
+                    "host.timeout",
+                    format!("Desktop host did not respond within {timeout_ms} ms"),
+                ))
+            }
+            Err(mpsc::RecvTimeoutError::Disconnected) => {
+                self.failed = true;
+                Err(HostError::new(
+                    "host.disconnected",
+                    "Desktop host closed its control stream",
+                ))
+            }
+        }
     }
 
     fn wait_until_ready(&mut self) -> Result<(), HostError> {
@@ -229,7 +300,89 @@ impl HostSession {
     }
 }
 
-fn start_reader(stdout: ChildStdout) -> Receiver<Result<Vec<u8>, String>> {
+#[cfg(windows)]
+/// Shares one synchronous duplex handle so reads and writes use the same named-pipe endpoint.
+struct SharedPipe(Arc<std::fs::File>);
+
+#[cfg(windows)]
+impl Read for SharedPipe {
+    fn read(&mut self, buffer: &mut [u8]) -> io::Result<usize> {
+        (&*self.0).read(buffer)
+    }
+}
+
+#[cfg(windows)]
+impl Write for SharedPipe {
+    fn write(&mut self, buffer: &[u8]) -> io::Result<usize> {
+        (&*self.0).write(buffer)
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        (&*self.0).flush()
+    }
+}
+
+#[cfg(windows)]
+/// Reads one realtime response with bounded polling so a dead GUI cannot hang the CLI forever.
+fn read_pipe_frame(pipe: &mut SharedPipe, timeout_ms: u64) -> Result<Vec<u8>, HostError> {
+    use std::{os::windows::io::AsRawHandle, ptr};
+    use windows_sys::Win32::System::Pipes::PeekNamedPipe;
+    let deadline = Instant::now() + Duration::from_millis(timeout_ms);
+    let mut frame = Vec::new();
+    loop {
+        let mut available = 0u32;
+        let ok = unsafe {
+            PeekNamedPipe(
+                pipe.0.as_raw_handle() as _,
+                ptr::null_mut(),
+                0,
+                ptr::null_mut(),
+                &mut available,
+                ptr::null_mut(),
+            )
+        };
+        if ok == 0 {
+            return Err(HostError::new(
+                "host.readFailed",
+                io::Error::last_os_error().to_string(),
+            ));
+        }
+        if available == 0 {
+            if Instant::now() >= deadline {
+                return Err(HostError::new(
+                    "host.timeout",
+                    format!("Desktop host did not respond within {timeout_ms} ms"),
+                ));
+            }
+            thread::sleep(Duration::from_millis(5));
+            continue;
+        }
+        let remaining = DEFAULT_MAX_FRAME_BYTES.saturating_sub(frame.len());
+        if remaining == 0 {
+            return Err(HostError::new(
+                "protocol.invalid",
+                "Desktop host response exceeded the frame limit",
+            ));
+        }
+        let mut chunk = vec![0u8; (available as usize).min(remaining)];
+        let count = pipe
+            .read(&mut chunk)
+            .map_err(|error| HostError::new("host.readFailed", error.to_string()))?;
+        if count == 0 {
+            return Err(HostError::new(
+                "host.disconnected",
+                "Desktop host closed its control stream",
+            ));
+        }
+        if let Some(newline) = chunk[..count].iter().position(|byte| *byte == b'\n') {
+            frame.extend_from_slice(&chunk[..newline]);
+            return Ok(frame);
+        }
+        frame.extend_from_slice(&chunk[..count]);
+    }
+}
+
+fn start_reader<R: Read + Send + 'static>(stdout: R) -> Receiver<Result<Vec<u8>, String>> {
     let (sender, receiver) = mpsc::channel();
     thread::Builder::new()
         .name("building-cli-host-reader".to_owned())
@@ -256,8 +409,10 @@ fn start_reader(stdout: ChildStdout) -> Receiver<Result<Vec<u8>, String>> {
 
 impl Drop for HostSession {
     fn drop(&mut self) {
-        let _ = self.child.kill();
-        let _ = self.child.wait();
+        if let Some(child) = self.child.as_mut() {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
     }
 }
 

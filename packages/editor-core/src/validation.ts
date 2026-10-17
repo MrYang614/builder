@@ -295,6 +295,34 @@ export function validateDocument(input: unknown): ValidationResult {
         }
       }
     }
+    for (let i = 0; i < d.slabs.length; i += 1) {
+      const first = d.slabs[i]!;
+      const firstX = first.polygon.map((point) => point.x);
+      const firstZ = first.polygon.map((point) => point.z);
+      for (let j = i + 1; j < d.slabs.length; j += 1) {
+        const second = d.slabs[j]!;
+        if (first.levelId !== second.levelId) {
+          continue;
+        }
+        const verticalOverlap =
+          Math.min(first.elevation, second.elevation) -
+          Math.max(first.elevation - first.thickness, second.elevation - second.thickness);
+        if (verticalOverlap <= EPSILON) {
+          continue;
+        }
+        const secondX = second.polygon.map((point) => point.x);
+        const secondZ = second.polygon.map((point) => point.z);
+        const horizontalOverlap =
+          Math.min(Math.max(...firstX), Math.max(...secondX)) -
+          Math.max(Math.min(...firstX), Math.min(...secondX));
+        const depthOverlap =
+          Math.min(Math.max(...firstZ), Math.max(...secondZ)) -
+          Math.max(Math.min(...firstZ), Math.min(...secondZ));
+        if (horizontalOverlap > EPSILON && depthOverlap > EPSILON) {
+          return fail('slab.overlap', { ids: [first.id, second.id] });
+        }
+      }
+    }
     for (const o of d.openings) {
       if (
         !allowed(o, [

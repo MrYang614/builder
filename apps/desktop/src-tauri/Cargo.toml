@@ -29,6 +29,16 @@ tempfile = "=3.27.0"
 percent-encoding = "=2.3.2"
 image = { version = "=0.25.10", default-features = false, features = ["png", "jpeg", "hdr", "exr"] }
 
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "=0.61.2", features = [
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Storage_FileSystem",
+  "Win32_System_IO",
+  "Win32_System_Pipes",
+  "Win32_System_Threading",
+] }
+
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]
 codegen-units = 1

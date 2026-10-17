@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: var(--background);
 }
 .viewport-snap-coordinate {
   position: absolute;
@@ -19,17 +20,20 @@
   pointer-events: none;
 }
 .main-toolbar {
-  min-height: 52px;
+  min-height: 58px;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 170px minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 8px 16px;
   border-bottom: 1px solid var(--border);
   background: var(--card);
+  box-shadow: 0 6px 18px var(--shadow);
   flex-shrink: 0;
   cursor: default;
   user-select: none;
+  position: relative;
+  z-index: 2;
 }
 .project-label {
   display: flex;
@@ -38,12 +42,48 @@
   min-width: 0;
   align-self: stretch;
 }
+.project-identity {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.project-mark {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.project-mark svg {
+  width: 16px;
+  height: 16px;
+}
+.project-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+.project-kicker {
+  color: var(--muted-foreground);
+  font-size: 10px;
+  line-height: 1;
+}
 .project-name {
-  max-width: 170px;
+  max-width: 190px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
+  font-size: 13px;
+  font-weight: 650;
 }
 .header-project-actions {
   display: flex;
@@ -71,8 +111,11 @@
   flex-shrink: 0;
   min-width: 0;
   border: 0;
-  padding: 0;
+  padding: 3px;
   margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--muted);
 }
 .header-preferences {
   border-left: 1px solid var(--border);
@@ -106,11 +149,21 @@
   flex-wrap: wrap;
 }
 .tools-bar {
-  min-height: 46px;
-  padding: 6px 14px;
+  min-height: 50px;
+  padding: 7px 16px;
   border-bottom: 1px solid var(--border);
-  background: var(--card);
+  background: var(--background);
   gap: 12px;
+}
+.tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: 0 3px 10px var(--shadow);
 }
 .boundary-hint {
   font-size: 11px;
@@ -122,6 +175,7 @@
   grid-template-columns: 190px minmax(300px, 1fr) 280px;
   flex: 1;
   min-height: 0;
+  background: var(--viewport-background);
 }
 .floors,
 .inspector {
@@ -134,11 +188,11 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
-  padding: 12px;
+  padding: 16px 12px;
 }
 .inspector {
   border-left: 1px solid var(--border);
-  padding: 14px;
+  padding: 16px 14px;
 }
 h2,
 h3,
@@ -196,12 +250,18 @@ h3 {
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  margin: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--viewport-background);
+  box-shadow: 0 8px 24px var(--shadow);
 }
 .viewport-toolbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px;
+  padding: 8px 10px;
   border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
   background: var(--background);
@@ -376,6 +436,9 @@ h3 {
   .header-window {
     gap: 4px;
   }
+  .main-toolbar {
+    padding-inline: 10px;
+  }
   .file-actions {
     gap: 2px;
   }
@@ -383,5 +446,8 @@ h3 {
     margin-left: 0;
     padding-left: 0;
     border-left: 0;
+  }
+  .viewport-region {
+    margin: 6px;
   }
 }

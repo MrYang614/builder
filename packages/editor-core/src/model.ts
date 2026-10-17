@@ -266,3 +266,115 @@ export function createExampleProject(): ProjectDocument {
   doc.slabs.push(createSlab('level_2', { x: -3, z: -2 }, { x: 3, z: 2 }, 6, 'roof'));
   return doc;
 }
+
+/** Builds a closed two-storey courtyard house with a real roof ring and open sky court. */
+export function createCourtyardProject(name = 'Courtyard House'): ProjectDocument {
+  const doc = createEmptyProject(name);
+  doc.levels.push({ id: 'level_2', name: '2', elevation: 3, height: 3 });
+  const outer = [
+    ['rear', { x: -7, z: -6 }, { x: 7, z: -6 }],
+    ['right', { x: 7, z: -6 }, { x: 7, z: 6 }],
+    ['front', { x: 7, z: 6 }, { x: -7, z: 6 }],
+    ['left', { x: -7, z: 6 }, { x: -7, z: -6 }],
+  ] as const;
+  const inner = [
+    ['south', { x: -3, z: -2.5 }, { x: 3, z: -2.5 }],
+    ['east', { x: 3, z: -2.5 }, { x: 3, z: 2.5 }],
+    ['north', { x: 3, z: 2.5 }, { x: -3, z: 2.5 }],
+    ['west', { x: -3, z: 2.5 }, { x: -3, z: -2.5 }],
+  ] as const;
+  const wings = [
+    [
+      { x: -7, z: -6 },
+      { x: 7, z: -2.5 },
+    ],
+    [
+      { x: -7, z: 2.5 },
+      { x: 7, z: 6 },
+    ],
+    [
+      { x: -7, z: -2.5 },
+      { x: -3, z: 2.5 },
+    ],
+    [
+      { x: 3, z: -2.5 },
+      { x: 7, z: 2.5 },
+    ],
+  ] as const;
+  const addWall = (levelId: string, prefix: string, name: string, start: Vec2, end: Vec2) => {
+    const wall = createWall(levelId, start, end);
+    wall.id = `${levelId}_${prefix}_${name}`;
+    wall.materials = {
+      A: defaultSurface('#e9dfd2'),
+      B: defaultSurface('#a95f47'),
+      edge: defaultSurface('#4c3d38'),
+    };
+    doc.walls.push(wall);
+    return wall;
+  };
+  const addOpening = (wall: Wall, id: string, kind: Opening['kind'], offset: number, angle = 0) => {
+    const opening = createOpening(wall, kind, offset);
+    opening.id = id;
+    opening.width = kind === 'door' ? 1.5 : 1.2;
+    opening.height = kind === 'door' ? 2.2 : 1.1;
+    opening.sill = kind === 'door' ? 0 : 0.9;
+    opening.angle = angle;
+    opening.materials = {
+      A: defaultSurface(kind === 'door' ? '#b8794f' : '#9fc4cb'),
+      B: defaultSurface(kind === 'door' ? '#7b4d38' : '#9fc4cb'),
+      edge: defaultSurface(kind === 'door' ? '#3d2b25' : '#556b73'),
+    };
+    doc.openings.push(opening);
+  };
+  const addSlabs = (levelId: string, elevation: number, prefix: string) => {
+    wings.forEach(([a, b], index) => {
+      const slab = createSlab(levelId, a, b, elevation);
+      slab.id = `${levelId}_${prefix}_wing_${index + 1}`;
+      slab.materials.top = defaultSurface('#b8875a');
+      slab.materials.bottom = defaultSurface('#f1eee7');
+      slab.materials.edge = defaultSurface('#5c4a42');
+      doc.slabs.push(slab);
+    });
+  };
+  for (const level of doc.levels) {
+    const outerWalls = new Map(
+      outer.map(([name, start, end]) => [name, addWall(level.id, 'outer', name, start, end)]),
+    );
+    const innerWalls = new Map(
+      inner.map(([name, start, end]) => [name, addWall(level.id, 'inner', name, start, end)]),
+    );
+    addSlabs(level.id, level.elevation, 'floor');
+    addOpening(
+      outerWalls.get('front')!,
+      `${level.id}_front_door`,
+      'door',
+      6.25,
+      level.id === 'level_2' ? 30 : 0,
+    );
+    addOpening(
+      innerWalls.get('south')!,
+      `${level.id}_court_door`,
+      'door',
+      2.25,
+      level.id === 'level_2' ? 20 : 0,
+    );
+    addOpening(outerWalls.get('rear')!, `${level.id}_rear_window_l`, 'window', 2.2);
+    addOpening(outerWalls.get('rear')!, `${level.id}_rear_window_r`, 'window', 10.4);
+    addOpening(outerWalls.get('right')!, `${level.id}_right_window`, 'window', 5.2);
+    addOpening(outerWalls.get('left')!, `${level.id}_left_window`, 'window', 5.2);
+    addOpening(innerWalls.get('east')!, `${level.id}_court_window_e`, 'window', 1.8);
+    addOpening(innerWalls.get('west')!, `${level.id}_court_window_w`, 'window', 1.8);
+  }
+  const courtyard = createSlab('level_1', { x: -3, z: -2.5 }, { x: 3, z: 2.5 }, 0);
+  courtyard.id = 'level_1_courtyard_paving';
+  courtyard.materials.top = defaultSurface('#b8a58a');
+  courtyard.materials.bottom = defaultSurface('#b8a58a');
+  courtyard.materials.edge = defaultSurface('#6e5b4b');
+  doc.slabs.push(courtyard);
+  addSlabs('level_2', 6, 'roof');
+  for (const slab of doc.slabs.filter((item) => item.id.startsWith('level_2_roof_'))) {
+    slab.purpose = 'roof';
+    slab.materials.top = defaultSurface('#b46c4f');
+  }
+  return doc;
+}

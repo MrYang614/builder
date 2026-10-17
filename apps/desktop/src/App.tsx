@@ -15,6 +15,7 @@ import {
   Settings,
   SaveAll,
   Blocks,
+  Building2,
 } from 'lucide-react';
 import { Button, ToggleGroup, Alert } from '@building/ui';
 import {
@@ -355,47 +356,57 @@ export default function App({
           </span>
         </div>
         <div className="project-label">
-          <span className="project-name">{doc.name}</span>
+          <div className="project-identity">
+            <span className="project-mark" aria-hidden="true">
+              <Building2 />
+            </span>
+            <span className="project-copy">
+              <span className="project-kicker">{t('app')}</span>
+              <span className="project-name">{doc.name}</span>
+            </span>
+          </div>
         </div>
       </HeaderWindow>
       <nav className="tools-bar" aria-label={t('select')}>
-        <ToggleGroup
-          label={t('select')}
-          value={s.tool}
-          size="sm"
-          variant="outline"
-          iconOnly
-          tooltip
-          options={tools.map(([tool, icon]) => ({
-            value: tool,
-            label: t(tool),
-            icon,
-            disabled: s.wholeBuildingPreview,
-          }))}
-          onValueChange={(v) => {
-            if (v) {
-              services.session.set({ tool: v as Tool });
-              services.notice.set({
-                key:
-                  v === 'select'
-                    ? 'hintSelect'
-                    : v === 'material'
-                      ? 'hintMaterial'
-                      : v === 'door' || v === 'window'
-                        ? 'hintPlace'
-                        : 'hintStart',
-                error: false,
-              });
-              services.editHint.set(services.notice.get().key);
-            }
-          }}
-        />
-        <Button.Icon
-          label={t('example')}
-          icon={Blocks}
-          disabled={busy}
-          onClick={() => void replace(true)}
-        />
+        <div className="tool-actions">
+          <ToggleGroup
+            label={t('select')}
+            value={s.tool}
+            size="sm"
+            variant="outline"
+            iconOnly
+            tooltip
+            options={tools.map(([tool, icon]) => ({
+              value: tool,
+              label: t(tool),
+              icon,
+              disabled: s.wholeBuildingPreview,
+            }))}
+            onValueChange={(v) => {
+              if (v) {
+                services.session.set({ tool: v as Tool });
+                services.notice.set({
+                  key:
+                    v === 'select'
+                      ? 'hintSelect'
+                      : v === 'material'
+                        ? 'hintMaterial'
+                        : v === 'door' || v === 'window'
+                          ? 'hintPlace'
+                          : 'hintStart',
+                  error: false,
+                });
+                services.editHint.set(services.notice.get().key);
+              }
+            }}
+          />
+          <Button.Icon
+            label={t('example')}
+            icon={Blocks}
+            disabled={busy}
+            onClick={() => void replace(true)}
+          />
+        </div>
         <span className="muted boundary-hint">{t('boundary')}</span>
       </nav>
       <div className="work-area">
