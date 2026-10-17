@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 const rows = (text) =>
   text
@@ -56,5 +56,6 @@ const report = {
     .filter((row) => row[5] !== '验证通过')
     .map(([id, scenario, , , , status, scope]) => ({ id, scenario, status, scope })),
 };
-await writeFile('docs/acceptance-status.json', JSON.stringify(report, null, 2) + '\n');
+await mkdir('.test-artifacts/acceptance', { recursive: true });
+await writeFile('.test-artifacts/acceptance/status.json', JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({ originalConditionsUnchanged: true, count: 42, counts }, null, 2));

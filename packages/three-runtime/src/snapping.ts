@@ -122,7 +122,7 @@ export class RuntimeSnapping {
 
   private updateReadout(): void {
     if (this.result) {
-      this.output.textContent = `${this.dimensions ? `${this.dimensions} · ` : ''}X ${this.result.point.x.toFixed(3)} · Z ${this.result.point.z.toFixed(3)} m`;
+      this.output.textContent = `${this.dimensions ? `${this.dimensions} · ` : ''}X ${this.result.point.x.toFixed(2)} · Z ${this.result.point.z.toFixed(2)} m`;
     }
   }
 

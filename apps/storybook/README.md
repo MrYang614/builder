@@ -20,7 +20,7 @@ npm run build:storybook
 npm run test:storybook
 ```
 
-The static result is `apps/storybook/dist`. A static web server can serve that directory independently of the desktop application. Root `npm run typecheck`, format, lint and architecture checks include Storybook source and its configuration. The browser test command uses `playwright.storybook.config.ts`; its artifacts live in the independent evidence directory documented in the delivery report.
+The static result is `apps/storybook/dist`. A static web server can serve that directory independently of the desktop application. Root `npm run typecheck`, format, lint and architecture checks include Storybook source and its configuration. The browser test command uses `playwright.storybook.config.ts`; reports, traces and screenshots stay in the Git-ignored `.test-artifacts/playwright/storybook/` directory.
 
 ## Directory
 

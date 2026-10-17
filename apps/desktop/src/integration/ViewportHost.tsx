@@ -124,7 +124,10 @@ export function ViewportHost() {
       }}
     >
       {doc.walls.length === 0 && doc.slabs.length === 0 && (
-        <div className="viewport-empty">{t('empty')}</div>
+        <div className="viewport-empty">
+          <strong>{t('workspace.start')}</strong>
+          <p>{t('workspace.emptyHint')}</p>
+        </div>
       )}
       {session.wholeBuildingPreview && <div className="viewport-mode">{t('preview')}</div>}
     </div>

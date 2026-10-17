@@ -77,7 +77,7 @@ fn default_renderer_backend() -> String {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            theme_mode: "light".into(),
+            theme_mode: "dark".into(),
             language: "zh-CN".into(),
             renderer_backend: default_renderer_backend(),
         }
@@ -359,13 +359,13 @@ fn read_settings(reader: impl Read) -> Result<Settings> {
     let Ok(mut stored) = serde_json::from_slice::<Value>(&bytes) else {
         return Ok(Settings::default());
     };
-    // Only reads migrate legacy/malformed theme values; save validation remains strict.
+    // Read migration uses the current dark default; explicit appearances and strict saves survive.
     if let Some(object) = stored.as_object_mut() {
         if !matches!(
             object.get("themeMode").and_then(Value::as_str),
             Some("light" | "dark")
         ) {
-            object.insert("themeMode".into(), Value::String("light".into()));
+            object.insert("themeMode".into(), Value::String("dark".into()));
         }
     }
     let Ok(mut settings) = serde_json::from_value::<Settings>(stored) else {

@@ -33,7 +33,7 @@ Google规范中仍需代码审查的内容包括API命名、文档、模块职�
 
 迁移期间曾保存逐文件超限基线。2026-10-11 全仓审查将其余五项按完整职责拆分，`scripts/check.mjs` 已移除全部旧例外，统一执行 500 行上限。未来新增例外仍须在规则评审中说明职责边界、当前行数及拆分会破坏内聚的具体原因，不能只因为文件历史悠久而保留。
 
-`Inspector.tsx` 的完整面级材质、资源导入及连续性命令职责已提取到 `MaterialFields.tsx`，其余对象尺寸字段仍在 Inspector；二者各自订阅现有服务，选中对象 key 保持草稿生命周期。该 UI 大小例外已删除。Core、validation、geometry 和 Rust storage 的拆分及真实 BUG 回归见 REPOSITORY-REVIEW.md。
+`Inspector.tsx` 的完整面级材质、资源导入及连续性命令职责已提取到 `MaterialFields.tsx`，其余对象尺寸字段仍在 Inspector；二者各自订阅现有服务，选中对象 key 保持草稿生命周期。该 UI 大小例外已删除。Core、validation、geometry 与 Rust storage 的职责边界见 [ARCHITECTURE.md](ARCHITECTURE.md)。
 
 `packages/three-runtime/src/runtime.ts` 已从1806行拆为不超过500行的协调入口：指针事务、预览、拾取、正式场景、选择辅助、动画、渲染器／后处理、环境、光追快照及RAF各由内聚模块持有状态与资源。模块通过明确的窄接口连接，不传入整个ThreeRuntime或共享可变context；异步请求版本与资源释放先后顺序仍由对应owner保证。`pathtracing.ts` 的backend驱动与释放适配进入 `pathtrace-drivers.ts`，会话只保留采样生命周期。两文件的逐文件大小例外已删除，整个three-runtime包都受默认500行门禁约束。
 
@@ -57,11 +57,11 @@ React refs／immutability／exhaustive-deps均保持启用。渲染期间写ref�
 
 ## 格式化排除
 
-第三方Skills有固定SHA256，token CSS与生成器逐字比较，原始PRD和验收表的42行条件精确校验。故排除 `.agents`、生成CSS、原文两份Markdown、历史JSON证据、测试／构建产物、Tauri生成schema、示例source JSON及锁文件；源token JSON、实际源码和测试仍在检查中。导入、Tailwind类与package.json不自动排序，保留副作用导入及数据键顺序。完整列表在 `.oxfmtrc.json` 和 `.oxlintrc.json`。
+第三方Skills有固定SHA256，token CSS与生成器逐字比较，原始PRD和验收表的42行条件精确校验。故排除 `.agents`、生成CSS、原文两份Markdown、测试／构建产物、Tauri生成schema、示例source JSON及锁文件；源token JSON、实际源码和测试仍在检查中。导入、Tailwind类与package.json不自动排序，保留副作用导入及数据键顺序。完整列表在 `.oxfmtrc.json` 和 `.oxlintrc.json`。
 
 ## 日常命令与CI
 
-`.gitattributes`将维护源码与生成文本的检出换行固定为LF，避免Windows默认autocrlf破坏格式及生成CSS检查。固定Skills、原PRD／验收文件、历史JSON、示例source JSON与tests/artifacts保持原始字节，不通过Git换行转换改变其哈希或证据。提交前还核对暂存Skills的SHA256与清单一致；工作区检查通过不能代替检出内容核验。
+`.gitattributes`将维护源码与生成文本的检出换行固定为LF，避免Windows默认autocrlf破坏格式及生成CSS检查。固定Skills、原PRD／验收文件、示例source JSON保持原始字节，不通过Git换行转换改变其哈希或证据。提交前还核对暂存Skills的SHA256与清单一致；工作区检查通过不能代替检出内容核验。
 
 ```powershell
 npm run format          # 写入格式
@@ -75,16 +75,12 @@ npm run verify          # check + typecheck + 单元测试 + 生产构建
 
 `npm run build`已有check前置，Tauri构建继续复用此入口。VS Code／兼容编辑器推荐 [官方Oxc扩展](https://oxc.rs/docs/guide/usage/formatter/editors.html)，仅源代码语言启用保存格式化；不更改用户全局设置，不声称已经安装编辑器扩展。
 
-`.github/workflows/quality.yml`提供Windows代码质量流程：push／PR／手动触发，最小contents:read权限，checkout v6和setup-node v7锁定实际官方标签提交，Node26.1.0／npm12.2.0、npm ci、npm run verify。当前工作区无Git仓库／远端，此工作流未在GitHub运行；配置存在不等于远程CI通过，也不代表Tauri／macOS验收。
+`.github/workflows/quality.yml`提供Windows代码质量流程：push／PR／手动触发，最小contents:read权限，checkout v6和setup-node v7锁定实际官方标签提交，Node26.1.0／npm12.2.0、npm ci、npm run verify。工作流配置存在不等于远程 CI 已通过，也不代表 Tauri／macOS 验收；以实际远程运行结果为准。
 
-## 本次验证记录
+## 验证与产物
 
-2026-10-13 UI 基础体系补充：format／lint 和架构检查纳入 `apps/storybook/src`、`.storybook` 与 Vite 配置；typecheck 在原四套目标外增加独立 Storybook 源码／示例／浏览器测试目标。UI 包继续禁止建筑业务、Three、Tauri 依赖；桌面禁止 Storybook／Sucrase 导入；公共 UI 调用由 AST 检查禁止 className/style 外观覆盖。所有新增手写源文件遵守500行，不新增文件大小例外。
+Storybook 源码、示例和浏览器测试也参加格式、lint 与独立类型检查。UI 包禁止建筑、Three 与 Tauri 依赖；桌面禁止 Storybook／Sucrase 依赖。公共 UI 调用由 AST 检查禁止 className/style 外观覆盖。
 
-Select 的丰富选项需要 APG combobox/listbox/option 主动后代模式：局部 `prefer-tag-over-role` 注释仅覆盖该结构，并说明原生 option 不能承载这些外部 slots。没有整包禁用规则。浏览器焦点探针现在检查实际拥有可见边框的 InputGroup，同时继续断言原生输入焦点、语义色与可见光环；Select 活动选项探针使用真实 `role=option` 和 `data-active`。原失败报告保留，不放宽超时或降低断言。
+Select 的丰富选项使用 APG combobox/listbox/option 主动后代模式；局部 `prefer-tag-over-role` 仅覆盖原生 option 不能承载的外部 slots，不关闭整包检查。
 
-本轮命令、干净依赖安装、编译模块图、组件覆盖和最终结果见 `docs/UI-COMPONENTS.md` 与 `test-results/ui-foundation-2026-10-13/validation.json`。固定 Skills、生成 token CSS、原 PRD 和原 A01–A42 行及历史证据仍保持原字节约束。
-
-最终结果记录于 `docs/code-quality-validation.json`，原始迁移诊断与源文件基线保留在 `test-results/code-quality`。首轮589条主要是缺少花括号及类型导入；没有删除失败测试或降低严格类型检查。安全自动修复曾将TypedArray的嵌套数组转换错误地化简为TypedArray.map，严格tsc捕获后改成明确Array.from，几何测试继续检查原体积／洞口／UV。
-
-原生WebDriver脚本只移除未使用css辅助声明；287个保留的字符串／模板片段cooked值逐项不变，语法通过，未重新执行原生GUI。浏览器回归与生产检查另列真实结果；历史NSIS和旧全套测试产物保留，不伪称本次已重新打包桌面或执行macOS。
+测试源码纳入版本管理，报告、截图、trace、基准与安装产物统一写入被忽略的 `.test-artifacts/`。`docs/` 不存逐轮运行报告；[PROGRESS.md](PROGRESS.md) 和 [KNOWN-ISSUES.md](KNOWN-ISSUES.md) 只记录最近结果、当前失败与平台限制。UI 改动仍须实际检查中英文截图，删除旧产物不能变成未验证通过。

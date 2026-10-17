@@ -36,6 +36,8 @@ interface SelectSharedProps extends Omit<
   onOpenChange?: (open: boolean) => void;
   icon?: LucideIcon;
   appearance?: 'default' | 'icon';
+  /** Changes numeric glyphs without coercing option values, labels or selection behavior. */
+  valueFormat?: 'text' | 'numeric';
   tooltip?: string;
 }
 
@@ -75,6 +77,7 @@ export function Select(props: SelectProps) {
     onOpenChange,
     icon: Icon,
     appearance = 'default',
+    valueFormat = 'text',
     tooltip,
     value,
     defaultValue,
@@ -278,14 +281,14 @@ export function Select(props: SelectProps) {
         className={cn(
           'flex min-w-0 items-center gap-2 outline-none [&_svg]:size-4 [&_svg]:shrink-0',
           appearance === 'icon'
-            ? 'size-9 shrink-0 justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
+            ? 'size-8 shrink-0 justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50'
             : cn(
-                'justify-between px-3 data-[placeholder]:text-muted-foreground',
+                'justify-between px-2 data-[placeholder]:text-muted-foreground',
                 inputSurface,
                 inputSizes[size],
                 width === 'full' ? 'w-full' : 'w-auto',
               ),
-          multiple && appearance !== 'icon' && 'h-auto min-h-9 py-1',
+          multiple && appearance !== 'icon' && 'h-auto min-h-8 py-1',
         )}
         onKeyDown={(event) => {
           onKeyDown?.(event);
@@ -302,7 +305,12 @@ export function Select(props: SelectProps) {
         }}
       >
         {Icon ? <Icon /> : null}
-        <span className={appearance === 'icon' ? 'sr-only' : 'min-w-0 flex-1 truncate text-left'}>
+        <span
+          className={cn(
+            appearance === 'icon' ? 'sr-only' : 'min-w-0 flex-1 truncate text-left',
+            valueFormat === 'numeric' && labels.length > 0 && 'font-mono tabular-nums',
+          )}
+        >
           {display}
         </span>
         {appearance !== 'icon' ? <ChevronDownIcon className="text-muted-foreground" /> : null}
@@ -326,7 +334,7 @@ export function Select(props: SelectProps) {
               <TooltipPrimitive.Portal>
                 <TooltipPrimitive.Content
                   sideOffset={8}
-                  className="z-50 rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground shadow-md shadow-shadow"
+                  className="z-50 rounded-md border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-sm shadow-shadow"
                 >
                   {tooltip}
                 </TooltipPrimitive.Content>
@@ -442,7 +450,14 @@ export function Select(props: SelectProps) {
                       }
                     }}
                   >
-                    <span className="min-w-0 flex-1 break-words">{option.label}</span>
+                    <span
+                      className={cn(
+                        'min-w-0 flex-1 break-words',
+                        valueFormat === 'numeric' && 'font-mono tabular-nums',
+                      )}
+                    >
+                      {option.label}
+                    </span>
                     {selected.includes(option.value) ? (
                       <CheckIcon className="size-4 shrink-0" />
                     ) : null}

@@ -179,6 +179,130 @@ export default function Demo() {
   await page.screenshot({ path: testInfo.outputPath('commit-drafts.png'), fullPage: true });
 });
 
+test('configured numeric precision limits edits and stepping while preserving exact untouched values', async ({
+  page,
+}, testInfo) => {
+  const stage = await openExample(
+    page,
+    `
+import { useState } from 'react';
+import { Button, Form, InputNumber } from '@building/ui';
+export default function Demo() {
+  const [value, setValue] = useState(1.23456789);
+  const [calls, setCalls] = useState(0);
+  const [bounded, setBounded] = useState(0.5);
+  const [boundedCalls, setBoundedCalls] = useState(0);
+  return <div data-testid="input-harness">
+    <Form.Item label="Dimension"><InputNumber precision={2} value={value} onCommit={(next) => { if(next === null) return false; setValue(next); setCalls(c => c+1); return true; }} /></Form.Item>
+    <Form.Item label="Step"><InputNumber precision={2} defaultValue={0.3} step={0.001} /></Form.Item>
+    <Form.Item label="Bounded"><InputNumber precision={2} min={-1.005} max={1.005} value={bounded} invalidMessage="Outside range" onCommit={(next) => { if(next === null) return false; setBounded(next); setBoundedCalls(c => c+1); return true; }} /></Form.Item>
+    <output data-testid="formal">{String(value)}</output><output data-testid="calls">{calls}</output>
+    <output data-testid="bounded-formal">{String(bounded)}</output><output data-testid="bounded-calls">{boundedCalls}</output>
+    <Button onClick={() => setValue(-1.23456789)}>External value</Button>
+    <Button onClick={() => {}}>Blur target</Button>
+  </div>;
+}`,
+  );
+  const number = stage.getByLabel('Dimension', { exact: true });
+  const blur = stage.getByRole('button', { name: 'Blur target' });
+  await expect(number).toHaveValue('1.23');
+  await number.focus();
+  await number.press('Enter');
+  await blur.click();
+  await expect(stage.getByTestId('formal')).toHaveText('1.23456789');
+  await expect(stage.getByTestId('calls')).toHaveText('0');
+
+  await number.fill('1.');
+  await expect(number).toHaveValue('1.');
+  await number.pressSequentially('005');
+  await expect(number).toHaveValue('1.01');
+  await expect(stage.getByTestId('calls')).toHaveText('0');
+  await number.press('Enter');
+  await blur.click();
+  await expect(stage.getByTestId('formal')).toHaveText('1.01');
+  await expect(stage.getByTestId('calls')).toHaveText('1');
+
+  await number.fill('-1.005');
+  await expect(number).toHaveValue('-1.01');
+  await number.press('Enter');
+  await expect(stage.getByTestId('formal')).toHaveText('-1.01');
+  await expect(stage.getByTestId('calls')).toHaveText('2');
+
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.evaluate(() => navigator.clipboard.writeText('0.555'));
+  await number.focus();
+  await number.press('ControlOrMeta+A');
+  await number.press('ControlOrMeta+V');
+  await expect(number).toHaveValue('0.56');
+  await number.press('Enter');
+  await expect(stage.getByTestId('formal')).toHaveText('0.56');
+  await expect(stage.getByTestId('calls')).toHaveText('3');
+
+  await number.fill('1.005e0');
+  await expect(number).toHaveValue('1.01');
+  await number.press('Enter');
+  await expect(stage.getByTestId('formal')).toHaveText('1.01');
+  await expect(stage.getByTestId('calls')).toHaveText('4');
+  for (const intermediate of ['-', '.', '1e', '1e-']) {
+    await number.fill(intermediate);
+    await expect(number).toHaveValue(intermediate);
+    await number.press('Escape');
+    await expect(number).toHaveValue('1.01');
+    await expect(stage.getByTestId('calls')).toHaveText('4');
+  }
+
+  await number.dispatchEvent('compositionstart');
+  await number.fill('1.239');
+  await expect(number).toHaveValue('1.239');
+  await number.press('Enter');
+  await expect(stage.getByTestId('calls')).toHaveText('4');
+  await expect(stage.getByTestId('formal')).toHaveText('1.01');
+  await number.dispatchEvent('compositionend');
+  await expect(number).toHaveValue('1.24');
+  await number.press('Enter');
+  await blur.click();
+  await expect(stage.getByTestId('formal')).toHaveText('1.24');
+  await expect(stage.getByTestId('calls')).toHaveText('5');
+
+  await number.fill('1.11');
+  await stage.getByRole('button', { name: 'External value' }).dispatchEvent('click');
+  await expect(stage.getByTestId('formal')).toHaveText('-1.23456789');
+  await expect(number).toHaveValue('1.11');
+  await number.press('Escape');
+  await expect(number).toHaveValue('-1.23');
+  await blur.click();
+  await expect(stage.getByTestId('formal')).toHaveText('-1.23456789');
+  await expect(stage.getByTestId('calls')).toHaveText('5');
+
+  const step = stage.getByLabel('Step', { exact: true });
+  await step.focus();
+  await step.press('ArrowUp');
+  await expect(step).toHaveValue('0.31');
+  await step.press('ArrowDown');
+  await expect(step).toHaveValue('0.3');
+  await step.fill('-0.01');
+  await step.press('ArrowUp');
+  await expect(step).toHaveValue('0');
+
+  const bounded = stage.getByLabel('Bounded', { exact: true });
+  await bounded.fill('1.004');
+  await bounded.press('Enter');
+  await expect(bounded).toHaveValue('1');
+  await expect(stage.getByTestId('bounded-formal')).toHaveText('1');
+  await expect(stage.getByTestId('bounded-calls')).toHaveText('1');
+  for (const rejected of ['1.005', '-1.005']) {
+    await bounded.fill(rejected);
+    await bounded.press('Enter');
+    await expect(bounded).toHaveAttribute('aria-invalid', 'true');
+    await expect(stage.getByRole('alert')).toHaveText('Outside range');
+    await expect(stage.getByTestId('bounded-formal')).toHaveText('1');
+    await expect(stage.getByTestId('bounded-calls')).toHaveText('1');
+    await bounded.press('Escape');
+    await expect(bounded).toHaveValue('1');
+  }
+  await page.screenshot({ path: testInfo.outputPath('two-decimal-inputs.png'), fullPage: true });
+});
+
 test('select supports searchable groups, disabled options, multiple values, clear and dynamic options', async ({
   page,
 }, testInfo) => {

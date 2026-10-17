@@ -25,5 +25,12 @@ export function Toggle({ children, size = 'md', label, icon, tooltip, ...props }
       {children}
     </Primitive>
   );
-  return tooltip ? <Tooltip content={tooltip}>{toggle}</Tooltip> : toggle;
+  // A separate trigger keeps Tooltip's data-state from replacing the toggle's selected state.
+  return tooltip ? (
+    <Tooltip content={tooltip}>
+      <span className="inline-flex shrink-0">{toggle}</span>
+    </Tooltip>
+  ) : (
+    toggle
+  );
 }

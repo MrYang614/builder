@@ -290,14 +290,14 @@ fn settings_are_separate_and_bad_preferences_fall_back() {
     save_settings(&path, &settings).unwrap();
     assert_eq!(load_settings(&path).unwrap(), settings);
     fs::write(&path, br#"{"themeMode":"invalid","language":"en"}"#).unwrap();
-    assert_eq!(load_settings(&path).unwrap().theme_mode, "light");
+    assert_eq!(load_settings(&path).unwrap().theme_mode, "dark");
     assert!(project().get("themeMode").is_none());
 }
 #[test]
-fn legacy_theme_preferences_migrate_to_light_without_losing_language_or_renderer() {
+fn legacy_theme_preferences_migrate_to_dark_without_losing_language_or_renderer() {
     let dir = tempfile::tempdir().unwrap();
     let path = settings_path(dir.path());
-    assert_eq!(load_settings(&path).unwrap().theme_mode, "light");
+    assert_eq!(load_settings(&path).unwrap().theme_mode, "dark");
     for theme in [
         json!("system"),
         json!("invalid"),
@@ -306,10 +306,10 @@ fn legacy_theme_preferences_migrate_to_light_without_losing_language_or_renderer
         json!("light"),
         json!("dark"),
     ] {
-        let expected = if theme.as_str() == Some("dark") {
-            "dark"
-        } else {
+        let expected = if theme.as_str() == Some("light") {
             "light"
+        } else {
+            "dark"
         };
         fs::write(
             &path,
@@ -328,12 +328,12 @@ fn legacy_theme_preferences_migrate_to_light_without_losing_language_or_renderer
     }
     fs::write(&path, br#"{"themeMode":"system","language":"en"}"#).unwrap();
     let loaded = load_settings(&path).unwrap();
-    assert_eq!(loaded.theme_mode, "light");
+    assert_eq!(loaded.theme_mode, "dark");
     assert_eq!(loaded.language, "en");
     assert_eq!(loaded.renderer_backend, "webgl");
     fs::write(&path, br#"{"language":"en","rendererBackend":"webgpu"}"#).unwrap();
     let loaded = load_settings(&path).unwrap();
-    assert_eq!(loaded.theme_mode, "light");
+    assert_eq!(loaded.theme_mode, "dark");
     assert_eq!(loaded.language, "en");
     assert_eq!(loaded.renderer_backend, "webgpu");
 }

@@ -1,6 +1,9 @@
+import { panelMessages } from './panel-messages';
+
 /** Editing stage copy stays separate from transient errors, snap targets and live dimensions. */
 export const editingMessages: Record<'en' | 'zh-CN', Record<string, string>> = {
   en: {
+    ...panelMessages.en,
     hintStart: 'Click a start point. Right drag rotates, Shift + right drag pans.',
     hintSelect: 'Click to select. Drag a wall endpoint, a slab or a door/window to edit.',
     hintPlace: 'Move over a wall on the current level, then click to place.',
@@ -9,6 +12,7 @@ export const editingMessages: Record<'en' | 'zh-CN', Record<string, string>> = {
     'hint.slabEnd': 'Click the opposite corner to finish the slab. Esc cancels.',
   },
   'zh-CN': {
+    ...panelMessages['zh-CN'],
     hintStart: '点击起点。右键拖动旋转，Shift＋右键拖动平移。',
     hintSelect: '点击选择，拖动墙端点、楼板或门窗进行编辑。',
     hintPlace: '移到当前层墙面预览，然后点击放置。',

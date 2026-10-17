@@ -28,7 +28,7 @@ const labels = {
     settings: '设置',
     close: '关闭',
     export: '导出 GLB',
-    example: '可编辑示例',
+    example: '庭院样板',
     preview: '整栋预览（只读）',
     saved: '已保存',
     unsaved: '未保存修改',
@@ -44,7 +44,7 @@ const labels = {
     settings: 'Settings',
     close: 'Close',
     export: 'Export GLB',
-    example: 'Editable example',
+    example: 'Courtyard starter',
     preview: 'Building preview (read only)',
     saved: 'Saved',
     unsaved: 'Unsaved changes',
@@ -271,7 +271,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       const disabledUndo = header.getByRole('button', { name: t.files[4]!, exact: true });
       await expect(disabledUndo).toBeDisabled();
       await disabledUndo.locator('..').hover();
-      await expect(page.getByRole('tooltip')).toHaveText(t.files[4]!);
+      await expect(page.getByRole('tooltip')).toHaveText(`${t.files[4]} (Ctrl/⌘ Z)`);
       await page.mouse.move(850, 580, { steps: 8 });
       await expect(page.getByRole('tooltip')).toHaveCount(0);
       await header.getByRole('button', { name: t.export, exact: true }).focus();
@@ -443,7 +443,7 @@ test('Header language theme and renderer choices persist across reload without c
   await expect(page.locator('canvas')).toHaveCount(1);
 });
 
-test('legacy system theme cache migrates to fixed light and ignores subsequent OS media changes', async ({
+test('legacy system theme cache migrates to dark and ignores subsequent OS media changes', async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -459,17 +459,17 @@ test('legacy system theme cache migrates to fixed light and ignores subsequent O
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.reload();
   await page.waitForFunction(() => !!(window as unknown as Probe).__editor);
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const appearance = page.getByRole('button', { name: '外观', exact: true });
-  await expect(appearance).toHaveAttribute('aria-pressed', 'false');
-  await expect(appearance).toHaveAttribute('aria-description', '亮色');
+  await expect(appearance).toHaveAttribute('aria-pressed', 'true');
+  await expect(appearance).toHaveAttribute('aria-description', '暗色');
   for (const colorScheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme });
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   }
-  expect(await page.evaluate(() => localStorage.getItem('building-theme'))).toBe('light');
+  expect(await page.evaluate(() => localStorage.getItem('building-theme'))).toBe('dark');
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.getByRole('button', { name: '外观', exact: true }).click();
   await expect
     .poll(() =>
@@ -477,9 +477,9 @@ test('legacy system theme cache migrates to fixed light and ignores subsequent O
         () => JSON.parse(localStorage.getItem('building-editor.settings.v1') ?? 'null')?.themeMode,
       ),
     )
-    .toBe('dark');
+    .toBe('light');
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
 
 test('long project name and local filename stay discoverable while saved state and Header controls fit 900x600', async ({

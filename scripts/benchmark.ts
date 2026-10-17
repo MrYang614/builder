@@ -118,6 +118,6 @@ const report = {
     'Per-cycle WebGL resource stability and disk faults require their separate integration/E2E tests.',
   ],
 };
-mkdirSync('docs', { recursive: true });
-writeFileSync('docs/benchmark-core.json', `${JSON.stringify(report, null, 2)}\n`);
+mkdirSync('.test-artifacts/benchmarks', { recursive: true });
+writeFileSync('.test-artifacts/benchmarks/core.json', `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));

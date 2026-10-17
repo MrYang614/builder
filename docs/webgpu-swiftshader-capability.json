@@ -1,7 +1,0 @@
-{
-  "measuredAt": "2026-10-03T14:58:08.267Z",
-  "scope": "Windows headless Chromium software WebGPU capability, not hardware/native Tauri/macOS",
-  "navigatorGpu": true,
-  "adapter": false,
-  "info": null
-}

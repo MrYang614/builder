@@ -8,7 +8,7 @@ CLI 控制面已从“参数校验骨架”接通到 sibling Tauri automation ho
 
 本次审查修复了 Tauri 事件名 `control.request` 的非法点号、React StrictMode 异步 listener 重复注册、host EOF 未退出、响应 protocol/requestId 校验、相对项目路径和超时清理。验证使用新 debug Tauri host 与非零 Canvas；安装后 sibling 路径、release/macOS、Named Pipe/UDS 及尚未接入的导出／camera／window 命令仍未标记为通过。
 
-本轮按 `docs/CLI-IMPLEMENTATION-PROMPT.md` 落地 G0 协议边界和 G1 automation host 控制面骨架。正式工程数据仍只由 TypeScript `EditorCore` 持有；Rust 只负责 framing、认证边界、排队、生命周期和文件输出。
+正式工程数据只由 TypeScript `EditorCore` 持有；Rust 只负责 framing、认证边界、排队、生命周期和文件输出。此文记录当前协议与能力限制，不累计逐轮测试报告。
 
 | 主题               | 决定                                                                                                                                                               | 原因与限制                                                                                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |

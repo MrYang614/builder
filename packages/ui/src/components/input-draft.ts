@@ -115,14 +115,5 @@ export function useInputDraft<T>({
   return { text, invalid, setFocused, setComposing, composing, change, reset, commit, draft };
 }
 
-/** Removes arithmetic display tails without changing exact stored values, including tiny values. */
-export function numericDisplay(value: number | null): string {
-  if (value === null) {
-    return '';
-  }
-  const rounded = Number(value.toPrecision(15));
-  return String(Number.isFinite(rounded) && (rounded !== 0 || value === 0) ? rounded : value);
-}
-
 export const textDisplay = (value: string) => value;
 export const parseTextDraft = (value: string): ParsedDraft<string> => ({ valid: true, value });

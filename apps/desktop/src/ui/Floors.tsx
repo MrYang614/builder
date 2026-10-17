@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { ChevronRight, Layers, Plus } from 'lucide-react';
 import { Button, Form } from '@building/ui';
 import { createId, type Command } from '@building/editor-core';
 import { useEditor, useDocument, useSession } from '../app/services';
@@ -6,8 +6,10 @@ import { deletionContents } from '../app/deletion';
 import { Numeric, TextField } from './fields';
 import { useConfirm } from './confirm';
 import { useLanguage } from './i18n';
+import { sceneObjectPresentation } from './scene-objects';
+import './panels.css';
 
-// Floors renders level navigation and object selection.
+/** Navigation changes session selection; every level edit still issues an undoable Core command. */
 export function Floors() {
   const { core, session, submit } = useEditor(),
     doc = useDocument(),
@@ -58,9 +60,12 @@ export function Floors() {
           <Button
             key={l.id}
             variant={l.id === level.id ? 'secondary' : 'ghost'}
+            size="sm"
+            icon={Layers}
+            aria-pressed={l.id === level.id}
             width="full"
             alignment="between"
-            suffix={l.elevation.toFixed(2) + ' m'}
+            suffix={<span className="scene-elevation">{l.elevation.toFixed(2)} m</span>}
             onClick={() => {
               session.set({
                 currentLevelId: l.id,
@@ -73,59 +78,72 @@ export function Floors() {
           </Button>
         ))}
       </div>
-      <section className="level-fields" key={level.id}>
-        <Form.Group>
-          <TextField
-            label={t('name')}
-            value={level.name}
-            onCommit={(name) => submit({ type: 'update-level', id: level.id, patch: { name } })}
-          />
-          <Numeric
-            label={t('levelElevation')}
-            value={level.elevation}
-            onCommit={(v) =>
-              submit({ type: 'update-level', id: level.id, patch: { elevation: v } })
-            }
-          />
-          <Numeric
-            label={t('levelHeight')}
-            value={level.height}
-            onCommit={asyncLevelHeight(submit, level.id)}
-          />
-          <p className="muted">{t('levelShift')}</p>
-          <Button
-            variant="outline"
-            disabled={doc.levels.length === 1 || s.wholeBuildingPreview}
-            onClick={() => void remove()}
-          >
-            {t('deleteLevel')}
-          </Button>
-        </Form.Group>
-      </section>
+      <details className="level-fields" key={level.id} open>
+        <summary>
+          <ChevronRight aria-hidden="true" />
+          <span>{t('panel.levelProperties')}</span>
+        </summary>
+        <div className="level-fields-content">
+          <Form.Group>
+            <TextField
+              label={t('name')}
+              value={level.name}
+              onCommit={(name) => submit({ type: 'update-level', id: level.id, patch: { name } })}
+            />
+            <Numeric
+              label={t('levelElevation')}
+              value={level.elevation}
+              onCommit={(v) =>
+                submit({ type: 'update-level', id: level.id, patch: { elevation: v } })
+              }
+            />
+            <Numeric
+              label={t('levelHeight')}
+              value={level.height}
+              onCommit={asyncLevelHeight(submit, level.id)}
+            />
+            <p className="muted">{t('levelShift')}</p>
+            <Button
+              variant="danger-ghost"
+              size="sm"
+              disabled={doc.levels.length === 1 || s.wholeBuildingPreview}
+              onClick={() => void remove()}
+            >
+              {t('deleteLevel')}
+            </Button>
+          </Form.Group>
+        </div>
+      </details>
       <section className="object-list">
-        <h3>{t('objects')}</h3>
-        <p className="muted">{t('objectCount', { count: objects.length })}</p>
-        {objects.map((o, i) => (
-          <Button
-            key={o.id}
-            size="sm"
-            variant={s.selectedId === o.id ? 'secondary' : 'ghost'}
-            width="full"
-            alignment="start"
-            onClick={() => session.set({ selectedId: o.id, selectedSurface: undefined })}
-          >
-            {t(
-              'start' in o
-                ? 'wall'
-                : 'polygon' in o
-                  ? o.purpose === 'roof'
-                    ? 'roof'
-                    : 'slab'
-                  : o.kind,
-            )}{' '}
-            {i + 1}
-          </Button>
-        ))}
+        <div className="scene-section-heading">
+          <h3>{t('objects')}</h3>
+          <span className="scene-count" aria-label={t('objectCount', { count: objects.length })}>
+            {objects.length}
+          </span>
+        </div>
+        {objects.length === 0 && (
+          <div className="scene-empty">
+            <p>{t('panel.emptyObjects')}</p>
+            <p className="muted">{t('panel.emptyObjectsHint')}</p>
+          </div>
+        )}
+        {objects.map((o, i) => {
+          const { icon, label } = sceneObjectPresentation(o);
+          return (
+            <Button
+              key={o.id}
+              size="sm"
+              variant={s.selectedId === o.id ? 'secondary' : 'ghost'}
+              aria-pressed={s.selectedId === o.id}
+              icon={icon}
+              width="full"
+              alignment="start"
+              onClick={() => session.set({ selectedId: o.id, selectedSurface: undefined })}
+            >
+              {t(label)} {i + 1}
+            </Button>
+          );
+        })}
       </section>
       <span className="muted floor-version">
         {core.getSnapshot().schemaVersion === 1 ? t('schema') : ''}

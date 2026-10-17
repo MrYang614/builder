@@ -1,3 +1,4 @@
+import { ImagePlus, Trash2, X } from 'lucide-react';
 import { Button, Checkbox, Form } from '@building/ui';
 import type { Command, EnvironmentSettings } from '@building/editor-core';
 import { useEditor, useDocument, useSession, useSignal } from '../app/services';
@@ -116,11 +117,18 @@ export function RenderingSettings() {
           )}
           <p className="render-hint">{t('render.environmentHint')}</p>
           <div className="render-actions">
-            <Button variant="outline" onClick={() => void importPanorama()}>
+            <Button
+              size="sm"
+              icon={ImagePlus}
+              variant="outline"
+              onClick={() => void importPanorama()}
+            >
               {t('render.importEnvironment')}
             </Button>
             <Button
               variant="outline"
+              size="sm"
+              icon={X}
               disabled={!resource}
               onClick={() => updateEnvironment({ resourceId: undefined })}
             >
@@ -129,6 +137,9 @@ export function RenderingSettings() {
             {resource && (
               <Button
                 variant="ghost"
+                size="sm"
+                icon={Trash2}
+                wrap
                 onClick={() =>
                   submitEnvironment({
                     type: 'batch',

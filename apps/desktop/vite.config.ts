@@ -9,11 +9,7 @@ export default defineConfig(({ mode }) => ({
   // Concurrent test and user servers must not overwrite each other's optimized modules.
   cacheDir: fileURLToPath(
     new URL(
-      mode === 'e2e-header'
-        ? '../../.test-artifacts/vite-header-cache'
-        : mode === 'e2e'
-          ? '../../.test-artifacts/vite-e2e-cache'
-          : '../../node_modules/.vite',
+      mode === 'e2e' ? '../../.test-artifacts/vite-e2e-cache' : '../../node_modules/.vite',
       import.meta.url,
     ),
   ),

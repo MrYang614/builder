@@ -182,6 +182,16 @@ describe('UI contracts: semantic colors, localized errors and public module boun
       }
     }
   });
+  it('keeps input and unchecked choice boundaries distinguishable from their adjacent surfaces', () => {
+    for (const theme of ['light', 'dark'] as const) {
+      for (const surface of ['background', 'sidebar', 'card', 'control', 'secondary'] as const) {
+        expect(
+          contrast(tokens[theme].input, tokens[theme][surface]),
+          `${theme} input boundary/${surface}`,
+        ).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
   it('checks the exact generated CSS, so changing JSON without regeneration is a failure', () => {
     const expected =
       '/* Generated from tokens/source.json. Do not edit. */\n' +
@@ -196,9 +206,9 @@ describe('UI contracts: semantic colors, localized errors and public module boun
       '\n';
     expect(read('packages/ui/src/styles/tokens.css')).toBe(expected);
   });
-  it('migrates legacy and invalid themes to fixed light while preserving explicit light/dark', () => {
+  it('defaults missing, legacy and invalid themes to dark while preserving explicit light/dark', () => {
     for (const value of ['system', 'unknown', null, '', undefined]) {
-      expect(validTheme(value)).toBe('light');
+      expect(validTheme(value)).toBe('dark');
     }
     expect(validTheme('light')).toBe('light');
     expect(validTheme('dark')).toBe('dark');
@@ -220,7 +230,7 @@ describe('UI contracts: semantic colors, localized errors and public module boun
           return { matches: true };
         },
       });
-      expect(dataset.theme, String(mode)).toBe(mode === 'dark' ? 'dark' : 'light');
+      expect(dataset.theme, String(mode)).toBe(mode === 'light' ? 'light' : 'dark');
       expect(systemQueries).toBe(0);
     }
     for (const file of ['packages/ui/src/theme/index.tsx', 'apps/desktop/src/main.tsx']) {
@@ -474,6 +484,25 @@ describe('actual production stylesheet build', () => {
     expect(html).not.toContain('prefers-color-scheme');
     expect(html.indexOf('building-theme')).toBeLessThan(html.indexOf('type="module"'));
     expect(html).not.toMatch(/<iframe|\/src\/main\.tsx/);
+  });
+  it('ships both local variable fonts for offline UI and precise numeric controls', () => {
+    const fontFiles = readdirSync(path.join(output, 'assets')).filter((file) =>
+      /(?:inter|jetbrains-mono)-latin-wght-normal-.*\.woff2$/.test(file),
+    );
+    expect(fontFiles).toHaveLength(2);
+    for (const file of fontFiles) {
+      expect(
+        readFileSync(path.join(output, 'assets', file))
+          .subarray(0, 4)
+          .toString(),
+      ).toBe('wOF2');
+      expect(styles).toContain(file);
+    }
+    expect(styles).toContain('Inter Variable');
+    expect(styles).toContain('JetBrains Mono Variable');
+    expect(styles).toContain('Microsoft YaHei UI');
+    expect(styles).toMatch(/input-number[^}]+font-family:var\(--font-mono\)/);
+    expect(styles).not.toContain('fonts.googleapis.com');
   });
   it('keeps development-only Storybook and TSX compiler modules outside the actual editor build', () => {
     expect(modules.length).toBeGreaterThan(100);

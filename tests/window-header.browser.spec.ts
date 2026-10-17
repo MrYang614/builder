@@ -309,9 +309,9 @@ for (const [language, theme] of [
     await expect(disabledUndo).toBeDisabled();
     await disabledUndo.locator('..').click();
     expect(await dragCount()).toBe(dragBeforeIcons);
-    const draft = page.getByLabel(language === 'en' ? 'Level height (m)' : '层高（m）', {
-      exact: true,
-    });
+    const draft = page
+      .locator('.level-fields')
+      .getByLabel(language === 'en' ? 'Height (m)' : '层高（m）', { exact: true });
     await draft.fill('-');
     const backgroundPoints = await header.evaluate((element) => {
       const bounds = element.getBoundingClientRect();
@@ -449,7 +449,7 @@ test('simulated Tauri Header close waits for preferences, Cancel preserves proje
   page,
 }) => {
   await openEditor(page, 'zh-CN', 'light');
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '新增楼层', exact: true }).click();
   await expect(page.getByTestId('dirty-state')).toHaveText('未保存修改');
   const beforeDocument = await documentOf(page);

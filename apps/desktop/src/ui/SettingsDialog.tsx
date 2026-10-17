@@ -17,13 +17,20 @@ export function SettingsDialog({
       open={open}
       onOpenChange={onOpenChange}
       title={t('settings')}
+      size="lg"
       description={t('render.settingsDescription')}
       closeLabel={t('close')}
       showCloseButton={false}
       footer={<Button onClick={() => onOpenChange(false)}>{t('close')}</Button>}
     >
-      <RenderingSettings />
-      <SnappingSettings />
+      <div className="settings-layout">
+        <div className="settings-rendering">
+          <RenderingSettings />
+        </div>
+        <div className="settings-snapping">
+          <SnappingSettings />
+        </div>
+      </div>
     </Dialog>
   );
 }

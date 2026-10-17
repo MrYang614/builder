@@ -6,7 +6,7 @@ import { validateBytes } from 'gltf-validator';
 
 const root = resolve('apps/desktop/dist');
 const output = resolve(
-  process.env.BUILDING_EVIDENCE_ROOT ?? 'test-results',
+  process.env.BUILDING_EVIDENCE_ROOT ?? '.test-artifacts',
   'theme-toggle/production',
 );
 await mkdir(output, { recursive: true });

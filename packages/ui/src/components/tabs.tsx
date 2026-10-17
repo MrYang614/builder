@@ -51,7 +51,7 @@ export function Tabs({
             value={item.value}
             disabled={item.disabled}
             className={cn(
-              size === 'sm' ? 'h-7 text-xs' : size === 'lg' ? 'h-10' : 'h-9',
+              size === 'sm' ? 'h-7 text-xs' : size === 'lg' ? 'h-9' : 'h-8',
               variant === 'pills'
                 ? 'data-[state=active]:bg-background data-[state=active]:text-foreground'
                 : 'rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary',

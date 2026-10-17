@@ -42,7 +42,7 @@ test('actual save/open/move/hinge/direction/save/GLB roundtrip preserves half-op
   const rendererId = await page.evaluate(
     () => (window as unknown as Instrumented).__editor.diagnostics().rendererId,
   );
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
   await setNumber(page, '当前角度（°）', '45');
   const first = await snapshot(page),

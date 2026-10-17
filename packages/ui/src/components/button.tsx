@@ -62,7 +62,7 @@ function ButtonRoot({
         alignment === 'between' && 'justify-between',
         variant === 'danger-ghost' && 'hover:bg-destructive hover:text-destructive-foreground',
         wrap && 'h-auto whitespace-normal text-left',
-        wrap && (size === 'sm' ? 'min-h-8' : size === 'lg' ? 'min-h-10' : 'min-h-9'),
+        wrap && (size === 'sm' ? 'min-h-7' : size === 'lg' ? 'min-h-9' : 'min-h-8'),
       )}
     >
       {loading ? (

@@ -9,9 +9,9 @@
       try {
         const mode = localStorage.getItem('building-theme');
         document.documentElement.dataset.theme =
-          mode === 'light' || mode === 'dark' ? mode : 'light';
+          mode === 'light' || mode === 'dark' ? mode : 'dark';
       } catch {
-        document.documentElement.dataset.theme = 'light';
+        document.documentElement.dataset.theme = 'dark';
       }
     </script>
   </head>

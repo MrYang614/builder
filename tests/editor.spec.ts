@@ -105,7 +105,7 @@ test('real mouse L walls, movable opening, command dimensions, cancel and undo',
 test('portable file flow, real local image, half-open door and animated GLB download', async ({
   page,
 }, testInfo) => {
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await expect(page.getByRole('button', { name: '门 6', exact: true })).toBeVisible();
   await page.getByRole('button', { name: '墙体 1', exact: true }).click();
   await choose(page, '表面', 'B 面');
@@ -153,7 +153,7 @@ test('theme, system changes, bilingual portals, input routing and stable runtime
 }, testInfo) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   const original = await snapshot(page),
     runtimeId = await page.evaluate(
       () => (window as unknown as Instrumented).__editor.diagnostics().rendererId,

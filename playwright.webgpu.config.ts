@@ -10,21 +10,22 @@ export default defineConfig({
   use: {
     ...base.use,
     channel: 'chromium',
-    baseURL: 'http://127.0.0.1:1421',
+    baseURL: 'http://127.0.0.1:1423',
     launchOptions: {
       // Full Chromium's headless mode supplies Dawn's DXIL libraries on Windows.
       // Playwright's default headless-shell fails requestDevice before shader compilation here.
       // These flags do not bypass shader or GPU resource validation or force a software GPU.
-      args: ['--enable-unsafe-webgpu', '--use-angle=d3d11'],
+      args: [
+        '--enable-unsafe-webgpu',
+        ...(process.platform === 'win32' ? ['--use-angle=d3d11'] : []),
+      ],
     },
   },
-  reporter: [
-    ['list'],
-    ['json', { outputFile: 'test-results/webgpu-sampler/hardware-results.json' }],
-  ],
+  outputDir: '.test-artifacts/playwright/webgpu/results',
+  reporter: [['list'], ['json', { outputFile: '.test-artifacts/playwright/webgpu/report.json' }]],
   webServer: {
-    command: 'npm run dev -- --port 1421 --mode e2e',
-    url: 'http://127.0.0.1:1421',
+    command: 'npm run dev -- --port 1423 --mode e2e',
+    url: 'http://127.0.0.1:1423',
     reuseExistingServer: false,
     timeout: 60000,
   },

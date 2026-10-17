@@ -218,6 +218,6 @@ const report = {
     'Mesh.raycast is switched only on the benchmark-owned instance. No Three prototype or global raycaster is modified.',
   ],
 };
-mkdirSync('docs', { recursive: true });
-writeFileSync('docs/benchmark-bvh.json', `${JSON.stringify(report, null, 2)}\n`);
+mkdirSync('.test-artifacts/benchmarks', { recursive: true });
+writeFileSync('.test-artifacts/benchmarks/bvh.json', `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify(report, null, 2));

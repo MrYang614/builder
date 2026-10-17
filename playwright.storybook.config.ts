@@ -15,10 +15,10 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  outputDir: 'test-results/ui-foundation-2026-10-13/storybook-browser',
+  outputDir: '.test-artifacts/playwright/storybook/results',
   reporter: [
     ['list'],
-    ['json', { outputFile: 'test-results/ui-foundation-2026-10-13/storybook-results.json' }],
+    ['json', { outputFile: '.test-artifacts/playwright/storybook/report.json' }],
   ],
   webServer: {
     env: { BUILDING_STORYBOOK_E2E: '1' },

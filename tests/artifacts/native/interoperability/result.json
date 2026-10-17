@@ -1,6 +1,0 @@
-{
-  "measuredAt": "2026-10-03T05:34:28.956Z",
-  "status": "passed",
-  "flow": "TypeScript ZIP → actual Rust decode → actual Rust ZIP → TypeScript decode",
-  "exactDocumentAndImageBytesRetained": true
-}

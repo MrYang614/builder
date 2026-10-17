@@ -30,7 +30,7 @@ const labels = {
     dark: '暗色',
     close: '关闭',
     redo: '重做',
-    example: '可编辑示例',
+    example: '庭院样板',
     wall: '墙体 1',
     length: '轴线长度（m）',
     error: '操作失败',
@@ -52,7 +52,7 @@ const labels = {
     dark: 'Dark',
     close: 'Close',
     redo: 'Redo',
-    example: 'Editable example',
+    example: 'Courtyard starter',
     wall: 'Wall 1',
     length: 'Axis length (m)',
     error: 'Operation failed',
@@ -227,7 +227,7 @@ for (const language of ['zh-CN', 'en'] as const) {
         page,
         page.locator('.main-toolbar'),
         'backgroundRGBA',
-        palette.card!,
+        palette.background!,
       );
       const sidebar = await semantic(
         page,
@@ -248,14 +248,14 @@ for (const language of ['zh-CN', 'en'] as const) {
       const tooltip = page.locator('[data-slot="tooltip-content"]');
       await expect(tooltip).toBeVisible();
       await expect(page.getByRole('tooltip', { name: t.addLevel, exact: true })).toHaveCount(1);
-      const tooltipHover = await semantic(page, tooltip, 'backgroundRGBA', palette.foreground!);
-      await semantic(page, tooltip, 'colorRGBA', palette.background!);
+      const tooltipHover = await semantic(page, tooltip, 'backgroundRGBA', palette.popover!);
+      await semantic(page, tooltip, 'colorRGBA', palette['popover-foreground']!);
       expect(tooltipHover.portalOutsideRoot).toBe(true);
       const tooltipArrow = await semantic(
         page,
         tooltip.locator('svg'),
         'fillRGBA',
-        palette.foreground!,
+        palette.popover!,
       );
       const tooltipLayout = await noOverflow(page);
       await page.screenshot({
@@ -268,7 +268,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       await page.locator('.floor-list button').first().press('Shift+Tab');
       await expect(titleHint).toBeFocused();
       await expect(tooltip).toBeVisible();
-      const tooltipKeyboard = await semantic(page, tooltip, 'backgroundRGBA', palette.foreground!);
+      const tooltipKeyboard = await semantic(page, tooltip, 'backgroundRGBA', palette.popover!);
       const tooltipTriggerFocus = await semantic(
         page,
         titleHint,
@@ -299,7 +299,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       await page.getByRole('button', { name: t.settings, exact: true }).click();
       const dialog = page.getByRole('dialog');
       await expect(dialog.getByRole('heading', { name: t.settings, exact: true })).toBeVisible();
-      const dialogColor = await semantic(page, dialog, 'backgroundRGBA', palette.background!);
+      const dialogColor = await semantic(page, dialog, 'backgroundRGBA', palette.popover!);
       expect(dialogColor.portalOutsideRoot).toBe(true);
       const overlay = await semantic(
         page,
@@ -327,6 +327,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       const inputSurface = input.locator('xpath=..');
       await expect(inputSurface).toHaveAttribute('data-slot', 'input-group');
       await expect(input).toBeFocused();
+      await semantic(page, inputSurface, 'backgroundRGBA', palette.control!);
       await semantic(page, inputSurface, 'borderRGBA', palette.ring!);
       const validFocus = await semantic(
         page,
@@ -487,8 +488,9 @@ test('OS media changes leave explicit theme, uncommitted invalid numeric draft, 
   page,
 }) => {
   await page.emulateMedia({ colorScheme: 'light' });
+  await choose(page, '外观', '亮色');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '墙体 1', exact: true }).click();
   await page.getByRole('button', { name: '查看整栋', exact: true }).click();
   const input = page.getByLabel('轴线长度（m）', { exact: true });

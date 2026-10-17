@@ -149,7 +149,7 @@ test('real decoded image completion arriving after UI project replacement cannot
     });
   });
   const rendererId = (await diagnostics(page)).rendererId;
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   type Gate = {
     __imageGate: {
       status(): {
@@ -423,7 +423,7 @@ test('actual rendered scene keeps lights exposure and displayed building materia
     };
     Object.assign(window, { __sceneProbe: () => latest });
   }, source);
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
   const originalDocument = await snapshot(page);
   async function themeRecord(mode: 'light' | 'dark') {

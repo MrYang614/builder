@@ -1,11 +1,12 @@
 import type { ComponentProps, ReactNode } from 'react';
 import { cn } from '../lib/utils';
 
-export const inputSizes = { sm: 'h-8 text-xs', md: 'h-9 text-sm', lg: 'h-11 text-base' };
+export const inputSizes = { sm: 'h-7 text-xs', md: 'h-8 text-sm', lg: 'h-9 text-sm' };
 export type ControlSize = keyof typeof inputSizes;
 export type ControlStatus = 'error' | 'warning';
+// Neutral hover must yield to keyboard focus and validation, regardless of generated variant order.
 export const inputSurface =
-  'rounded-md border border-input bg-background text-foreground shadow-xs shadow-shadow outline-none transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 data-[status=error]:border-destructive data-[status=error]:focus-within:ring-destructive/20 dark:data-[status=error]:focus-within:ring-destructive/40 data-[status=warning]:border-warning data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50';
+  'rounded-md border border-input bg-control text-foreground outline-none transition-[border-color,box-shadow] [&:hover:not(:focus-within):not([data-status]):not([data-disabled=true])]:border-muted-foreground focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/50 data-[status=error]:border-destructive data-[status=error]:focus-within:ring-destructive/20 dark:data-[status=error]:focus-within:ring-destructive/40 data-[status=warning]:border-warning data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50';
 
 /** Internal shadcn input-group boundary; wrappers choose semantic size and status. */
 export function InputGroup({
@@ -27,7 +28,7 @@ export function InputGroup({
       data-status={status}
       data-disabled={disabled}
       className={cn(
-        'flex min-w-0 items-center gap-2 px-3',
+        'flex min-w-0 items-center gap-1.5 px-2',
         inputSurface,
         inputSizes[size],
         width === 'full' ? 'w-full' : 'w-auto',

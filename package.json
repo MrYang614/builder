@@ -26,7 +26,7 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:webgpu": "playwright test --config playwright.webgpu.config.ts",
-    "test:regression": "playwright test --config playwright.regression.config.ts",
+    "test:regression": "npm run test:e2e --",
     "bench": "tsx scripts/benchmark.ts",
     "bench:bvh": "tsx scripts/benchmark-bvh.ts",
     "preview": "vite preview --config apps/desktop/vite.config.ts",

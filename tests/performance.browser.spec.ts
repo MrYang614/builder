@@ -321,8 +321,11 @@ test('PRD workload: real file open, camera input, 50 resource cycles and 5 expor
     for (let cycle = 1; cycle <= 50; cycle += 1) {
       await page.getByRole('button', { name: 'Wall 1', exact: true }).click();
       const height = 2.72 + (cycle % 3) * 0.01;
-      await page.getByLabel('Height (m)', { exact: true }).fill(String(height));
-      await page.getByLabel('Height (m)', { exact: true }).press('Enter');
+      const wallHeight = page
+        .getByRole('complementary', { name: 'Properties', exact: true })
+        .getByLabel('Height (m)', { exact: true });
+      await wallHeight.fill(String(height));
+      await wallHeight.press('Enter');
       await page.waitForFunction(
         (expected) =>
           (window as unknown as InstrumentedWindow).__editor.document().walls[0]?.height ===

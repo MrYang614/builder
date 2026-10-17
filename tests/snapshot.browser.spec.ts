@@ -54,7 +54,7 @@ test.beforeEach(async ({ page }) => {
   });
   await page.goto('/');
   await page.waitForFunction(() => !!(window as unknown as Instrumented).__editor);
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '墙体 1', exact: true }).click();
   await number(page, '高度（m）', '3.1');
 });

@@ -12,7 +12,7 @@ async function choose(page: Page, label: string, option: string) {
 test.beforeEach(async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('canvas')).toHaveCount(1);
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
 });
 
 test('connected matching face material batch and user designated nonintegral closure seam', async ({

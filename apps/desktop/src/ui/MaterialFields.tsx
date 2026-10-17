@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ImagePlus, RotateCcw } from 'lucide-react';
 import { Button, Checkbox, Input, Form } from '@building/ui';
 import {
   defaultSurface,
@@ -15,6 +16,7 @@ import { builtInResources, findMaterialResource } from '../app/materials';
 import { importImage } from '../platform';
 import { useLanguage } from './i18n';
 import { Numeric, Choice } from './fields';
+import { PanelSection } from './PanelSection';
 
 /** Owns selected-face material commands, resource import and continuity editing. */
 export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
@@ -166,8 +168,7 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
     }
   };
   return (
-    <section className="property-section">
-      <h3>{t('material')}</h3>
+    <PanelSection title={t('material')}>
       <Form.Group>
         <Choice
           label={t('surface')}
@@ -175,11 +176,18 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
           options={sides.map((value) => ({ value, label: t(value) }))}
           onChange={(v) => session.set({ selectedSurface: v as 'A' })}
         />
-        <Form.Item label={t('color')}>
-          <Input type="color" value={binding.color} onValueChange={(color) => change({ color })} />
+        <Form.Item label={t('color')} orientation="horizontal">
+          <Input
+            size="sm"
+            type="color"
+            value={binding.color}
+            onValueChange={(color) => change({ color })}
+          />
         </Form.Item>
-        {!isEdge && (
-          <>
+      </Form.Group>
+      {!isEdge && (
+        <div className="material-fields">
+          <Form.Group>
             <Choice
               label={t('image')}
               value={binding.resourceId ?? 'solid'}
@@ -199,46 +207,60 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
                 alt={previewResource?.name ?? t('image')}
               />
             )}
-            <Button variant="outline" disabled={busyFlag} onClick={() => void importTexture()}>
-              {t('importImage')}
-            </Button>
-            <Numeric
-              label={t('tileWidth')}
-              value={binding.tileWidth}
-              onCommit={(v) => change({ tileWidth: v })}
-            />
-            <Numeric
-              label={t('tileHeight')}
-              value={binding.tileHeight}
-              onCommit={(v) => change({ tileHeight: v })}
-            />
-            <Numeric
-              label={t('rotation')}
-              value={binding.rotation}
-              onCommit={(v) => change({ rotation: v })}
-            />
-            <Numeric
-              label={t('offsetX')}
-              value={binding.offsetX}
-              onCommit={(v) => change({ offsetX: v })}
-            />
-            <Numeric
-              label={t('offsetY')}
-              value={binding.offsetY}
-              onCommit={(v) => change({ offsetY: v })}
-            />
             <Button
               variant="outline"
-              onClick={() =>
-                change({ tileWidth: 0.5, tileHeight: 0.5, rotation: 0, offsetX: 0, offsetY: 0 })
-              }
+              size="sm"
+              icon={ImagePlus}
+              disabled={busyFlag}
+              onClick={() => void importTexture()}
             >
-              {t('resetTile')}
+              {t('importImage')}
             </Button>
-            {'start' in object && (
-              <>
+          </Form.Group>
+          <PanelSection title={t('panel.textureMapping')}>
+            <Form.Group>
+              <Numeric
+                label={t('tileWidth')}
+                value={binding.tileWidth}
+                onCommit={(v) => change({ tileWidth: v })}
+              />
+              <Numeric
+                label={t('tileHeight')}
+                value={binding.tileHeight}
+                onCommit={(v) => change({ tileHeight: v })}
+              />
+              <Numeric
+                label={t('rotation')}
+                value={binding.rotation}
+                onCommit={(v) => change({ rotation: v })}
+              />
+              <Numeric
+                label={t('offsetX')}
+                value={binding.offsetX}
+                onCommit={(v) => change({ offsetX: v })}
+              />
+              <Numeric
+                label={t('offsetY')}
+                value={binding.offsetY}
+                onCommit={(v) => change({ offsetY: v })}
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={RotateCcw}
+                onClick={() =>
+                  change({ tileWidth: 0.5, tileHeight: 0.5, rotation: 0, offsetX: 0, offsetY: 0 })
+                }
+              >
+                {t('resetTile')}
+              </Button>
+            </Form.Group>
+          </PanelSection>
+          {'start' in object && (
+            <PanelSection title={t('panel.continuity')}>
+              <Form.Group>
                 <Checkbox label={t('group')} checked={group} onCheckedChange={setGroup} />
-                <Button variant="outline" onClick={continuity}>
+                <Button size="sm" variant="outline" wrap onClick={continuity}>
                   {t('seam')}
                 </Button>
                 <p className="muted">{t('seamInfo')}</p>
@@ -254,11 +276,11 @@ export function MaterialFields({ object }: { object: Wall | Slab | Opening }) {
                     })}
                   </p>
                 )}
-              </>
-            )}
-          </>
-        )}
-      </Form.Group>
-    </section>
+              </Form.Group>
+            </PanelSection>
+          )}
+        </div>
+      )}
+    </PanelSection>
   );
 }

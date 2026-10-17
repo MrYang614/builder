@@ -93,7 +93,7 @@ export function Segmented({
           value={option.value}
           disabled={option.disabled}
           className={cn(
-            size === 'sm' ? 'h-7 text-xs' : size === 'lg' ? 'h-10' : 'h-8',
+            size === 'sm' ? 'h-6 text-xs' : size === 'lg' ? 'h-8' : 'h-7',
             width === 'full' && 'flex-1',
           )}
         >

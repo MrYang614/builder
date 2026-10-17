@@ -9,8 +9,8 @@ page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://127.0.0.1:1420');
 await page.waitForSelector('canvas');
 await page.waitForTimeout(200);
-mkdirSync('docs/screenshots', { recursive: true });
-await page.screenshot({ path: 'docs/screenshots/editor-initial.png' });
+mkdirSync('.test-artifacts/smoke', { recursive: true });
+await page.screenshot({ path: '.test-artifacts/smoke/editor-initial.png' });
 console.log(
   JSON.stringify({
     errors,

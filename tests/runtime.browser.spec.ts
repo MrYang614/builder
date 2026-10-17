@@ -228,7 +228,7 @@ test('20 real selection/theme/create/delete/replace cycles release GPU resources
   const records: RuntimeDiagnostics[] = [];
   const retainedRecords: RendererTextureIdentity[][] = [];
   async function cycle(index: number) {
-    await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+    await page.getByRole('button', { name: '庭院样板', exact: true }).click();
     await page.getByRole('button', { name: '墙体 1', exact: true }).click();
     await choose(page, '表面', 'B 面');
     expect((await diagnostics(page)).handles).toBe(2);
@@ -426,6 +426,8 @@ test('real slab corner resize has one history record; invalid opening previews s
 test('right-button camera operation preserves the drawing anchor; theme preserves camera and the resumed stroke commits once', async ({
   page,
 }) => {
+  // Start explicitly in light so the later dark choice exercises a real theme transition.
+  await choose(page, '外观', '亮色');
   await page.getByRole('radio', { name: '墙体', exact: true }).click();
   await clickWorld(page, -2, -1);
   const end = await project(page, 1, -1);
@@ -517,7 +519,7 @@ for (const { name, tool, bypass, halfWidth } of [
 test('two actual UI door playbacks sample independently, finish as commands, keep pose on move and cancel on undo', async ({
   page,
 }) => {
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '门 6', exact: true }).click();
   await number(page, '动画单程时长（s）', '8');
   await page.locator('.floor-list button').nth(1).click();
@@ -608,8 +610,8 @@ test('real window placement, sill/size editing, pointer move and deletion/undo p
           .find((name) => /\/three\.js(?:\?|$)/.test(name)),
         THREE = await import(url!);
       const buttons = [...document.querySelectorAll('button')],
-        top = buttons.find((button) => button.textContent === '俯视')!,
-        all = buttons.find((button) => button.textContent === '查看整栋')!;
+        top = buttons.find((button) => button.getAttribute('aria-label') === '俯视')!,
+        all = buttons.find((button) => button.getAttribute('aria-label') === '查看整栋')!;
       top.click();
       all.click();
       const editor = (window as unknown as Instrumented).__editor,

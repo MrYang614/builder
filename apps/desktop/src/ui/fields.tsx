@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Input, InputNumber, Select } from '@building/ui';
 import { useOptionalLanguage } from './i18n';
 
-/** Adapts shared numeric drafts to the domain callback; empty values never reach EditorCore. */
+/** Uses two-decimal edits without rounding untouched Core values; empty drafts never commit. */
 export function Numeric({
   label,
   value,
@@ -17,6 +17,7 @@ export function Numeric({
   return (
     <Form.Item
       label={label}
+      orientation="horizontal"
       announceError={false}
       error={
         invalid
@@ -25,6 +26,8 @@ export function Numeric({
       }
     >
       <InputNumber
+        size="sm"
+        precision={2}
         aria-invalid={invalid}
         value={value}
         onCommit={(next) => (next === null ? false : onCommit(next))}
@@ -49,6 +52,7 @@ export function TextField({
   return (
     <Form.Item
       label={label}
+      orientation="horizontal"
       announceError={false}
       error={
         invalid
@@ -57,6 +61,7 @@ export function TextField({
       }
     >
       <Input
+        size="sm"
         aria-invalid={invalid}
         value={value}
         onCommit={onCommit}
@@ -72,18 +77,22 @@ export function Choice({
   value,
   options,
   onChange,
+  valueFormat,
 }: {
   label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
+  valueFormat?: 'text' | 'numeric';
 }) {
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} orientation="horizontal">
       <Select
+        size="sm"
         aria-label={label}
         value={value}
         options={options}
+        valueFormat={valueFormat}
         onValueChange={(next) => {
           if (next !== undefined) {
             onChange(next);

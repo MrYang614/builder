@@ -195,6 +195,11 @@ export const inputNumber = defineExample(
     min: number('Minimum accepted numeric value.'),
     max: number('Maximum accepted numeric value.'),
     step: { ...number('Keyboard step increment.'), minimum: 0 },
+    precision: {
+      ...number('Decimal places (0–15). Unset keeps full precision.'),
+      minimum: 0,
+      maximum: 15,
+    },
     allowClear: boolean('Shows a clear action; null is submitted for empty.'),
     suffix: string('Trailing unit.'),
     prefix: string('Leading unit.'),

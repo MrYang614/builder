@@ -12,7 +12,7 @@ test('real saved files with truncation, future version or corrupt images fail vi
 }, testInfo) => {
   await page.goto('/');
   await page.waitForFunction(() => !!(window as unknown as Instrumented).__editor);
-  await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+  await page.getByRole('button', { name: '庭院样板', exact: true }).click();
   await page.getByRole('button', { name: '墙体 1', exact: true }).click();
   const height = page.getByLabel('高度（m）', { exact: true });
   await height.fill('3.1');

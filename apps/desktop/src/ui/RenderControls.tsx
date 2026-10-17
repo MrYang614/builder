@@ -5,7 +5,7 @@ import { savePNG } from '../platform';
 import { useLanguage } from './i18n';
 import { RenderDialog } from './RenderDialog';
 
-// RenderControls exposes path tracing lifecycle actions and sample progress.
+/** Runtime lifecycle actions use the existing render owner; sampling never writes project history. */
 export function RenderControls({
   open,
   onOpenChange,
@@ -54,37 +54,30 @@ export function RenderControls({
               target: state.targetSamples,
             })}
           </output>
-          <Button
+          <Button.Icon
             size="sm"
-            variant="outline"
+            variant="ghost"
+            icon={state.pathStatus === 'paused' ? Play : Pause}
+            label={t(state.pathStatus === 'paused' ? 'render.resume' : 'render.pause')}
             disabled={transitionBusy}
             onClick={() => runtimeRef.current?.pausePathTracing(state.pathStatus !== 'paused')}
-          >
-            {state.pathStatus === 'paused' ? (
-              <Play aria-hidden="true" />
-            ) : (
-              <Pause aria-hidden="true" />
-            )}
-            {t(state.pathStatus === 'paused' ? 'render.resume' : 'render.pause')}
-          </Button>
-          <Button
+          />
+          <Button.Icon
             size="sm"
-            variant="outline"
+            variant="ghost"
+            icon={Square}
+            label={t('render.raster')}
             disabled={isBusy || state.switching}
             onClick={() => void runtimeRef.current?.setPathTracing(false)}
-          >
-            <Square aria-hidden="true" />
-            {t('render.raster')}
-          </Button>
-          <Button
+          />
+          <Button.Icon
             size="sm"
-            variant="outline"
+            variant="ghost"
+            icon={ImageDown}
+            label={t('render.exportPNG')}
             disabled={isBusy || state.samples < 1 || transitionBusy || state.environmentLoading}
             onClick={() => void save()}
-          >
-            <ImageDown aria-hidden="true" />
-            {t('render.exportPNG')}
-          </Button>
+          />
         </>
       )}
     </div>

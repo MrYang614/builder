@@ -1,9 +1,0 @@
-{
-  "scope": "Windows Chromium browser adapter, real UI New/Save/field edit and actual ZIP download; hashing delayed to reproduce late IO, not native dialog validation",
-  "capturedRevision": 1,
-  "currentRevision": 2,
-  "storedHeight": 3.1,
-  "currentHeight": 3.4,
-  "newWasCancelledForNewerUnsavedChanges": true,
-  "dirtyPreserved": true
-}

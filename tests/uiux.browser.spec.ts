@@ -6,6 +6,8 @@ import type { EditorSession, ProjectDocument } from '@building/editor-core';
 import type { ThreeRuntime } from '@building/three-runtime';
 import { choose } from './browser-controls';
 
+test.use({ viewport: { width: 1600, height: 900 } });
+
 type Probe = {
   __editor: {
     document(): ProjectDocument;
@@ -15,9 +17,7 @@ type Probe = {
     project(point: { x: number; y: number; z: number }): { x: number; y: number };
   };
 };
-const root = resolve(
-  process.env.BUILDING_UIUX_EVIDENCE_ROOT ?? '.test-artifacts/uiux-20261013/flow-after',
-);
+const root = resolve(process.env.BUILDING_UIUX_EVIDENCE_ROOT ?? '.test-artifacts/uiux');
 const failures = new WeakMap<Page, string[]>();
 const documentOf = (page: Page) =>
   page.evaluate(() => (window as unknown as Probe).__editor.document());
@@ -55,8 +55,8 @@ async function evidence(page: Page, name: string, details: unknown, testInfo: Te
   await testInfo.attach(name, { path, contentType: 'image/png' });
   const json = JSON.stringify(
     {
-      scope:
-        'Current-source Chromium/SwiftShader real mouse and keyboard UI; no Tauri or macOS acceptance.',
+      scope: 'Current-source browser mouse and keyboard UI; no Tauri or macOS acceptance.',
+      launchOptions: testInfo.project.use.launchOptions,
       capturedAt: new Date().toISOString(),
       viewport: page.viewportSize(),
       theme: await page.locator('html').getAttribute('data-theme'),
@@ -389,7 +389,7 @@ for (const language of ['zh-CN', 'en'] as const) {
       page,
     }, testInfo) => {
       const english = language === 'en';
-      await page.getByRole('button', { name: '可编辑示例', exact: true }).click();
+      await page.getByRole('button', { name: '庭院样板', exact: true }).click();
       await page.getByRole('button', { name: '墙体 1', exact: true }).click();
       if (english) {
         await choose(page, '语言', 'English');

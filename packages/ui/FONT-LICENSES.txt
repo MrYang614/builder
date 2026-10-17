@@ -1,0 +1,26 @@
+Builder UI fonts
+
+Inter Variable 5.3.0
+Source package: @fontsource-variable/inter
+Upstream: https://github.com/rsms/inter
+License: SIL Open Font License 1.1
+Bundled asset: inter-latin-wght-normal.woff2 (48,256 bytes)
+Distributed notice: apps/desktop/public/licenses/Inter-OFL.txt
+Purpose: interface labels, menus, buttons, dialogs and ordinary text.
+
+JetBrains Mono Variable 5.3.0
+Source package: @fontsource-variable/jetbrains-mono
+Upstream: https://github.com/JetBrains/JetBrainsMono
+License: SIL Open Font License 1.1
+Bundled asset: jetbrains-mono-latin-wght-normal.woff2 (40,404 bytes)
+Distributed notice: apps/desktop/public/licenses/JetBrainsMono-OFL.txt
+Purpose: measurements, numeric fields and technical statistics; tabular numerals.
+
+Only normal Latin variable subsets are referenced by the shared stylesheet.
+Both files are included by Vite and require no network connection. Their combined
+uncompressed transfer size is 88,660 bytes. font-display: swap provides immediate
+fallback text while bundled assets load. Font weights remain variable.
+
+Windows falls back to Segoe UI Variable / Segoe UI and Microsoft YaHei UI.
+macOS CJK falls back to PingFang SC. Numeric fallback is Cascadia Code / Consolas,
+then the CJK system face. System fonts are not redistributed by Builder.

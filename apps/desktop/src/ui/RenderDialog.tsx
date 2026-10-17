@@ -67,27 +67,36 @@ export function RenderDialog({
         </>
       }
     >
-      <Form.Section disabled={busy || starting}>
-        <Form.Group>
-          <Choice
-            label={t('render.samplesLabel')}
-            value={String(state.targetSamples)}
-            options={[16, 64, 128, 256, 512].map((value) => ({
-              value: String(value),
-              label: String(value),
-            }))}
-            onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
-          />
-          <p className="render-hint">{t('render.pathHint')}</p>
-          {state.environmentLoading && <output>{t('render.loading')}</output>}
-          {starting && <output>{t('render.building')}</output>}
-          {error && (
-            <p role="alert" className="render-error">
-              {t(error, notice.key === error ? notice.params : { reason: '' })}
-            </p>
-          )}
-        </Form.Group>
-      </Form.Section>
+      <div className="render-dialog-body">
+        <dl className="render-dialog-facts">
+          <dt>{t('render.backend')}</dt>
+          <dd>{t(`render.${state.backend}`)}</dd>
+          <dt>{t('render.title')}</dt>
+          <dd>{t(pathActive ? 'render.pathtrace' : 'render.idle')}</dd>
+        </dl>
+        <Form.Section disabled={busy || starting}>
+          <Form.Group>
+            <Choice
+              label={t('render.samplesLabel')}
+              valueFormat="numeric"
+              value={String(state.targetSamples)}
+              options={[16, 64, 128, 256, 512].map((value) => ({
+                value: String(value),
+                label: String(value),
+              }))}
+              onChange={(value) => services.runtimeRef.current?.setPathSamples(Number(value))}
+            />
+            <p className="render-hint">{t('render.pathHint')}</p>
+            {state.environmentLoading && <output>{t('render.loading')}</output>}
+            {starting && <output>{t('render.building')}</output>}
+            {error && (
+              <p role="alert" className="render-error">
+                {t(error, notice.key === error ? notice.params : { reason: '' })}
+              </p>
+            )}
+          </Form.Group>
+        </Form.Section>
+      </div>
     </Dialog>
   );
 }

@@ -26,15 +26,14 @@ export interface AppSettings {
 export const SETTINGS_CACHE_KEY = 'building-editor.settings.v1';
 export const isDesktop = (): boolean => isTauri();
 const defaultSettings: AppSettings = {
-  themeMode: 'light',
+  themeMode: 'dark',
   language: 'zh-CN',
   rendererBackend: 'webgl',
 };
 function normalizeSettings(value: unknown): AppSettings {
   const input = (value && typeof value === 'object' ? value : {}) as Partial<AppSettings>;
   return {
-    themeMode:
-      input.themeMode === 'light' || input.themeMode === 'dark' ? input.themeMode : 'light',
+    themeMode: input.themeMode === 'light' || input.themeMode === 'dark' ? input.themeMode : 'dark',
     language: input.language === 'en' ? 'en' : 'zh-CN',
     rendererBackend: input.rendererBackend === 'webgpu' ? 'webgpu' : 'webgl',
   };

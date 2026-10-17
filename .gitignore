@@ -32,19 +32,29 @@ dist-ssr
 *.sln
 *.sw?
 
-# Generated local build/test/runtime evidence; curated records stay in docs/examples.
+# Local build, test and runtime output. Keep test source and product assets tracked.
 .test-artifacts/
 test-results/
-tests/artifacts/**
-# Keep checked-in native acceptance records and canonical validation summaries.
-!tests/artifacts/native/
-!tests/artifacts/native/**
-!tests/artifacts/*-validation.json
+tests/artifacts/
 playwright-report/
 blob-report/
 coverage/
 .cache/
 .vite/
+**/storybook-static/
 **/target/
 apps/desktop/src-tauri/.webdriver/
 .agents/impeccable-source/
+
+# docs contains maintained Markdown guides and the pinned Skills manifest.
+/docs/*
+!/docs/*.md
+!/docs/skills-manifest.json
+/docs/**/*-validation.*
+/docs/**/*-artifacts.*
+/docs/**/benchmark-*
+/docs/TEST-RESULTS.md
+/docs/*-REVIEW*.md
+/docs/UI-REDESIGN-*.md
+/docs/CLI-IMPLEMENTATION-PROMPT.md
+/examples/rendering/validation.json

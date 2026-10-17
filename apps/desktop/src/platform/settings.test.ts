@@ -35,20 +35,20 @@ describe('local theme and renderer preference migration and validation', () => {
     });
     values.set(SETTINGS_CACHE_KEY, 'broken-json');
     expect(await loadSettings()).toEqual({
-      themeMode: 'light',
+      themeMode: 'dark',
       language: 'zh-CN',
       rendererBackend: 'webgl',
     });
   });
   it.each(['system', 'invalid', null])(
-    'migrates legacy %s to light without losing language or renderer',
+    'migrates legacy %s to dark without losing language or renderer',
     async (themeMode) => {
       values.set(
         SETTINGS_CACHE_KEY,
         JSON.stringify({ themeMode, language: 'en', rendererBackend: 'webgpu' }),
       );
       expect(await loadSettings()).toEqual({
-        themeMode: 'light',
+        themeMode: 'dark',
         language: 'en',
         rendererBackend: 'webgpu',
       });
@@ -69,17 +69,17 @@ describe('local theme and renderer preference migration and validation', () => {
       rendererBackend: 'webgpu',
     });
     expect(await loadSettings()).toEqual({
-      themeMode: 'light',
+      themeMode: 'dark',
       language: 'en',
       rendererBackend: 'webgpu',
     });
     expect(host.invoke).toHaveBeenCalledWith('load_settings');
   });
-  it('writes a fixed light theme when legacy runtime input reaches the save boundary', async () => {
+  it('writes the dark default when legacy runtime input reaches the save boundary', async () => {
     host.desktop = true;
     const legacyInput: unknown = { themeMode: 'system', language: 'en', rendererBackend: 'webgpu' };
     await saveSettings(legacyInput as AppSettings);
-    const expected = { themeMode: 'light', language: 'en', rendererBackend: 'webgpu' };
+    const expected = { themeMode: 'dark', language: 'en', rendererBackend: 'webgpu' };
     expect(host.invoke).toHaveBeenCalledWith('save_settings', { settings: expected });
     expect(JSON.parse(values.get(SETTINGS_CACHE_KEY)!)).toEqual(expected);
   });

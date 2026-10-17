@@ -1,0 +1,218 @@
+.floors .panel-heading {
+  min-height: 42px;
+  margin: 0;
+  padding: 8px 12px;
+}
+.floors .floor-list {
+  gap: 2px;
+  padding: 0 8px 10px;
+}
+.scene-elevation,
+.scene-count {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.scene-elevation {
+  font-size: 10px;
+}
+.floors .level-fields {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.level-fields > summary,
+.property-group > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 12px;
+  color: var(--foreground);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.level-fields > summary::-webkit-details-marker,
+.property-group > summary::-webkit-details-marker {
+  display: none;
+}
+.level-fields > summary:hover,
+.property-group > summary:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.level-fields > summary:focus-visible,
+.property-group > summary:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+.level-fields > summary svg,
+.property-group > summary svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.level-fields[open] > summary svg,
+.property-group[open] > summary svg {
+  transform: rotate(90deg);
+}
+.level-fields-content,
+.property-group-content {
+  padding: 4px 12px 12px;
+}
+.level-fields-content [data-slot='field'] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 72px);
+}
+.floors .object-list {
+  margin: 0;
+  padding: 0 8px 12px;
+  gap: 2px;
+}
+.scene-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 10px 4px 8px;
+}
+.scene-section-heading h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+.scene-count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.scene-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 4px 16px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.scene-empty .muted {
+  font-size: 11px;
+}
+.floors .floor-version {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+}
+.inspector > h2 {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.inspector .selection-title {
+  min-height: 44px;
+  margin: 0;
+  padding: 6px 10px 6px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.selection-name {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+.selection-name svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.property-group {
+  border-bottom: 1px solid var(--border);
+}
+.property-group-content > .material-fields {
+  margin-top: 12px;
+}
+.material-fields > .property-group {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+}
+.material-fields > .property-group > summary {
+  padding-inline: 0;
+}
+.material-fields > .property-group > .property-group-content {
+  padding: 4px 0 0;
+}
+.inspector .material-preview {
+  height: 54px;
+  border-radius: 3px;
+}
+.inspector-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 16px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.inspector-empty > svg {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 4px;
+}
+.inspector-empty .muted {
+  font-size: 11px;
+}
+.settings-layout {
+  display: grid;
+  gap: 20px;
+}
+.settings-rendering,
+.settings-snapping {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 20px;
+}
+.settings-snapping {
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.render-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.render-dialog-facts {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.render-dialog-facts dt {
+  color: var(--muted-foreground);
+}
+.render-dialog-facts dd {
+  margin: 0;
+}
+@media (min-width: 720px) {
+  .settings-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: 24px;
+  }
+  .settings-snapping {
+    padding-top: 0;
+    padding-left: 24px;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+}

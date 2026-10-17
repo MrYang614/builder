@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-/** Lets a regression run isolate generated evidence instead of overwriting historical reports. */
+/** Keeps generated evidence local; an optional root isolates concurrent test runs. */
 export function evidencePath(relativePath: string): string {
-  return resolve(process.env.BUILDING_EVIDENCE_ROOT ?? 'test-results', relativePath);
+  return resolve(process.env.BUILDING_EVIDENCE_ROOT ?? '.test-artifacts', relativePath);
 }

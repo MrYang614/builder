@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useCallback, useId } from 'react';
 import type { ComponentProps, ReactNode } from 'react';
 import { XIcon } from 'lucide-react';
 import {
@@ -9,7 +9,8 @@ import {
 } from '../primitives/input-group';
 import type { ControlSize, ControlStatus } from '../primitives/input-group';
 import { useFieldControl } from './form';
-import { numericDisplay, useInputDraft } from './input-draft';
+import { useInputDraft } from './input-draft';
+import { numberPrecision, numericDisplay, numericDraft } from './number-format';
 
 export interface InputNumberProps extends Omit<
   ComponentProps<'input'>,
@@ -33,6 +34,7 @@ export interface InputNumberProps extends Omit<
   min?: number;
   max?: number;
   step?: number;
+  precision?: number;
   size?: ControlSize;
   width?: 'full' | 'auto';
   status?: ControlStatus;
@@ -43,7 +45,7 @@ export interface InputNumberProps extends Omit<
   invalidMessage?: string;
 }
 
-/** Keeps decimal intermediate text and commits only valid values; display rounding never creates a write. */
+/** Optional precision limits edited values; formatting or focusing untouched data never creates a write. */
 export function InputNumber({
   value,
   defaultValue = null,
@@ -53,6 +55,7 @@ export function InputNumber({
   min,
   max,
   step,
+  precision,
   size = 'md',
   width = 'full',
   status,
@@ -73,10 +76,12 @@ export function InputNumber({
   const field = useFieldControl();
   const blocked = Boolean(disabled || field.disabled);
   const errorId = useId();
+  const places = numberPrecision(precision);
+  const format = useCallback((next: number | null) => numericDisplay(next, places), [places]);
   const draft = useInputDraft({
     value,
     defaultValue,
-    format: numericDisplay,
+    format,
     parse: (text) => {
       if (text.trim() === '') {
         return { valid: true, value: null };
@@ -84,7 +89,7 @@ export function InputNumber({
       if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(text.trim())) {
         return { valid: false };
       }
-      const parsed = Number(text);
+      const parsed = Number(numericDraft(text, places));
       if (
         !Number.isFinite(parsed) ||
         (min !== undefined && parsed < min) ||
@@ -128,7 +133,13 @@ export function InputNumber({
           readOnly={readOnly}
           value={draft.text}
           data-escape-handled="true"
-          onChange={(event) => draft.change(event.target.value)}
+          onChange={(event) =>
+            draft.change(
+              draft.composing.current
+                ? event.target.value
+                : numericDraft(event.target.value, places),
+            )
+          }
           onFocus={(event) => {
             draft.setFocused(true);
             onFocus?.(event);
@@ -144,6 +155,10 @@ export function InputNumber({
           }}
           onCompositionEnd={(event) => {
             draft.setComposing(false);
+            const next = numericDraft(event.currentTarget.value, places);
+            if (next !== draft.draft.current) {
+              draft.change(next);
+            }
             onCompositionEnd?.(event);
           }}
           onKeyDown={(event) => {
@@ -173,11 +188,15 @@ export function InputNumber({
               event.preventDefault();
               const current = Number(draft.draft.current);
               if (Number.isFinite(current)) {
+                const increment = places === undefined ? step : Math.max(step, 10 ** -places);
                 const next = Math.max(
                   min ?? -Infinity,
-                  Math.min(max ?? Infinity, current + (event.key === 'ArrowUp' ? step : -step)),
+                  Math.min(
+                    max ?? Infinity,
+                    current + (event.key === 'ArrowUp' ? increment : -increment),
+                  ),
                 );
-                draft.change(String(next));
+                draft.change(numericDraft(String(next), places));
               }
             }
           }}

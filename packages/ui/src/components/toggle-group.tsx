@@ -69,8 +69,12 @@ export function ToggleGroup({
       </ToggleGroupItem>
     );
     return tooltip || option.tooltip ? (
-      <Tooltip key={option.value} content={option.tooltip ?? option.label}>
-        {item}
+      <Tooltip
+        key={option.value}
+        content={option.tooltip ?? option.label}
+        side={orientation === 'vertical' ? 'right' : 'top'}
+      >
+        <span className="inline-flex shrink-0">{item}</span>
       </Tooltip>
     ) : (
       item

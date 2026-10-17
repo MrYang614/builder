@@ -52,7 +52,7 @@ const en: Record<string, string> = {
   'wall.topologyEditUnsupported':
     'This edit would detach or reverse a connected wall. Keep the corner connected or shorten a different segment.',
   closedAngle: 'Closed angle (°)',
-  levelElevation: 'Level base elevation (m)',
+  levelElevation: 'Elevation (m)',
   closeGuardFailure: 'The unsaved-close guard could not start. Save your project before closing.',
 };
 const zh: Record<string, string> = {

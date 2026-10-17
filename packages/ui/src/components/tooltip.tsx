@@ -33,7 +33,8 @@ export function Tooltip({
   }
   return (
     <TooltipProvider delayDuration={delayDuration}>
-      <TooltipPrimitive {...props}>
+      {/* Content is noninteractive; leaving its trigger must close without a hover-grace corridor. */}
+      <TooltipPrimitive {...props} disableHoverableContent>
         <TooltipTrigger asChild>
           {isValidElement<{ disabled?: boolean }>(children) && children.props.disabled ? (
             <span className="inline-flex shrink-0">{children}</span>

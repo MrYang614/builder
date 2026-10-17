@@ -70,11 +70,16 @@ function FormItem({
     >
       <div
         data-slot="field"
+        data-orientation={orientation}
         data-invalid={Boolean(error)}
         data-disabled={blocked}
         className={cn(
-          'flex min-w-0 gap-1.5',
-          orientation === 'vertical' ? 'flex-col' : 'flex-row items-start gap-3',
+          'min-w-0 gap-1.5',
+          orientation === 'vertical'
+            ? 'flex flex-col'
+            : label
+              ? 'grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] items-start gap-x-3'
+              : 'grid grid-cols-1',
         )}
       >
         {label && (
@@ -94,7 +99,7 @@ function FormItem({
                 focusTarget?.focus();
               }
             }}
-            className="min-w-0 text-xs leading-snug"
+            className={cn('min-w-0 text-xs leading-snug', orientation === 'horizontal' && 'py-1.5')}
           >
             {label}
             {required && (
