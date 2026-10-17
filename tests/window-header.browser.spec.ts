@@ -90,6 +90,8 @@ async function installHost(
                 return 'C:\\工程交付\\建筑方案与正式成果文件夹\\超长目录名称\\审查与归档\\超长工程名称以测试自定义标题栏布局和未保存提示.building';
               case 'open_project':
                 return new Uint8Array(projectBytes).buffer;
+              case 'control_ready':
+                return;
               case 'plugin:event|listen': {
                 const id = ++eventId;
                 listeners.set(id, {

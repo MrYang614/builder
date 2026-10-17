@@ -2,7 +2,7 @@
 
 2026-10-03 实际在 Windows 11 专业版 10.0.26200（build 26200）运行 Tauri 桌面进程。不是浏览器适配器，也没有 mock IPC。执行的是 `target/debug/builder.exe` 加 Vite 开发前端；此记录不代表安装包已经安装验证，也不代表之后修改的所有代码已经重新完成原生回归。
 
-原生结果：`tests/artifacts/native/results.json` 保留所有原始成功和失败尝试，`finalCases` 汇总最终状态，`retries` 解释重试。截图、实际 `.building`、实际 `.glb`、Validator 报告及独立加载结果均位于同一目录。
+历史原生结果：`tests/artifacts/native/results.json` 保留一次 Windows 运行的成功和失败尝试，`finalCases` 汇总最终状态，`retries` 解释重试。新的运行通过 `BUILDING_EVIDENCE_ROOT` 隔离到 `.test-artifacts/native/`，避免覆盖已跟踪证据；截图、实际 `.building`、实际 `.glb`、Validator 报告及独立加载结果均位于运行目录。
 
 ## 实际版本与来源
 
@@ -40,7 +40,7 @@ $nativeDriverProcess = Start-Process -FilePath $tauriDriverExecutable -ArgumentL
 ```powershell
 node tests/desktop.mjs start
 node tests/desktop.mjs save
-# 在真实保存对话框选择 tests/artifacts/native/中文 native project.building
+# 在真实保存对话框选择 .test-artifacts/native/中文 native project.building
 node tests/desktop.mjs verify-save
 node tests/desktop.mjs open
 # 在真实打开对话框选择刚保存的 .building
@@ -52,7 +52,7 @@ node tests/desktop.mjs verify-open
 node tests/desktop.mjs enrich
 node tests/desktop.mjs resave
 node tests/desktop.mjs export
-# 在真实 GLB 保存对话框选择 tests/artifacts/native/中文 native door.glb
+# 在真实 GLB 保存对话框选择 .test-artifacts/native/中文 native door.glb
 node tests/desktop.mjs verify-export
 node tests/desktop.mjs independent-export
 ```

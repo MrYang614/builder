@@ -55,14 +55,12 @@ test('settings exposes one error alert and preserves the rejected draft', async 
   await expect(page.getByRole('alert')).toBeVisible();
 });
 
-test('snapshot failures release the file action lock for save and export', async ({ page }) => {
-  const module = `/@fs/${resolve('packages/three-runtime/src/runtime.ts').replaceAll('\\', '/')}`;
-  await page.evaluate(async (url) => {
-    const { ThreeRuntime } = await import(url);
-    ThreeRuntime.prototype.snapshot = () => {
-      throw new Error('snapshot failure probe');
+test('file action failures release the busy lock for save and export', async ({ page }) => {
+  await page.evaluate(() => {
+    URL.createObjectURL = () => {
+      throw new Error('file action failure probe');
     };
-  }, module);
+  });
   for (const label of ['保存', '导出 GLB']) {
     await page.getByRole('button', { name: label, exact: true }).click();
     await expect(page.getByRole('button', { name: '保存', exact: true })).toBeEnabled();

@@ -1,12 +1,14 @@
 import { readFile, writeFile, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+const evidenceRoot = process.env.BUILDING_EVIDENCE_ROOT ?? '.test-artifacts';
+const nativeReport = `${evidenceRoot}/native/results.json`;
 const json = async (file) => JSON.parse(await readFile(file, 'utf8'));
 const [browser, acceptance, release, production, native] = await Promise.all([
   json('test-results/e2e-results.json'),
   json('docs/acceptance-status.json'),
   json('docs/release-artifacts.json'),
   json('docs/production-smoke.json'),
-  json('tests/artifacts/native/results.json'),
+  json(nativeReport),
 ]);
 if (
   browser.stats.unexpected ||
@@ -51,10 +53,10 @@ const report = {
     recordedRetries: native.retries.length,
     scope:
       'Actual Windows debug Tauri/WebView2 before final runtime revisions; not final release regression',
-    report: 'tests/artifacts/native/results.json',
+    report: nativeReport,
   },
   acceptance: { count: acceptance.count, counts: acceptance.counts },
-  observedCommands: [
+  historicalObservedCommands: [
     {
       command: 'npm test',
       result: '71/71 passed',

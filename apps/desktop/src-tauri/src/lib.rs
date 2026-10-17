@@ -6,6 +6,9 @@ mod environment_tests;
 mod image_assets;
 mod project_archive;
 mod project_schema;
+#[cfg(test)]
+mod project_schema_tests;
+mod project_topology;
 pub mod storage;
 use tauri::Manager;
 

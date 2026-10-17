@@ -14,8 +14,6 @@
   "aliases": {
     "components": "@building/ui/components",
     "utils": "@building/ui/lib/utils",
-    "ui": "@building/ui/primitives",
-    "lib": "@building/ui/lib",
-    "hooks": "@building/ui/hooks"
+    "ui": "@building/ui/primitives"
   }
 }

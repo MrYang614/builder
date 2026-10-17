@@ -1,0 +1,277 @@
+--- a/build/index.module.js	
++++ b/build/index.module.js	
+@@ -1,5 +1,5 @@
+-import { BufferAttribute, BufferGeometry, Matrix4, Vector3, Vector4, Matrix3, MeshBasicMaterial, Mesh, ShaderMaterial, NoBlending, Vector2, WebGLRenderTarget, FloatType, RGBAFormat, NearestFilter, PerspectiveCamera, DataUtils, HalfFloatType, Source, DataTexture, LinearFilter, RepeatWrapping, RedFormat, ClampToEdgeWrapping, Quaternion, DataArrayTexture, DoubleSide, BackSide, FrontSide, Color, WebGLArrayRenderTarget, UnsignedByteType, NoToneMapping, RGFormat, NormalBlending, Spherical, EquirectangularReflectionMapping, LinearMipMapLinearFilter, Clock, Scene, AdditiveBlending, Camera, SpotLight, RectAreaLight, PMREMGenerator, MeshStandardMaterial, TangentSpaceNormalMap } from 'three';
++import { BufferAttribute, BufferGeometry, Matrix4, Vector3, Vector4, Matrix3, MeshBasicMaterial, Mesh, ShaderMaterial, NoBlending, Vector2, WebGLRenderTarget, FloatType, RGBAFormat, NearestFilter, PerspectiveCamera, DataUtils, HalfFloatType, TextureSource, DataTexture, LinearFilter, RepeatWrapping, RedFormat, ClampToEdgeWrapping, Quaternion, DataArrayTexture, DoubleSide, BackSide, FrontSide, Color, WebGLArrayRenderTarget, UnsignedByteType, NoToneMapping, RGFormat, NormalBlending, Spherical, EquirectangularReflectionMapping, LinearMipMapLinearFilter, Timer, Scene, AdditiveBlending, Camera, SpotLight, RectAreaLight, PMREMGenerator, MeshStandardMaterial, TangentSpaceNormalMap } from 'three';
+ import { SAH, MeshBVH, FloatVertexAttributeTexture, MeshBVHUniformStruct, UIntVertexAttributeTexture, BVHShaderGLSL } from 'three-mesh-bvh';
+ import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
+ 
+ // target offset is the number of elements in the target buffer stride to skip before copying the
+@@ -1448,9 +1448,9 @@
+ 			if ( result.changeType === GEOMETRY_REBUILT ) {
+ 
+ 				const bvhOptions = {
+ 					strategy: SAH,
+-					maxLeafTris: 1,
++					targetLeafSize: 1,
+ 					indirect: true,
+ 					onProgress,
+ 					...this.bvhOptions,
+ 				};
+@@ -2109,9 +2109,9 @@
+ // ensures the data is all floating point values and flipY is false
+ function preprocessEnvMap( envMap, targetType = HalfFloatType ) {
+ 
+ 	const map = envMap.clone();
+-	map.source = new Source( { ...map.image } );
++	map.source = new TextureSource( { ...map.image } );
+ 	const { width, height, data } = map.image;
+ 
+ 	// TODO: is there a simple way to avoid cloning and adjusting the env map data here?
+ 	// convert the data from half float uint 16 arrays to float arrays for cdf computation
+@@ -8629,16 +8629,14 @@
+ 	}
+ 
+ 	constructor( renderer ) {
+ 
+-		console.warn( 'WebGLPathTracer: This class has been deprecated and will be removed in a future release. Use "WebGPUPathTracer" instead.' );
+-
+ 		// members
+ 		this._renderer = renderer;
+ 		this._generator = new PathTracingSceneGenerator();
+ 		this._pathTracer = new PathTracingRenderer( renderer );
+ 		this._queueReset = false;
+-		this._clock = new Clock();
++		this._clock = new Timer();
+ 		this._compilePromise = null;
+ 
+ 		this._lowResPathTracer = new PathTracingRenderer( renderer );
+ 		this._lowResPathTracer.tiles.set( 1, 1 );
+@@ -8917,9 +8915,8 @@
+ 
+ 		const lowResPathTracer = this._lowResPathTracer;
+ 		const pathTracer = this._pathTracer;
+ 		const renderer = this._renderer;
+-		const clock = this._clock;
+ 		const quad = this._quad;
+ 
+ 		this._updateScale();
+ 
+@@ -8929,15 +8926,18 @@
+ 			lowResPathTracer.reset();
+ 			this._queueReset = false;
+ 
+ 			quad.material.opacity = 0;
+-			clock.start();
++			// Timer replaces Clock and is recreated so the elapsed time starts at zero.
++			this._clock = new Timer();
+ 
+ 		}
+ 
+ 		// render the path tracing sample after enough time has passed
++		const clock = this._clock;
++		clock.update();
+ 		const delta = clock.getDelta() * 1e3;
+-		const elapsedTime = clock.getElapsedTime() * 1e3;
++		const elapsedTime = clock.getElapsed() * 1e3;
+ 		if ( ! this.pausePathTracing && this.enablePathTracing && this.renderDelay <= elapsedTime && ! this.isCompiling ) {
+ 
+ 			pathTracer.update();
+ 
+@@ -9055,9 +9055,9 @@
+ 	}
+ 
+ 	getRenderTime() {
+ 
+-		return this._clock.getElapsedTime() * 1e3;
++		return this._clock.getElapsed() * 1e3;
+ 
+ 	}
+ 
+ }
+--- a/build/index.umd.cjs	
++++ b/build/index.umd.cjs	
+@@ -1450,9 +1450,9 @@
+ 				if ( result.changeType === GEOMETRY_REBUILT ) {
+ 
+ 					const bvhOptions = {
+ 						strategy: threeMeshBvh.SAH,
+-						maxLeafTris: 1,
++						targetLeafSize: 1,
+ 						indirect: true,
+ 						onProgress,
+ 						...this.bvhOptions,
+ 					};
+@@ -2111,9 +2111,9 @@
+ 	// ensures the data is all floating point values and flipY is false
+ 	function preprocessEnvMap( envMap, targetType = three.HalfFloatType ) {
+ 
+ 		const map = envMap.clone();
+-		map.source = new three.Source( { ...map.image } );
++		map.source = new three.TextureSource( { ...map.image } );
+ 		const { width, height, data } = map.image;
+ 
+ 		// TODO: is there a simple way to avoid cloning and adjusting the env map data here?
+ 		// convert the data from half float uint 16 arrays to float arrays for cdf computation
+@@ -8631,16 +8631,14 @@
+ 		}
+ 
+ 		constructor( renderer ) {
+ 
+-			console.warn( 'WebGLPathTracer: This class has been deprecated and will be removed in a future release. Use "WebGPUPathTracer" instead.' );
+-
+ 			// members
+ 			this._renderer = renderer;
+ 			this._generator = new PathTracingSceneGenerator();
+ 			this._pathTracer = new PathTracingRenderer( renderer );
+ 			this._queueReset = false;
+-			this._clock = new three.Clock();
++			this._clock = new three.Timer();
+ 			this._compilePromise = null;
+ 
+ 			this._lowResPathTracer = new PathTracingRenderer( renderer );
+ 			this._lowResPathTracer.tiles.set( 1, 1 );
+@@ -8919,9 +8917,8 @@
+ 
+ 			const lowResPathTracer = this._lowResPathTracer;
+ 			const pathTracer = this._pathTracer;
+ 			const renderer = this._renderer;
+-			const clock = this._clock;
+ 			const quad = this._quad;
+ 
+ 			this._updateScale();
+ 
+@@ -8931,15 +8928,18 @@
+ 				lowResPathTracer.reset();
+ 				this._queueReset = false;
+ 
+ 				quad.material.opacity = 0;
+-				clock.start();
++				// Timer replaces Clock and is recreated so the elapsed time starts at zero.
++				this._clock = new three.Timer();
+ 
+ 			}
+ 
+ 			// render the path tracing sample after enough time has passed
++			const clock = this._clock;
++			clock.update();
+ 			const delta = clock.getDelta() * 1e3;
+-			const elapsedTime = clock.getElapsedTime() * 1e3;
++			const elapsedTime = clock.getElapsed() * 1e3;
+ 			if ( ! this.pausePathTracing && this.enablePathTracing && this.renderDelay <= elapsedTime && ! this.isCompiling ) {
+ 
+ 				pathTracer.update();
+ 
+@@ -9057,9 +9057,9 @@
+ 		}
+ 
+ 		getRenderTime() {
+ 
+-			return this._clock.getElapsedTime() * 1e3;
++			return this._clock.getElapsed() * 1e3;
+ 
+ 		}
+ 
+ 	}
+--- a/src/core/PathTracingSceneGenerator.js	
++++ b/src/core/PathTracingSceneGenerator.js	
+@@ -215,9 +215,9 @@
+ 			if ( result.changeType === GEOMETRY_REBUILT ) {
+ 
+ 				const bvhOptions = {
+ 					strategy: SAH,
+-					maxLeafTris: 1,
++					targetLeafSize: 1,
+ 					indirect: true,
+ 					onProgress,
+ 					...this.bvhOptions,
+ 				};
+--- a/src/core/WebGLPathTracer.js	
++++ b/src/core/WebGLPathTracer.js	
+@@ -1,5 +1,5 @@
+-import { PerspectiveCamera, Scene, Vector2, Clock, NormalBlending, NoBlending, AdditiveBlending } from 'three';
++import { PerspectiveCamera, Scene, Vector2, Timer, NormalBlending, NoBlending, AdditiveBlending } from 'three';
+ import { PathTracingSceneGenerator } from './PathTracingSceneGenerator.js';
+ import { PathTracingRenderer } from './PathTracingRenderer.js';
+ import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
+ import { GradientEquirectTexture } from '../textures/GradientEquirectTexture.js';
+@@ -101,16 +101,14 @@
+ 	}
+ 
+ 	constructor( renderer ) {
+ 
+-		console.warn( 'WebGLPathTracer: This class has been deprecated and will be removed in a future release. Use "WebGPUPathTracer" instead.' );
+-
+ 		// members
+ 		this._renderer = renderer;
+ 		this._generator = new PathTracingSceneGenerator();
+ 		this._pathTracer = new PathTracingRenderer( renderer );
+ 		this._queueReset = false;
+-		this._clock = new Clock();
++		this._clock = new Timer();
+ 		this._compilePromise = null;
+ 
+ 		this._lowResPathTracer = new PathTracingRenderer( renderer );
+ 		this._lowResPathTracer.tiles.set( 1, 1 );
+@@ -389,9 +387,8 @@
+ 
+ 		const lowResPathTracer = this._lowResPathTracer;
+ 		const pathTracer = this._pathTracer;
+ 		const renderer = this._renderer;
+-		const clock = this._clock;
+ 		const quad = this._quad;
+ 
+ 		this._updateScale();
+ 
+@@ -401,15 +398,18 @@
+ 			lowResPathTracer.reset();
+ 			this._queueReset = false;
+ 
+ 			quad.material.opacity = 0;
+-			clock.start();
++			// Timer replaces Clock and is recreated so the elapsed time starts at zero.
++			this._clock = new Timer();
+ 
+ 		}
+ 
+ 		// render the path tracing sample after enough time has passed
++		const clock = this._clock;
++		clock.update();
+ 		const delta = clock.getDelta() * 1e3;
+-		const elapsedTime = clock.getElapsedTime() * 1e3;
++		const elapsedTime = clock.getElapsed() * 1e3;
+ 		if ( ! this.pausePathTracing && this.enablePathTracing && this.renderDelay <= elapsedTime && ! this.isCompiling ) {
+ 
+ 			pathTracer.update();
+ 
+@@ -527,9 +527,9 @@
+ 	}
+ 
+ 	getRenderTime() {
+ 
+-		return this._clock.getElapsedTime() * 1e3;
++		return this._clock.getElapsed() * 1e3;
+ 
+ 	}
+ 
+ }
+--- a/src/uniforms/EquirectHdrInfoUniform.js	
++++ b/src/uniforms/EquirectHdrInfoUniform.js	
+@@ -1,5 +1,5 @@
+-import { DataTexture, RedFormat, LinearFilter, DataUtils, HalfFloatType, Source, RepeatWrapping, RGBAFormat, FloatType, ClampToEdgeWrapping } from 'three';
++import { DataTexture, RedFormat, LinearFilter, DataUtils, HalfFloatType, TextureSource, RepeatWrapping, RGBAFormat, FloatType, ClampToEdgeWrapping } from 'three';
+ import { toHalfFloatArray } from '../utils/TextureUtils.js';
+ 
+ function binarySearchFindClosestIndexOf( array, targetValue, offset = 0, count = array.length ) {
+ 
+@@ -41,9 +41,9 @@
+ // ensures the data is all floating point values and flipY is false
+ function preprocessEnvMap( envMap, targetType = HalfFloatType ) {
+ 
+ 	const map = envMap.clone();
+-	map.source = new Source( { ...map.image } );
++	map.source = new TextureSource( { ...map.image } );
+ 	const { width, height, data } = map.image;
+ 
+ 	// TODO: is there a simple way to avoid cloning and adjusting the env map data here?
+ 	// convert the data from half float uint 16 arrays to float arrays for cdf computation

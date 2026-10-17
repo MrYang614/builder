@@ -10,7 +10,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { validateBytes } from 'gltf-validator';
-const directory = resolve('tests/artifacts/native');
+const directory = resolve(process.env.BUILDING_EVIDENCE_ROOT ?? '.test-artifacts', 'native');
 await mkdir(directory, { recursive: true });
 const statePath = resolve(directory, 'session.json');
 const evidencePath = resolve(directory, 'results.json');

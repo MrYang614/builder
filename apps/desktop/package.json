@@ -4,9 +4,19 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
+    "@tauri-apps/api": "2.12.1",
+    "@tauri-apps/plugin-dialog": "2.8.1",
     "@building/editor-core": "*",
     "@building/building-geometry": "*",
     "@building/three-runtime": "*",
-    "@building/ui": "*"
+    "@building/ui": "*",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "vite": "8.0.16"
   }
 }

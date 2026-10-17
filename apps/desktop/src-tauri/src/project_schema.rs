@@ -34,9 +34,9 @@ struct EnvironmentSettings {
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Point {
-    x: f64,
-    z: f64,
+pub(crate) struct Point {
+    pub(crate) x: f64,
+    pub(crate) z: f64,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -75,13 +75,13 @@ struct SlabMaterials {
 }
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct Wall {
+pub(crate) struct Wall {
     id: String,
-    level_id: String,
-    start: Point,
-    end: Point,
+    pub(crate) level_id: String,
+    pub(crate) start: Point,
+    pub(crate) end: Point,
     height: f64,
-    thickness: f64,
+    pub(crate) thickness: f64,
     surface_orientation: Option<i8>,
     materials: WallMaterials,
 }
@@ -143,16 +143,31 @@ fn invalid(details: impl Into<String>) -> AppError {
     AppError::new("invalid_project", details)
 }
 fn identifier(value: &str) -> bool {
-    !value.is_empty() && value.len() <= 512 && !value.contains('\0')
+    !value.is_empty()
+        && value.len() <= 128
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'-')
 }
 fn bounded(value: f64) -> bool {
     value.is_finite() && value.abs() <= 100_000.0
 }
 fn positive(value: f64) -> bool {
-    bounded(value) && value > 0.0
+    bounded(value) && value > 1e-7 && value <= 10_000.0
 }
 fn point(value: &Point) -> bool {
     bounded(value.x) && bounded(value.z)
+}
+fn same_point(a: &Point, b: &Point) -> bool {
+    (a.x - b.x).abs() < 1e-7 && (a.z - b.z).abs() < 1e-7
+}
+fn rectangle_polygon(polygon: &[Point]) -> bool {
+    polygon.iter().enumerate().all(|(index, point)| {
+        let next = &polygon[(index + 1) % polygon.len()];
+        !same_point(point, next)
+            && ((point.x - next.x).abs() <= 1e-7 || (point.z - next.z).abs() <= 1e-7)
+    }) && (polygon[0].x - polygon[2].x).abs() >= 0.05
+        && (polygon[0].z - polygon[2].z).abs() >= 0.05
 }
 fn direction(value: i8) -> bool {
     value == 1 || value == -1
@@ -290,6 +305,9 @@ pub fn validate_document(doc: &Value) -> Result<()> {
         }
     }
     let walls: HashMap<&str, &Wall> = schema.walls.iter().map(|v| (v.id.as_str(), v)).collect();
+    if !crate::project_topology::validate_wall_pairs(&schema.walls) {
+        return Err(invalid("Invalid wall topology"));
+    }
     for level in &schema.levels {
         if level.name.len() > 4096 || !bounded(level.elevation) || !positive(level.height) {
             return Err(invalid("Invalid level parameters"));
@@ -301,7 +319,7 @@ pub fn validate_document(doc: &Value) -> Result<()> {
         if !levels.contains(wall.level_id.as_str())
             || !point(&wall.start)
             || !point(&wall.end)
-            || dx.hypot(dz) < 0.001
+            || dx.hypot(dz) < 0.05
             || (dx.abs() > 0.000001 && dz.abs() > 0.000001)
             || !positive(wall.height)
             || !positive(wall.thickness)
@@ -315,6 +333,7 @@ pub fn validate_document(doc: &Value) -> Result<()> {
         if !levels.contains(slab.level_id.as_str())
             || slab.polygon.len() != 4
             || !slab.polygon.iter().all(point)
+            || !rectangle_polygon(&slab.polygon)
             || !bounded(slab.elevation)
             || !positive(slab.thickness)
             || !matches!(slab.purpose.as_str(), "floor" | "roof")
@@ -335,20 +354,66 @@ pub fn validate_document(doc: &Value) -> Result<()> {
             || !matches!(opening.hinge.as_str(), "left" | "right")
             || !direction(opening.direction)
             || !bounded(opening.offset)
-            || opening.offset < 0.0
+            || opening.offset < 1e-7
             || !positive(opening.width)
             || !positive(opening.height)
             || !bounded(opening.sill)
             || opening.sill < 0.0
-            || opening.offset + opening.width > length + 0.000001
-            || opening.sill + opening.height > wall.height + 0.000001
+            || opening.offset + opening.width > length - 1e-7
+            || opening.sill + opening.height > wall.height + 1e-7
             || (opening.kind == "door" && opening.sill != 0.0)
             || !bounded(opening.angle)
+            || opening.angle.abs() > 180.0
             || !bounded(opening.open_angle)
-            || opening.closed_angle.is_some_and(|v| !bounded(v))
+            || opening.open_angle.abs() > 180.0
+            || opening
+                .closed_angle
+                .is_some_and(|v| !bounded(v) || v.abs() > 180.0)
             || !positive(opening.duration)
         {
             return Err(invalid(format!("Invalid opening {}", opening.id)));
+        }
+        let dx = (wall.end.x - wall.start.x) / length;
+        let dz = (wall.end.z - wall.start.z) / length;
+        for neighbor in schema
+            .walls
+            .iter()
+            .filter(|candidate| candidate.id != wall.id && candidate.level_id == wall.level_id)
+        {
+            if opening.sill >= neighbor.height - 1e-7
+                || (dx * (neighbor.end.x - neighbor.start.x)
+                    + dz * (neighbor.end.z - neighbor.start.z))
+                    .abs()
+                    > 1e-7
+            {
+                continue;
+            }
+            let junction = if dx.abs() > 0.9 {
+                Point {
+                    x: neighbor.start.x,
+                    z: wall.start.z,
+                }
+            } else {
+                Point {
+                    x: wall.start.x,
+                    z: neighbor.start.z,
+                }
+            };
+            if !crate::project_topology::point_on_segment(&junction, wall)
+                || !crate::project_topology::point_on_segment(&junction, neighbor)
+            {
+                continue;
+            }
+            let offset = (junction.x - wall.start.x) * dx + (junction.z - wall.start.z) * dz;
+            let clearance = neighbor.thickness / 2.0 + 0.01;
+            if opening.offset < offset + clearance - 1e-7
+                && opening.offset + opening.width > offset - clearance + 1e-7
+            {
+                return Err(invalid(format!(
+                    "Opening {} conflicts with wall junction",
+                    opening.id
+                )));
+            }
         }
         if let Some(materials) = &opening.materials {
             wall_materials(materials, &resources)?;
@@ -361,11 +426,11 @@ pub fn validate_document(doc: &Value) -> Result<()> {
             .skip(index + 1)
             .filter(|other| other.wall_id == opening.wall_id)
         {
-            if opening.offset < other.offset + other.width
-                && other.offset < opening.offset + opening.width
-                && opening.sill < other.sill + other.height
-                && other.sill < opening.sill + opening.height
-            {
+            let horizontal_gap = (opening.offset + opening.width).min(other.offset + other.width)
+                - opening.offset.max(other.offset);
+            let vertical_gap = (opening.sill + opening.height).min(other.sill + other.height)
+                - opening.sill.max(other.sill);
+            if horizontal_gap > -0.08 && vertical_gap > -0.08 {
                 return Err(invalid("Wall openings overlap"));
             }
         }

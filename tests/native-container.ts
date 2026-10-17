@@ -18,9 +18,7 @@ doc.resources.push({
   dataUrl:
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=',
 });
-const directory = process.env.BUILDING_EVIDENCE_ROOT
-  ? evidencePath('native/interoperability')
-  : resolve('tests/artifacts/native/interoperability');
+const directory = evidencePath('native/interoperability');
 await mkdir(directory, { recursive: true });
 const browserPath = resolve(directory, 'browser-generated.building');
 const jsonPath = resolve(directory, 'rust-unpacked.json');

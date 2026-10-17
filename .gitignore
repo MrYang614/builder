@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+*.tmp
+*.temp
+.env
+.env.*
+!.env.example
 *.tsbuildinfo
 
 # Editor directories and files
@@ -28,7 +33,16 @@ dist-ssr
 # Generated local build/test/runtime evidence; curated records stay in docs/examples.
 .test-artifacts/
 test-results/
+tests/artifacts/**
+# Keep checked-in native acceptance records and canonical validation summaries.
+!tests/artifacts/native/
+!tests/artifacts/native/**
+!tests/artifacts/*-validation.json
 playwright-report/
+blob-report/
+coverage/
+.cache/
+.vite/
 **/target/
 apps/desktop/src-tauri/.webdriver/
 .agents/impeccable-source/

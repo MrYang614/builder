@@ -60,7 +60,7 @@ WebGPU环境采样器与派生资源修复见 [修复记录](docs/WEBGPU-FIX.md)
 
 ## 可编辑样例与测试
 
-[examples](examples/README.md) 有两层、两扇不同铰链侧／开启方向的门、双面材质、窗和半开姿态；分别提供有封板／无封板 `.building` 与动画 `.glb`，所有图片内嵌。实际用户操作生成的 Windows 文件在 `tests/artifacts/native/`。
+[examples](examples/README.md) 有两层、两扇不同铰链侧／开启方向的门、双面材质、窗和半开姿态；分别提供有封板／无封板 `.building` 与动画 `.glb`，所有图片内嵌。历史 Windows 原生证据保留在 `tests/artifacts/native/`；新的本地运行默认写入被忽略的 `.test-artifacts/native/`。
 
 [环境与光追样例](examples/rendering/README.md) 提供同一次真实操作下载的工程、门动画GLB及16采样PNG，环境HDR已嵌入；这是实际软件WebGL验证产物，采样噪声和平台限制随样例说明记录。
 
