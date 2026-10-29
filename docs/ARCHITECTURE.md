@@ -18,6 +18,8 @@ TextureContinuity 的参考点、收口与实际重复尺寸进入工程；同�
 
 资源池按建筑 binding 和 resource 版本共享材质／纹理，每个构件持租约；显示 clone 由其构件所有者释放。初始化、替换、销毁都有独立 owner；导出场景单独建造、等待图像准备、完成后释放。所有 builder、表面、UV、门支点和动画逻辑由编辑与导出复用。导出只读固定 revision 快照，包含所有正式楼层与编辑时隐藏封板，不包含辅助、临时透明或 theme；门播放中快照采样当前角度并保留完整开关端点。
 
+`@building/ez-tree-adapter` 是唯一的 ez-tree 边界：它依赖 `@dgreenheck/ez-tree` 与 workspace Three.js，向后续 vegetation/editor integration 提供 builder 自有请求、能力和释放接口。editor-core、three-runtime、项目 schema 与现有 UI 对象树不依赖上游包；LOD／风动／项目纹理资源的缺口由 adapter 的 capability 和 warning 明确保留。
+
 `.building` 是 version 1 ZIP 容器，project.json 存正式参数，resources 按 SHA-256 内容地址去重。未提取不可信路径；重复／未知条目、缺失／损坏资源、不支持版本／字段均拒绝。PNG/JPEG 单图 32 MiB、最大 8192×8192；工程 256 MiB、JSON 32 MiB。Rust 写临时文件、flush、校验后替换；失权／磁盘错误保持上次有效工程。
 
 packages/ui 单一 JSON token 源生成 CSS，提供公共 `/tokens` 纯数据、`/theme`、`/styles.css`、`/components/*` 入口。集成层将 token 解析色值传入 ThreeRuntime；建筑材质色是正式用户数据例外。shadcn 生成源码已替换固定遮罩／阴影／状态颜色并纳入检查。依赖、颜色字面量、主题键、生成一致性及生产 CSS 自动验证。

@@ -68,3 +68,4 @@
 | CLI 共用正式命令与 automation host | rust CLI／control-protocol、ProjectController／CommandGateway／CliBridge；CLI-IMPLEMENTATION-DECISIONS.md | 已实现未验证 | debug host 文件命令曾实测；安装后 sibling、签名、断线故障、PID 重用、macOS UDS 和高级命令范围未完成 |
 | 最新 Windows／macOS／安装与辅助技术 | WINDOWS-NATIVE.md 和对应原生流程 | 环境阻塞 | 原生 Escape 停止边界保持；浏览器与模拟 IPC 不代替安装、真实 IME／屏幕阅读器／多屏／触控板 |
 | Q5 系统、架构、硬件和性能预算 | PRD 与 KNOWN-ISSUES.md | 需求待确认 | 未自行认定参考设备、FPS／P95、显存或冷启动达标条件 |
+| ez-tree adapter 隔离层 | packages/ez-tree-adapter；package build、adapter.test.ts、scripts/check.mjs | 已实现未验证 | `@dgreenheck/ez-tree@1.1.0` 预设／网格快照／规范化／释放已通过包级验证；上游无原生 LOD、稳定风动参数或材质注入，Node 单测使用 DOM stub，实际桌面 WebView 与后续 vegetation 集成待验 |
