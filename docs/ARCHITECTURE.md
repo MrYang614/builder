@@ -48,9 +48,29 @@ packages/ui 单一 JSON token 源生成 CSS，提供公共 `/tokens` 纯数据�
 
 所有three-runtime手写源文件均受默认500行门禁约束，`runtime.ts`／`pathtracing.ts`的旧例外删除。单元测试直接执行真实owner；部分异步故障注入仍通过受控私有探针设置挂起状态，同时新增实际调用dispose的回归验证完整释放顺序。浏览器诊断形状保持兼容，不把单元fakes或浏览器结果标为原生桌面验收。
 
+## SVG 平面视图
+
+2026-10-29 用户批准 SVG 2D 接入方案，扩展原 PRD 的单三维编辑流程；仍为单窗口、单 WebView、一个 Three Renderer／Canvas。`apps/desktop/src/plan-view` 承担 SVG、DOM 输入和独立相机，模式、平移开关与导航信号属于应用会话，不进入 ProjectDocument 或本机工程文件。
+
+两个视图均读同一个 EditorCore 快照，通过 `services.submit`／CommandGateway 提交，属性、删除、撤销、保存和导出继续复用现有入口。`PlanInteraction` 只保留当前工具和单对象草稿，指针移动不验证整份工程、不提交命令；释放时执行一次正式命令。失焦、指针取消、切层、选区变化、文档替换和视图切换丢弃草稿。共享纯 `dragAnchor`／`dragGeometry` 归 Core，runtime 原路径只作兼容重导出。
+
+坐标按米使用 XZ→SVG XY，正 Z 向下；客户端坐标使用 CSS 像素，DPR 不重复参与转换。正式数据不因显示两位小数而量化。SVG 正式对象层 memo 化并使用稳定 ID，局部预览单独更新。`building-geometry/plan` 复用 solids／ownerAt 输出墙体实际轮廓和外露边界，共线／L／T 接缝不另造算法。门符号与 Three 门扇共用 `doorRotationRadians`，开启弧是辅助线。
+
+ThreeRuntime 的 `setActive` 保留 Renderer、场景、相机和增量文档同步，隐藏时停止输入、RAF、光追重建并取消未完成门动画；恢复后重新测量和绘制。SVG 不拥有或释放 GPU 资源。2D 的开关门按钮通过同一命令入口提交最终角度，不在 SVG 中另建动画历史。只读平面预览仍显示当前层；整栋三维预览从 3D 进入。
+
+第一阶段沿用单选与矩形楼板；不新增 schema、分屏、自动房间、家具或植物实例。后续资产必须先定义版本化的资源定义／楼层实例（ID、位置、旋转、缩放、资源引用），再提供独立 2D 符号／3D builder 与迁移验证；禁止将 SVG 字符串、DOM 或 Three 对象存入正式文档，ez-tree adapter 保持独立边界。
+
+2D／3D 切换流程按用户提供的 `packages/1.html`：进入时，runtime 从 SVG 当前中心、每米像素与楼层标高计算重合俯视姿态，绘制压平模型后开始 450ms 淡入；等待 420ms（与淡入重叠），再用 1700ms 球坐标弧线插值抬升相机并升起模型。返回时先用 1300ms 回转压平，再用 450ms 淡回 SVG。每次进入的斜视姿态由保留的 2D 视口推导；繁忙期间忽略重复请求。减少动态效果时只保留 80ms 淡入淡出。
+
+斜视终点保留参考的目标与方向，并根据当前平面窗口内可见建筑的实际高度／深度扩展最小距离，避免外墙被视口裁切；不会为窗口外远处对象缩小当前构图。压缩期间暂时关闭原本启用的阴影接收，避免近共面表面的阴影条纹，恢复全高或取消后恢复原标志。
+
+`RuntimeViewTransition` 独占临时相机／建筑根变换，通过既有渲染调度器推进；phase 在实际光栅绘制后按真实时间发布，React 只订阅阶段边界。临时高度绕当前层标高缩放，其他楼层与辅助层暂时隐藏；结束／取消恢复原变换和可见性，不进入 Core、历史或独立导出快照。过渡期间使用实时光栅，暂停干净光追场景的工作并保留用户渲染设置。工程／会话变化、真实尺寸变化、渲染后端切换、动态效果偏好变化或卸载会取消并恢复起始视图。
+
+SVG／Canvas 保持同一区域尺寸，工具栏用重叠网格预留稳定高度，楼板输入只保留一份；切换与编辑输入在过渡期间隔离。不新增逐帧 React、IPC、截图复制或第二个 Renderer。相同尺寸／DPR 不重设缓冲；真实尺寸变化先绘制光栅帧再恢复采样，暂停且无采样时保留光栅回退并停止调度。参考 HTML 是只读原件，不作为构建入口或运行时依赖。
+
 ## 核心与文件职责边界
 
-Core 的命令应用、变更集和不可变数据进入 commands／changes／immutable；validation-primitives 与 topology 分别持有字段校验与墙配对约束。geometry 的公开 index 只重导出 types／solids／surface-paths／meshes 与 snap-boundaries。Mesh／UV 的公开构建路径保持共享，预计算复用同一 solids，不引入 React、DOM 或文件依赖。
+Core 的命令应用、变更集和不可变数据进入 commands／changes／immutable；validation-primitives 与 topology 分别持有字段校验与墙配对约束。geometry 的公开 index 统一导出几何、表面、snap-boundaries 和 plan 的纯接口。Mesh／UV／平面轮廓的公开构建路径保持共享，预计算复用同一 solids，不引入 React、DOM 或文件依赖。
 
 Rust storage 保留公开 IO、设置和原子替换入口；project_schema 验证正式数据，image_assets 验证建筑图片，project_archive 负责 ZIP 与内容地址资源，storage_tests 单独放场景矩阵。解码前按每个 manifest 引用累计资源展开预算，内容去重不能绕过内存预算。最终 ZIP 与原子临时文件均不得超过重开限制。
 

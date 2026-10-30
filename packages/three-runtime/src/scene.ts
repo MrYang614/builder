@@ -11,7 +11,12 @@ import {
   type Material,
 } from 'three';
 import type { ProjectDocument, Opening, Wall, SurfaceBinding } from '@building/editor-core';
-import { prepareGeometry, type GeometryData, type SurfaceRole } from '@building/building-geometry';
+import {
+  doorRotationRadians,
+  prepareGeometry,
+  type GeometryData,
+  type SurfaceRole,
+} from '@building/building-geometry';
 import { ResourcePool, type MaterialLease } from './materials';
 import { acquireMeshBvh, type BvhLease } from './bvh';
 import { prepareBorrowedShadow } from './shadow-materials';
@@ -55,12 +60,7 @@ export function toBufferGeometry(data: GeometryData): BufferGeometry {
 
 /** Rotation is absolute relative to the closed leaf; current angle never gets added to animation endpoints. */
 export function doorRadians(opening: Opening, wall?: Wall, angle = opening.angle): number {
-  return (
-    ((angle * Math.PI) / 180) *
-    (opening.hinge === 'left' ? -1 : 1) *
-    opening.direction *
-    (wall?.surfaceOrientation ?? 1)
-  );
+  return doorRotationRadians(opening, wall, angle);
 }
 export function doorAnimations(opening: Opening, wall?: Wall): AnimationClip[] {
   const axis = new Vector3(0, 1, 0);

@@ -69,8 +69,8 @@ async function evidence(page: Page, name: string, details: unknown, testInfo: Te
   );
   await writeFile(resolve(root, `${name}.json`), `${json}\n`);
 }
-async function canvasOutline(page: Page) {
-  return page.locator('.viewport canvas').evaluate((element) => {
+async function canvasOutline(page: Page, selector = '.viewport canvas') {
+  return page.locator(selector).evaluate((element) => {
     const style = getComputedStyle(element);
     return {
       focused: element === document.activeElement,
@@ -142,6 +142,99 @@ test('property Enter then pointer drawing has no ring; Tab and in-Canvas keys re
   await page.keyboard.press('Escape');
   expect((await documentOf(page)).walls).toHaveLength(1);
 });
+
+for (const language of ['zh-CN', 'en'] as const) {
+  for (const theme of ['dark', 'light'] as const) {
+    test(`Escape preserves viewport focus origin and cancels drafts ${language}/${theme}`, async ({
+      page,
+    }, testInfo) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      const english = language === 'en';
+      if (english) {
+        await choose(page, '语言', 'English');
+      }
+      await choose(page, english ? 'Appearance' : '外观', theme === 'dark' ? 'Dark' : 'Light');
+      const before = await documentOf(page);
+      const history = await historyOf(page);
+      for (const width of [1600, 900]) {
+        await page.setViewportSize({ width, height: width === 900 ? 600 : 900 });
+        for (const mode of ['3d', 'plan'] as const) {
+          await page
+            .getByRole('radio', {
+              name:
+                mode === '3d'
+                  ? english
+                    ? '3D scene'
+                    : '3D 场景'
+                  : english
+                    ? '2D plan'
+                    : '2D 平面',
+              exact: true,
+            })
+            .click();
+          await expect(page.locator('.viewport-stage')).toHaveAttribute('data-phase', 'idle');
+          const selector = mode === '3d' ? '.viewport canvas' : 'svg.plan-canvas';
+          const surface = page.locator(selector);
+          const wall = page.getByRole('radio', { name: english ? 'Wall' : '墙体', exact: true });
+          await wall.click();
+          const bounds = (await surface.boundingBox())!;
+          await page.mouse.click(bounds.x + bounds.width * 0.4, bounds.y + bounds.height * 0.55);
+          await page.mouse.move(bounds.x + bounds.width * 0.65, bounds.y + bounds.height * 0.55);
+          if (mode === 'plan') {
+            await expect(page.locator('.plan-draft')).toHaveCount(1);
+          } else {
+            expect((await diagnostic(page)).preview.state.kind).toBe('preview');
+          }
+          await expect(surface).toBeFocused();
+          await page.keyboard.press('Escape');
+          const afterEscape = await canvasOutline(page, selector);
+          await evidence(
+            page,
+            `escape-pointer-${language}-${theme}-${mode}-${width}`,
+            afterEscape,
+            testInfo,
+          );
+          expect(afterEscape).toMatchObject({ focused: true, outlineStyle: 'none' });
+          expect(await documentOf(page)).toEqual(before);
+          expect(await historyOf(page)).toEqual(history);
+          if (mode === 'plan') {
+            await expect(page.locator('.plan-draft')).toHaveCount(0);
+          } else {
+            expect((await diagnostic(page)).preview.state.kind).toBe('idle');
+          }
+          await page.keyboard.press('Tab');
+          await expect(surface).not.toBeFocused();
+          await page.keyboard.press('Shift+Tab');
+          await expect(surface).toBeFocused();
+          await page.keyboard.press('Escape');
+          const keyboard = await canvasOutline(page, selector);
+          expect(keyboard).toMatchObject({
+            focused: true,
+            outlineWidth: '2px',
+            outlineStyle: 'solid',
+          });
+          await evidence(
+            page,
+            `escape-keyboard-${language}-${theme}-${mode}-${width}`,
+            keyboard,
+            testInfo,
+          );
+          await wall.click();
+          await wall.press('Escape');
+          await expect(wall).toBeFocused();
+          await expect(surface).not.toBeFocused();
+          const input = page.getByLabel(english ? 'Name' : '名称', { exact: true });
+          await input.click();
+          await input.press('Escape');
+          await expect(input).toBeFocused();
+          await expect(surface).not.toBeFocused();
+          expect(await documentOf(page)).toEqual(before);
+          expect(await historyOf(page)).toEqual(history);
+        }
+      }
+    });
+  }
+}
 
 test('drawing stage, one local dimension readout, snap feedback, camera pause, continuous commit and Esc stay consistent', async ({
   page,

@@ -15,8 +15,15 @@ import { RuntimePicking } from './runtime-picking';
 import { RuntimeRendering } from './runtime-rendering';
 import { RuntimeSnapping } from './snapping';
 import { runResourceCleanup } from './resource-cleanup';
+import { RuntimeViewTransition } from './runtime-view-transition';
+import type { PlanViewFraming, ViewTransitionOptions } from './view-transition-math';
 
 export type { Tool, ViewportTheme, RuntimeSession, RuntimeOptions } from './runtime-contracts';
+export type {
+  PlanViewFraming,
+  ViewTransitionOptions,
+  ViewTransitionPhase,
+} from './view-transition-math';
 const lifecycle = { created: 0, disposed: 0 };
 
 /** Coordinates independent runtime owners; EditorCore remains the sole formal document owner. */
@@ -32,8 +39,10 @@ export class ThreeRuntime {
   private readonly preview: RuntimePreview;
   private readonly interaction: RuntimeInteraction;
   private readonly rendering: RuntimeRendering;
+  private readonly viewTransition: RuntimeViewTransition;
   private readonly observer: ResizeObserver;
   private disposed = false;
+  private active = true;
   private theme: ViewportTheme;
   private readonly onControlsChange = () => this.interaction.onCameraChange();
 
@@ -62,9 +71,17 @@ export class ThreeRuntime {
       background: () => this.theme.background,
       document: () => this.building.document,
       snapshot: () => this.animations.snapshot(),
-      interactive: () => this.interaction.active || this.animations.active,
-      advanceAnimations: (time) => this.animations.advance(time),
-      cancelEditing: () => this.interaction.cancel(false),
+      interactive: () =>
+        this.viewTransition?.active || this.interaction.active || this.animations.active,
+      advanceAnimations: (time) =>
+        this.viewTransition?.active
+          ? this.viewTransition.advance(time)
+          : this.animations.advance(time),
+      frameRendered: (time) => this.viewTransition?.presented(time),
+      cancelEditing: () => {
+        this.viewTransition?.cancel();
+        this.interaction.cancel(false);
+      },
       disconnectControls: () => this.controls.disconnect(),
       connectControls: (canvas) => this.controls.connect(canvas),
       bindCanvas: () => this.interaction.bindCanvas(),
@@ -123,6 +140,34 @@ export class ThreeRuntime {
       picking,
       this.snapping,
     );
+    this.viewTransition = new RuntimeViewTransition({
+      camera: this.camera,
+      target: this.controls.target,
+      building: this.building.root,
+      auxiliary: this.decorations.auxiliary,
+      roots: () => {
+        const levelId = this.options.getSession().levelId;
+        const ids = new Set(
+          objectsOf(this.building.document)
+            .filter((object) => object.levelId === levelId)
+            .map((object) => object.id),
+        );
+        return [...this.building.entries()].map(([id, built]) => ({
+          root: built.root,
+          currentLevel: ids.has(id),
+        }));
+      },
+      viewport: () => this.container.getBoundingClientRect(),
+      isActive: () => this.active,
+      prepare: () => this.animations.cancel(),
+      activate: (active) => this.setActive(active),
+      input: (active) => {
+        this.interaction.setActive(active);
+        this.renderer.domElement.tabIndex = active ? 0 : -1;
+      },
+      rasterOnly: (active) => this.rendering.setRasterOnly(active),
+      invalidate: this.invalidate,
+    });
     this.controls.addEventListener('change', this.onControlsChange);
     this.interaction.bindCanvas();
     this.observer = new ResizeObserver(() => this.resize());
@@ -148,6 +193,7 @@ export class ThreeRuntime {
     if (this.disposed) {
       return;
     }
+    this.viewTransition.cancel();
     this.interaction.sync(doc, changes);
     const delta = this.building.sync(doc, changes);
     this.animations.sync(delta, doc, changes);
@@ -162,6 +208,7 @@ export class ThreeRuntime {
     if (this.disposed) {
       return;
     }
+    this.viewTransition.cancel();
     this.rendering.invalidateHistory();
     this.interaction.setSession();
     const session = this.options.getSession(),
@@ -172,13 +219,48 @@ export class ThreeRuntime {
     this.invalidate();
   }
 
+  /** Keeps the 3D scene synchronized while another view owns input; no renderer is recreated. */
+  setActive(active: boolean): void {
+    if (this.disposed || this.viewTransition?.active || this.active === active) {
+      return;
+    }
+    this.active = active;
+    this.rendering.setActive(active);
+    this.interaction.setActive(active);
+    this.renderer.domElement.tabIndex = active ? 0 : -1;
+    if (active) {
+      this.setSession();
+      this.resize();
+    } else {
+      this.animations.cancel();
+    }
+  }
+
+  /** Runs the planar fade, camera arc and height morph through the retained renderer's scheduler. */
+  transitionView(
+    target: '3d' | 'plan',
+    framing: PlanViewFraming,
+    options: ViewTransitionOptions = {},
+  ): Promise<boolean> {
+    if (this.disposed || this.rendering.getRenderState().switching) {
+      return Promise.resolve(false);
+    }
+    return this.viewTransition.start(target, framing, options);
+  }
+
+  /** Restores the origin view when its framing or the user's motion preference becomes stale. */
+  cancelViewTransition(): void {
+    this.viewTransition.cancel();
+  }
+
   /** Reprojects the shared camera before resizing render targets; screen-dependent feedback is cleared. */
   resize(): void {
-    if (this.disposed) {
+    if (this.disposed || !this.active) {
       return;
     }
     this.snapping.clear();
     const { width, height } = this.container.getBoundingClientRect();
+    this.viewTransition?.resize(width, height);
     if (!width || !height) {
       return;
     }
@@ -205,6 +287,9 @@ export class ThreeRuntime {
 
   /** Frames formal visible objects only; selection and preview overlays do not expand the bounds. */
   focus(scope: 'selected' | 'level' | 'all' | 'top' = 'all'): void {
+    if (this.viewTransition.active) {
+      return;
+    }
     const box = new THREE.Box3(),
       session = this.options.getSession(),
       dataById = new Map(objectsOf(this.building.document).map((o) => [o.id, o]));
@@ -238,7 +323,14 @@ export class ThreeRuntime {
 
   /** Starts a transient door animation; its final angle uses the existing Core command boundary. */
   animateDoor(id: string, to: number): void {
-    this.animations.animate(id, to);
+    if (this.viewTransition.active) {
+      return;
+    }
+    if (this.active) {
+      this.animations.animate(id, to);
+    } else {
+      this.options.command({ type: 'update-opening', id, patch: { angle: to } });
+    }
   }
 
   /** Returns a revision snapshot with sampled live door angles, never display helpers. */
@@ -252,11 +344,13 @@ export class ThreeRuntime {
 
   /** Swaps renderer ownership asynchronously while retaining the scene, camera and editor policy. */
   setRendererBackend(backend: RendererBackend): Promise<boolean> {
+    this.viewTransition.cancel();
     return this.rendering.setRendererBackend(backend);
   }
 
   /** Starts or releases a clean path-tracing snapshot through the render owner. */
   setPathTracing(enabled: boolean): Promise<void> {
+    this.viewTransition.cancel();
     return this.rendering.setPathTracing(enabled);
   }
 
@@ -284,6 +378,8 @@ export class ThreeRuntime {
   diagnostics() {
     return {
       ...this.rendering.diagnostics(),
+      viewportActive: this.active,
+      viewTransition: this.viewTransition.diagnostics(),
       ...this.building.diagnostics(),
       ...this.selection.diagnostics(),
       geometries: this.renderer.info.memory.geometries,
@@ -317,6 +413,7 @@ export class ThreeRuntime {
     if (this.disposed) {
       return;
     }
+    this.viewTransition.cancel();
     this.disposed = true;
     lifecycle.disposed++;
     runResourceCleanup([

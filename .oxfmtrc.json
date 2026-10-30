@@ -29,6 +29,7 @@
     "**/*.tsbuildinfo",
     "packages/ui/src/styles/tokens.css",
     "examples/*.source.json",
+    "packages/1.html",
     "docs/skills-manifest.json",
     "docs/PRD-v0.3.md",
     "docs/ACCEPTANCE.md"

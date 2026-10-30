@@ -22,6 +22,8 @@ import {
 import { Button, ToggleGroup, Alert, DropdownMenu } from '@building/ui';
 import type { Tool } from '@building/editor-core';
 import { ViewportHost } from './integration/ViewportHost';
+import { useViewTransition } from './integration/use-view-transition';
+import { PlanView } from './plan-view/PlanView';
 import { useEditor, useDocument, useSession, useSignal } from './app/services';
 import { useProjectActions } from './app/use-project-actions';
 import { Inspector } from './ui/Inspector';
@@ -33,6 +35,7 @@ import { HeaderWindow } from './ui/WindowControls';
 import { WorkspacePanels } from './ui/WorkspacePanels';
 import { useLanguage } from './ui/i18n';
 import './editor.css';
+import './integration/view-transition.css';
 
 /** Workspace chrome owns only presentation state; the mounted viewport owns its runtime. */
 export default function App(preferences: {
@@ -44,11 +47,15 @@ export default function App(preferences: {
     s = useSession(),
     { t } = useLanguage();
   const { save, replace, open, exportModel, status } = useProjectActions(preferences);
+  const { state: transition, switchView, transitioning } = useViewTransition();
   const notice = useSignal(services.notice),
-    busy = useSignal(services.busy);
+    busy = useSignal(services.busy) || transitioning;
   const snapFeedback = useSignal(services.snapFeedback),
     editHint = useSignal(services.editHint);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const viewMode = useSignal(services.viewMode);
+  const statusText = (key: string, params?: Record<string, string | number>) =>
+    t(viewMode === 'plan' && key === 'hintStart' ? 'plan.hintStart' : key, params);
   const [renderOpen, setRenderOpen] = useState(false);
   const [sceneOpen, setSceneOpen] = useState(true);
   const [inspectorOpen, setInspectorOpen] = useState(true);
@@ -162,7 +169,7 @@ export default function App(preferences: {
               label={t('undo')}
               tooltip={t('undo') + ' (Ctrl/⌘ Z)'}
               icon={Undo2}
-              disabled={s.wholeBuildingPreview || !status.canUndo}
+              disabled={transitioning || s.wholeBuildingPreview || !status.canUndo}
               onClick={() => services.commands.undo()}
             />
             <Button.Icon
@@ -170,7 +177,7 @@ export default function App(preferences: {
               label={t('redo')}
               tooltip={t('redo') + ' (Ctrl/⌘ Shift Z)'}
               icon={Redo2}
-              disabled={s.wholeBuildingPreview || !status.canRedo}
+              disabled={transitioning || s.wholeBuildingPreview || !status.canRedo}
               onClick={() => services.commands.redo()}
             />
           </fieldset>
@@ -189,11 +196,30 @@ export default function App(preferences: {
           icon={PanelLeft}
           aria-pressed={sceneOpen}
           aria-controls="scene-panel"
+          disabled={transitioning}
           onClick={() => setSceneOpen(!sceneOpen)}
         >
           {t('workspace.scene')}
         </Button>
         <span className="active-tool-name">{t(s.tool)}</span>
+        <div className="view-switch" data-view={viewMode} aria-busy={transitioning}>
+          <ToggleGroup
+            label={t('plan.view')}
+            value={viewMode}
+            size="sm"
+            disabled={transitioning}
+            options={[
+              { value: 'plan', label: t('plan.mode') },
+              { value: '3d', label: t('plan.scene') },
+            ]}
+            onValueChange={(value) => {
+              if (value === 'plan' || value === '3d') {
+                setRenderOpen(false);
+                void switchView(value);
+              }
+            }}
+          />
+        </div>
         <span className="muted boundary-hint">{t('boundary')}</span>
         <Button
           size="sm"
@@ -201,12 +227,13 @@ export default function App(preferences: {
           icon={PanelRight}
           aria-pressed={inspectorOpen}
           aria-controls="inspector-panel"
+          disabled={transitioning}
           onClick={() => setInspectorOpen(!inspectorOpen)}
         >
           {t('properties')}
         </Button>
       </div>
-      <div className="workspace-body">
+      <div className="workspace-body" inert={transitioning}>
         <nav className="tools-bar" aria-label={t('select')}>
           <ToggleGroup
             label={t('select')}
@@ -255,7 +282,10 @@ export default function App(preferences: {
         >
           <section className="viewport-region">
             <ToolOptions renderOpen={renderOpen} onRenderOpenChange={setRenderOpen} />
-            <ViewportHost />
+            <div className="viewport-stage" data-phase={transition.phase} aria-busy={transitioning}>
+              <ViewportHost />
+              <PlanView />
+            </div>
             {notice.error && !settingsOpen && !renderOpen && (
               <div className="error-notice">
                 <Alert
@@ -282,7 +312,11 @@ export default function App(preferences: {
       </div>
       <output className="status-bar">
         <span className={notice.error ? 'status-error' : undefined}>
-          {busy ? t('busy') : notice.error ? t(editHint) : t(notice.key, notice.params)}
+          {busy
+            ? t('busy')
+            : notice.error
+              ? statusText(editHint)
+              : statusText(notice.key, notice.params)}
         </span>
         {snapFeedback && <span data-testid="snap-feedback">{t(snapFeedback)}</span>}
         <span>

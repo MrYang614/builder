@@ -131,6 +131,17 @@ export class RuntimeAnimations {
     return [...this.animations.keys()];
   }
 
+  /** Cancels hidden-view playback and restores formal poses without creating a history entry. */
+  cancel(): void {
+    const ids = new Set([...this.animations.keys(), ...this.liveAngles.keys()]);
+    this.clear();
+    for (const opening of this.hooks.document().openings) {
+      if (ids.has(opening.id)) {
+        this.setPose(opening.id, opening.angle);
+      }
+    }
+  }
+
   /** Drops transient poses on project replacement or runtime disposal. */
   clear(): void {
     this.animations.clear();

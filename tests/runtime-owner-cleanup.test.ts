@@ -84,6 +84,160 @@ afterEach(() => {
 });
 
 describe('complete native runtime owner cleanup with a GPU boundary fake', () => {
+  test.each(['sync', 'session', 'resize', 'backend', 'dispose'] as const)(
+    'a %s transition cancellation restores meshes and resolves without formal edits',
+    async (action) => {
+      const document = createEmptyProject();
+      document.walls.push(createWall('level_1', { x: 0, z: 0 }, { x: 4, z: 0 }));
+      const core = new EditorCore(document);
+      const session: RuntimeSession = {
+        levelId: 'level_1',
+        tool: 'select',
+        selectedId: null,
+        surface: 'A',
+        wholeBuilding: false,
+        hiddenIds: [],
+        slabPurpose: 'floor',
+        roofElevation: 3,
+        cameraMode: 'edit',
+        snap: { enabled: true, mode: 'points', tolerance: 0.16, gridSize: 0.1 },
+      };
+      const container = new Element();
+      const runtime = new ThreeRuntime(
+        container as unknown as HTMLElement,
+        {
+          getDocument: core.getSnapshot,
+          getSession: () => session,
+          command: (command) => core.execute(command).ok,
+          select: vi.fn(),
+          beginPreview: () => core.beginPreview(),
+          preview: (token, command) => core.preview(token, command),
+          cancelPreview: (token) => core.cancelPreview(token),
+          status: vi.fn(),
+        },
+        viewportTokens('light'),
+      );
+      const origin = runtime.camera.position.clone();
+      const building = Reflect.get(runtime, 'building') as RuntimeBuilding;
+      runtime.setActive(false);
+      const formal = core.getSnapshot();
+      const pending = runtime.transitionView('3d', {
+        center: { x: 2, z: 0 },
+        elevation: 0,
+        pixelsPerMeter: 50,
+      });
+      expect(runtime.controls.enabled).toBe(false);
+      expect(building.root.scale.y).toBe(0.0001);
+      runtime.focus('all');
+      expect(runtime.camera.position.equals(origin)).toBe(false);
+      if (action === 'sync') {
+        runtime.sync(formal);
+      } else if (action === 'session') {
+        runtime.setSession();
+      } else if (action === 'resize') {
+        vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({
+          left: 0,
+          top: 0,
+          width: 900,
+          height: 600,
+        });
+        runtime.resize();
+      } else if (action === 'backend') {
+        await runtime.setRendererBackend('webgl');
+      } else {
+        runtime.dispose();
+      }
+      expect(await pending).toBe(false);
+      expect(building.root.scale.y).toBe(1);
+      expect(runtime.camera.position.equals(origin)).toBe(true);
+      expect(runtime.diagnostics().viewTransition.phase).toBe('idle');
+      expect(runtime.diagnostics().viewportActive).toBe(false);
+      expect(runtime.diagnostics().pendingFrame).toBe(false);
+      expect(core.getSnapshot()).toBe(formal);
+      expect(core.getHistoryState().undoCount).toBe(0);
+      runtime.dispose();
+    },
+  );
+
+  test('changing views retains the renderer and incremental scene, resuming one redraw without rebuilding', () => {
+    const document = createEmptyProject();
+    const wall = createWall('level_1', { x: 0, z: 0 }, { x: 4, z: 0 });
+    document.walls.push(wall);
+    const core = new EditorCore(document);
+    const session: RuntimeSession = {
+      levelId: 'level_1',
+      tool: 'select',
+      selectedId: wall.id,
+      surface: 'A',
+      wholeBuilding: false,
+      hiddenIds: [],
+      slabPurpose: 'floor',
+      roofElevation: 3,
+      cameraMode: 'edit',
+      snap: { enabled: true, mode: 'points', tolerance: 0.16, gridSize: 0.1 },
+    };
+    const runtime = new ThreeRuntime(
+      new Element() as unknown as HTMLElement,
+      {
+        getDocument: core.getSnapshot,
+        getSession: () => session,
+        command: (command) => core.execute(command).ok,
+        select: vi.fn(),
+        beginPreview: () => core.beginPreview(),
+        preview: (token, command) => core.preview(token, command),
+        cancelPreview: (token) => core.cancelPreview(token),
+        status: vi.fn(),
+      },
+      viewportTokens('light'),
+    );
+    const unsubscribe = core.subscribe((changes) => runtime.sync(core.getSnapshot(), changes));
+    try {
+      const renderer = runtime.renderer,
+        scene = runtime.scene,
+        camera = runtime.camera;
+      runtime.setActive(false);
+      expect(runtime.controls.enabled).toBe(false);
+      expect(renderer.domElement.tabIndex).toBe(-1);
+      expect(runtime.diagnostics()).toMatchObject({
+        viewportActive: false,
+        pendingFrame: false,
+        eventListeners: 2,
+      });
+      const requested = vi.mocked(requestAnimationFrame).mock.calls.length;
+      expect(core.execute({ type: 'update-wall', id: wall.id, patch: { height: 2.5 } }).ok).toBe(
+        true,
+      );
+      expect(
+        core.execute({
+          type: 'add-wall',
+          wall: createWall('level_1', { x: 0, z: 4 }, { x: 4, z: 4 }),
+        }).ok,
+      ).toBe(true);
+      expect(runtime.diagnostics().objects).toBe(2);
+      expect(vi.mocked(requestAnimationFrame).mock.calls.length).toBe(requested);
+      expect(runtime.controls.enabled).toBe(false);
+      const building = Reflect.get(runtime, 'building') as RuntimeBuilding;
+      const updated = building.get(wall.id);
+      runtime.setActive(true);
+      expect(runtime.controls.enabled).toBe(true);
+      expect(renderer.domElement.tabIndex).toBe(0);
+      expect(runtime.renderer).toBe(renderer);
+      expect(runtime.scene).toBe(scene);
+      expect(runtime.camera).toBe(camera);
+      expect(building.get(wall.id)).toBe(updated);
+      expect(runtime.diagnostics()).toMatchObject({
+        viewportActive: true,
+        pendingFrame: true,
+        eventListeners: 9,
+      });
+      expect(vi.mocked(requestAnimationFrame).mock.calls.length).toBe(requested + 1);
+      expect(core.getHistoryState().undoCount).toBe(2);
+      expect(releaseRenderer).not.toHaveBeenCalled();
+    } finally {
+      unsubscribe();
+      runtime.dispose();
+    }
+  });
   test.each(['formal', 'selection', 'preview', 'snap', 'static'] as const)(
     'a %s geometry disposal event cannot skip input, helper or renderer cleanup',
     async (fault) => {

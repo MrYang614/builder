@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import type { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {
   createOpening,
   createSlab,
@@ -16,34 +15,15 @@ import {
   objectsOf,
   updateCommand,
   type ObjectData,
-  type RuntimeOptions,
   type Tool,
 } from './runtime-contracts';
-import { dragAnchor, type DragAnchor } from './drag-anchor';
+import { dragAnchor } from './drag-anchor';
 import { dragGeometry } from './drag-geometry';
 import type { RuntimePicking } from './runtime-picking';
 import type { RuntimePreview } from './runtime-preview';
 import type { RuntimeSnapping } from './snapping';
-
-type Drag = DragAnchor & {
-  id: string;
-  initial: ObjectData;
-  draft: ObjectData;
-  endpoint?: 'start' | 'end';
-  corner?: number;
-  elevation: number;
-  projectId: string;
-  revision: number;
-};
-export interface InteractionHooks extends Pick<
-  RuntimeOptions,
-  'getDocument' | 'getSession' | 'command' | 'select' | 'activateTool' | 'status'
-> {
-  getCanvas(): HTMLCanvasElement;
-  controls: Pick<OrbitControls, 'enabled' | 'mouseButtons'>;
-  invalidate(): void;
-  invalidateHistory(): void;
-}
+import type { Drag, InteractionHooks } from './runtime-interaction-state';
+export type { InteractionHooks } from './runtime-interaction-state';
 
 /** Owns complete pointer gestures, capture and tool transitions; drafts commit only on release. */
 export class RuntimeInteraction {
@@ -56,6 +36,7 @@ export class RuntimeInteraction {
   private projectId: string;
   private canvasUnsubscribers: (() => void)[] = [];
   private disposed = false;
+  private inputEnabled = true;
 
   constructor(
     private readonly hooks: InteractionHooks,
@@ -71,6 +52,9 @@ export class RuntimeInteraction {
   bindCanvas(): void {
     this.canvasUnsubscribers.forEach((unsubscribe) => unsubscribe());
     this.canvasUnsubscribers = [];
+    if (!this.inputEnabled || this.disposed) {
+      return;
+    }
     const canvas = this.hooks.getCanvas();
     const listen = (event: string, listener: EventListener) => {
       canvas.addEventListener(event, listener);
@@ -136,6 +120,9 @@ export class RuntimeInteraction {
 
   /** Retains world-space drawing anchors while camera movement invalidates screen-dependent drags. */
   onCameraChange(): void {
+    if (!this.inputEnabled) {
+      return;
+    }
     this.suspendForCamera();
     this.snapping.clear();
     this.hooks.invalidateHistory();
@@ -419,7 +406,24 @@ export class RuntimeInteraction {
       });
     }
   };
-  private blur = () => this.cancel(false);
+  private blur = () => {
+    if (this.inputEnabled) {
+      this.cancel(false);
+    }
+  };
+
+  /** Detaches canvas input while another view edits the document, discarding any captured draft. */
+  setActive(active: boolean): void {
+    if (this.disposed || active === this.inputEnabled) {
+      return;
+    }
+    this.inputEnabled = active;
+    if (!active) {
+      this.cancel(false);
+    }
+    this.hooks.controls.enabled = active;
+    this.bindCanvas();
+  }
 
   /** Clears the capture ID before release because lostpointercapture may re-enter cancellation. */
   private releasePointer(): void {
@@ -440,7 +444,7 @@ export class RuntimeInteraction {
     this.tools.handle({ type: 'cancel' });
     this.cameraPointers.clear();
     this.tools.handle({ type: 'camera', active: this.hooks.getSession().cameraMode !== 'edit' });
-    this.hooks.controls.enabled = true;
+    this.hooks.controls.enabled = this.inputEnabled;
     this.snapping.clear();
     if (idle && exitTool === true && this.hooks.activateTool) {
       this.hooks.activateTool('select');

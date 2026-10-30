@@ -20,21 +20,8 @@ import { RuntimeEnvironment } from './runtime-environment';
 import { RuntimePathTracing } from './runtime-pathtrace';
 import { RuntimeScheduler, type RuntimeFrameResult } from './runtime-scheduler';
 import { runResourceCleanup } from './resource-cleanup';
-
-export interface RuntimeRenderingHooks {
-  background(): string;
-  document(): ProjectDocument;
-  snapshot(): ProjectDocument;
-  interactive(): boolean;
-  advanceAnimations(time: number): boolean;
-  cancelEditing(): void;
-  disconnectControls(): void;
-  connectControls(canvas: HTMLCanvasElement): void;
-  bindCanvas(): void;
-  resizeViewport(): void;
-  status(code: string, params?: Record<string, string | number>): void;
-  renderState?(state: RenderState): void;
-}
+import type { RuntimeRenderingHooks } from './runtime-rendering-contracts';
+export type { RuntimeRenderingHooks } from './runtime-rendering-contracts';
 
 /** Owns the renderer, post effects and render-mode resources while borrowing scene and camera. */
 export class RuntimeRendering {
@@ -46,6 +33,10 @@ export class RuntimeRendering {
   private postProcessingKey = '';
   private lastInteraction = 0;
   private disposed = false;
+  private active = true;
+  private rasterOnly = false;
+  private viewportSize: { width: number; height: number; pixelRatio: number } | null = null;
+  private resizedFramePending = false;
   private readonly path: RuntimePathTracing;
   private readonly environment: RuntimeEnvironment;
   private readonly scheduler: RuntimeScheduler;
@@ -146,6 +137,7 @@ export class RuntimeRendering {
       this.publish({ error: undefined });
       return true;
     }
+    this.hooks.cancelEditing();
     this.publish({ switching: true, error: undefined });
     let next: SceneRenderer | null = null;
     let nextPost: RasterPostProcessor | null = null;
@@ -190,11 +182,11 @@ export class RuntimeRendering {
       canvas.setAttribute('aria-label', old.domElement.getAttribute('aria-label') ?? '3D viewport');
       canvas.dataset.testid = 'viewport-canvas';
       canvas.dataset.runtimeId = crypto.randomUUID();
-      this.hooks.cancelEditing();
       this.path.stop();
       this.hooks.disconnectControls();
       old.domElement.replaceWith(canvas);
       this.currentRenderer = next;
+      this.viewportSize = null;
       const oldPost = this.postProcessing;
       this.postProcessing = nextPost;
       try {
@@ -240,6 +232,22 @@ export class RuntimeRendering {
   }
 
   invalidate = (): void => this.scheduler.invalidate();
+  /** Suspends frames and clean-scene rebuilds while retaining the renderer and formal scene. */
+  setActive(active: boolean): void {
+    if (this.disposed || active === this.active) {
+      return;
+    }
+    this.active = active;
+    this.scheduler.setActive(active);
+    this.path.setActive(active && !this.rasterOnly);
+  }
+  /** Suspends clean tracer work for display morphs without changing the user's render or pause policy. */
+  setRasterOnly(active: boolean): void {
+    this.rasterOnly = active;
+    this.path.setActive(this.active && !active);
+    this.invalidateHistory();
+    this.invalidate();
+  }
   /** Prevents frame reentry before the facade releases interaction and formal scene owners. */
   stopScheduling(): void {
     this.scheduler.dispose();
@@ -252,14 +260,24 @@ export class RuntimeRendering {
   setBackground(background: string): void {
     this.renderer.setClearColor(background);
   }
-  /** Resizes owned buffers after the shared camera projection has been updated. */
+  /** Resizes changed buffers only; view activation at the same size preserves retained pixels and samples. */
   resize(width: number, height: number, pixelRatio: number): void {
+    const previous = this.viewportSize;
+    if (
+      previous?.width === width &&
+      previous.height === height &&
+      previous.pixelRatio === pixelRatio
+    ) {
+      return;
+    }
     this.renderer.setSize(width, height, false);
     if (this.renderer.getPixelRatio() !== pixelRatio) {
       this.renderer.setPixelRatio(pixelRatio);
     }
     this.postProcessing?.setSize(width, height);
     this.path.reset();
+    this.resizedFramePending = true;
+    this.viewportSize = { width, height, pixelRatio };
     this.invalidate();
   }
   /** Formal changes invalidate temporal history and the clean path snapshot, never pointer previews. */
@@ -348,10 +366,17 @@ export class RuntimeRendering {
         this.lastInteraction = time;
         this.invalidateHistory();
       }
-      this.path.updateCamera();
+      if (!this.rasterOnly) {
+        this.path.updateCamera();
+      }
+      // A genuine resize invalidates even paused accumulation; show raster until sampling resumes.
+      const canPresentPath = this.path.samples > 0 || !this.path.paused;
       if (
         this.path.active &&
         !this.path.dirty &&
+        canPresentPath &&
+        !this.resizedFramePending &&
+        !this.rasterOnly &&
         !interactive &&
         time - this.lastInteraction > 150
       ) {
@@ -362,17 +387,23 @@ export class RuntimeRendering {
         };
       }
       const needsAnotherFrame = this.rasterFrame();
+      this.resizedFramePending = false;
+      this.hooks.frameRendered?.(performance.now());
       return {
         rendered: true,
         continueRendering:
           animating ||
           (needsAnotherFrame && !interactive) ||
-          (this.renderState.mode === 'pathtrace' && this.path.active && !this.path.dirty),
+          (this.renderState.mode === 'pathtrace' &&
+            this.path.active &&
+            !this.path.dirty &&
+            canPresentPath),
       };
     } catch (error) {
       if (this.disposed) {
         return { rendered: false, continueRendering: false };
       }
+      this.hooks.cancelEditing();
       if (this.renderState.error !== 'render.pathFailed') {
         this.path.stop();
         this.publish({ mode: 'raster', pathStatus: 'error', error: 'render.pathFailed' });
@@ -384,6 +415,9 @@ export class RuntimeRendering {
 
   /** Captures the current converged view; transient editing and stale camera samples reject visibly. */
   async capturePNG(): Promise<ArrayBuffer> {
+    if (!this.active || this.rasterOnly) {
+      throw new Error('render.notReady');
+    }
     if (this.path.updateCamera()) {
       this.invalidate();
       throw new Error('render.notReady');

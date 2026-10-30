@@ -7,6 +7,7 @@ export interface RuntimeFrameResult {
 export class RuntimeScheduler {
   private raf: number | null = null;
   private disposed = false;
+  private active = true;
   private frameInProgress = false;
   private frameRequested = false;
   private frameCount = 0;
@@ -15,7 +16,7 @@ export class RuntimeScheduler {
 
   /** Coalesces event-driven invalidations without starting overlapping asynchronous frames. */
   invalidate = (): void => {
-    if (this.disposed) {
+    if (this.disposed || !this.active) {
       return;
     }
     if (this.frameInProgress) {
@@ -27,7 +28,7 @@ export class RuntimeScheduler {
 
   private frame = async (time: number): Promise<void> => {
     this.raf = null;
-    if (this.disposed) {
+    if (this.disposed || !this.active) {
       return;
     }
     this.frameInProgress = true;
@@ -52,8 +53,26 @@ export class RuntimeScheduler {
     return {
       frameCount: this.frameCount,
       pendingFrame:
-        !this.disposed && (this.raf !== null || this.frameInProgress || this.frameRequested),
+        !this.disposed &&
+        (this.frameInProgress || (this.active && (this.raf !== null || this.frameRequested))),
     };
+  }
+
+  /** Suspends queued frames without disposing owners; resuming requests one current-state redraw. */
+  setActive(active: boolean): void {
+    if (this.disposed || this.active === active) {
+      return;
+    }
+    this.active = active;
+    if (active) {
+      this.invalidate();
+    } else {
+      if (this.raf !== null) {
+        cancelAnimationFrame(this.raf);
+      }
+      this.raf = null;
+      this.frameRequested = false;
+    }
   }
 
   /** Cancels queued work; an in-flight frame may finish but cannot schedule another frame. */

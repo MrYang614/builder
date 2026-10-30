@@ -1,25 +1,50 @@
 import { Focus, Move, Rotate3d, Layers, Scan, View, MousePointer2, Magnet } from 'lucide-react';
 import { Button, Checkbox, Toggle, ToggleGroup } from '@building/ui';
-import { useEditor, useDocument, useSession, useSignal } from '../app/services';
-import { Choice, Numeric } from './fields';
+import { useEditor, useSession, useSignal } from '../app/services';
 import { RenderControls } from './RenderControls';
 import { useLanguage } from './i18n';
+import { PlanToolbar } from '../plan-view/PlanToolbar';
+import { SlabOptions } from './SlabOptions';
 
-// ToolOptions groups camera, editing, preview, and slab controls.
-export function ToolOptions({
-  renderOpen,
-  onRenderOpenChange,
-}: {
-  renderOpen: boolean;
-  onRenderOpenChange: (open: boolean) => void;
-}) {
+type ToolOptionsProps = { renderOpen: boolean; onRenderOpenChange: (open: boolean) => void };
+
+/** Stacked toolbars reserve one stable viewport boundary; only the active layer owns input. */
+export function ToolOptions(props: ToolOptionsProps) {
+  const { viewMode, viewTransition } = useEditor(),
+    view = useSignal(viewMode),
+    transitioning = useSignal(viewTransition).phase !== 'idle';
+  return (
+    <div className="view-tools">
+      <div className="view-toolbars">
+        <div
+          className="view-toolbar-layer"
+          data-active={view === '3d'}
+          aria-hidden={view !== '3d' || transitioning}
+          inert={view !== '3d' || transitioning}
+        >
+          <SceneToolbar {...props} />
+        </div>
+        <div
+          className="view-toolbar-layer"
+          data-active={view === 'plan'}
+          aria-hidden={view !== 'plan' || transitioning}
+          inert={view !== 'plan' || transitioning}
+        >
+          <PlanToolbar />
+        </div>
+      </div>
+      <SlabOptions />
+    </div>
+  );
+}
+
+/** Scene controls issue runtime commands; their mounted identity survives a plan-view transition. */
+function SceneToolbar({ renderOpen, onRenderOpenChange }: ToolOptionsProps) {
   const { session, camera, runtimeRef, renderState } = useEditor(),
     s = useSession(),
-    doc = useDocument(),
     { t } = useLanguage(),
     mode = useSignal(camera),
     rendering = useSignal(renderState);
-  const level = doc.levels.find((l) => l.id === s.currentLevelId)!;
   return (
     <div className="viewport-toolbar">
       <div className="camera-tools">
@@ -93,25 +118,6 @@ export function ToolOptions({
           onCheckedChange={(checked) => session.set({ wholeBuildingPreview: checked })}
         />
       </div>
-      {s.tool === 'slab' && (
-        <div className="slab-options">
-          <Choice
-            label={t('purpose')}
-            value={s.slabPurpose}
-            options={['floor', 'roof'].map((value) => ({ value, label: t(value) }))}
-            onChange={(v) => session.set({ slabPurpose: v as 'floor' | 'roof' })}
-          />
-          {s.slabPurpose === 'roof' && (
-            <Numeric
-              label={t('roofHeight')}
-              value={s.roofElevation ?? level.elevation + level.height}
-              onCommit={(v) => {
-                session.set({ roofElevation: v });
-              }}
-            />
-          )}
-        </div>
-      )}
     </div>
   );
 }

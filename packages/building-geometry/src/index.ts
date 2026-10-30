@@ -15,3 +15,5 @@ export {
   surfaceAtTriangle,
 } from './meshes';
 export { buildEffectiveWallSnapCandidates } from './snap-boundaries';
+export { buildPlanWallFootprints, derivePlanOpening, doorRotationRadians } from './plan';
+export type { PlanEdge, PlanWallFootprint, PlanOpening } from './plan';

@@ -13,6 +13,7 @@ interface BorrowedPath {
   start(scene: THREE.Scene, camera: THREE.Camera): Promise<void>;
   setMaxSamples(samples: number): void;
   pause(paused: boolean): void;
+  reset(): void;
   dispose(): void;
   updateCamera(camera: THREE.Camera): void;
   renderSample(): Promise<boolean>;
@@ -32,6 +33,8 @@ interface FakeRenderer {
   domElement: FakeCanvas;
   render: TestCallback;
   setPixelRatio: TestCallback;
+  getPixelRatio(): number;
+  setSize: TestCallback;
   setClearColor: TestCallback;
   outputColorSpace: string;
   toneMapping: number;
@@ -57,6 +60,7 @@ interface RuntimeHarness {
   cancel: TestCallback;
   bindCanvas: TestCallback;
   resize: TestCallback;
+  resizeBuffers(width: number, height: number, pixelRatio: number): void;
   renderState: RenderState;
   path: BorrowedPath | null;
   pathBuilding: { dispose(): void } | null;
@@ -80,9 +84,12 @@ interface RuntimeHarness {
   capturePNG(): Promise<ArrayBuffer>;
   pathCameraSignature(): string;
   frame(time: number): Promise<void>;
+  frameRendered: TestCallback;
   stopPathResources(): void;
   setPathTracing(enabled: boolean): Promise<void>;
   setPathSamples(samples: number): void;
+  setActive(active: boolean): void;
+  setRasterOnly(active: boolean): void;
   markPathDirty(): void;
   setRendererBackend(backend: RendererBackend): Promise<boolean>;
   bindRendererCallbacks(renderer: FakeRenderer): void;
@@ -166,6 +173,7 @@ function runtime() {
   value.controls = { disconnect: vi.fn(), connect: vi.fn() };
   value.cancel = vi.fn();
   value.bindCanvas = vi.fn();
+  value.frameRendered = vi.fn();
   value.resize = vi.fn();
   value.scene = new THREE.Scene();
   value.camera = new THREE.PerspectiveCamera(45, 1, 0.05, 1500);
@@ -181,6 +189,7 @@ function runtime() {
     connectControls: (canvas) => value.controls.connect(canvas),
     bindCanvas: () => value.bindCanvas(),
     resizeViewport: () => value.resize(),
+    frameRendered: (time) => value.frameRendered(time),
     status: (code, params) => value.options.status(code, params),
     renderState: (state) => value.options.renderState(state),
   });
@@ -238,6 +247,9 @@ function runtime() {
   value.capturePNG = () => owner.capturePNG();
   value.setPathTracing = (enabled) => owner.setPathTracing(enabled);
   value.setPathSamples = (samples) => owner.setPathSamples(samples);
+  value.setActive = (active) => owner.setActive(active);
+  value.setRasterOnly = (active) => owner.setRasterOnly(active);
+  value.resizeBuffers = (width, height, pixelRatio) => owner.resize(width, height, pixelRatio);
   value.markPathDirty = () => Reflect.apply(path.markDirty as () => void, path, []);
   value.setRendererBackend = (backend) => owner.setRendererBackend(backend);
   value.dispose = () => owner.dispose();
@@ -246,9 +258,14 @@ function runtime() {
   return value;
 }
 function fakeRenderer(nativeGPU = false): FakeRenderer {
+  let pixelRatio = 1;
   const renderer = {
     render: vi.fn(),
-    setPixelRatio: vi.fn(),
+    setPixelRatio: vi.fn((value: number) => {
+      pixelRatio = value;
+    }),
+    getPixelRatio: () => pixelRatio,
+    setSize: vi.fn(),
     setClearColor: vi.fn(),
     outputColorSpace: THREE.SRGBColorSpace,
     toneMapping: THREE.NoToneMapping,
@@ -294,6 +311,9 @@ function allocatedPath(state: Partial<PathTraceStats> = {}) {
       stats = { ...stats, targetSamples: samples };
     }),
     pause: vi.fn(),
+    reset: vi.fn(() => {
+      stats = { ...stats, samples: 0, minSamples: 0, maxSamples: 0, complete: false };
+    }),
     dispose: vi.fn(),
     updateCamera: vi.fn((_camera: THREE.Camera) => {
       stats = { ...stats, samples: 0, minSamples: 0, maxSamples: 0, complete: false };
@@ -332,6 +352,206 @@ afterEach(() => {
 });
 
 describe('production render owners with owned allocation fakes (no GPU claim)', () => {
+  test('phase notification starts its hold after an expensive raster frame, not at the RAF timestamp', async () => {
+    const value = runtime();
+    const now = vi.spyOn(performance, 'now').mockReturnValue(10);
+    value.currentRenderer.render.mockImplementation(() => {
+      now.mockReturnValue(810);
+    });
+    await value.frame(10);
+    expect(value.frameRendered).toHaveBeenCalledWith(810);
+    now.mockRestore();
+  });
+
+  test('view morphs retain paused tracer resources and policy while presenting only raster frames', async () => {
+    const value = runtime();
+    const retained = retainedPath(value, { paused: true });
+    value.renderState = { ...value.renderState, pathStatus: 'paused' };
+    const original = value.camera.position.clone();
+    value.setRasterOnly(true);
+    value.camera.position.x += 3;
+    await value.frame(1000);
+    expect(value.currentRenderer.render).toHaveBeenCalledOnce();
+    expect(retained.updateCamera).not.toHaveBeenCalled();
+    expect(retained.present).not.toHaveBeenCalled();
+    expect(retained.renderSample).not.toHaveBeenCalled();
+    expect(value.renderState.mode).toBe('pathtrace');
+    expect(value.renderState.pathStatus).toBe('paused');
+    await expect(value.capturePNG()).rejects.toThrow('render.notReady');
+    value.camera.position.copy(original);
+    value.setRasterOnly(false);
+    await value.frame(1500);
+    expect(retained.present).toHaveBeenCalledOnce();
+    expect(retained.updateCamera).not.toHaveBeenCalled();
+    expect(retained.dispose).not.toHaveBeenCalled();
+    expect(retained.getStats().samples).toBe(16);
+  });
+
+  test('settled morph camera resets paused samples and presents a raster fallback with no extra RAF', async () => {
+    const value = runtime();
+    const retained = retainedPath(value, { paused: true });
+    value.setRasterOnly(true);
+    value.camera.position.x += 3;
+    await value.frame(1000);
+    value.setRasterOnly(false);
+    requestFrame.mockClear();
+    await value.frame(1500);
+    expect(retained.updateCamera).toHaveBeenCalledOnce();
+    expect(retained.getStats().samples).toBe(0);
+    expect(retained.present).not.toHaveBeenCalled();
+    expect(retained.renderSample).not.toHaveBeenCalled();
+    expect(value.currentRenderer.render).toHaveBeenCalledTimes(2);
+    expect(requestFrame).not.toHaveBeenCalled();
+  });
+
+  test('same-size activation preserves the canvas, post buffers and paused trace samples', async () => {
+    const value = runtime();
+    value.resizeBuffers(800, 600, 1);
+    await value.frame(0);
+    const retained = retainedPath(value, { paused: true });
+    const setSize = vi.fn();
+    value.postProcessing = {
+      state: { ...value.renderState.postProcessing, history: 'stable' },
+      render: vi.fn(() => false),
+      update: vi.fn(),
+      setSize,
+      invalidateHistory: vi.fn(),
+      dispose: vi.fn(),
+    };
+    value.currentRenderer.setSize.mockClear();
+    value.setActive(false);
+    value.setActive(true);
+    value.resizeBuffers(800, 600, 1);
+    value.resizeBuffers(800, 600, 1);
+    expect(value.currentRenderer.setSize).not.toHaveBeenCalled();
+    expect(setSize).not.toHaveBeenCalled();
+    expect(retained.reset).not.toHaveBeenCalled();
+    expect(retained.getStats().samples).toBe(16);
+    await value.frame(1000);
+    expect(retained.present).toHaveBeenCalledOnce();
+    expect(retained.renderSample).not.toHaveBeenCalled();
+    value.dispose();
+  });
+
+  test.each(['size', 'dpi'] as const)(
+    'a changed %s clears accumulation once and uses raster for a paused zero-sample trace',
+    async (change) => {
+      const value = runtime();
+      value.resizeBuffers(800, 600, 1);
+      const retained = retainedPath(value, { paused: true });
+      const width = change === 'size' ? 1000 : 800;
+      const ratio = change === 'dpi' ? 2 : 1;
+      value.currentRenderer.setSize.mockClear();
+      value.resizeBuffers(width, 600, ratio);
+      value.resizeBuffers(width, 600, ratio);
+      expect(value.currentRenderer.setSize).toHaveBeenCalledExactlyOnceWith(width, 600, false);
+      expect(value.currentRenderer.getPixelRatio()).toBe(ratio);
+      expect(retained.reset).toHaveBeenCalledOnce();
+      requestFrame.mockClear();
+      await value.frame(1000);
+      expect(value.currentRenderer.render).toHaveBeenCalledExactlyOnceWith(
+        value.scene,
+        value.camera,
+      );
+      expect(retained.present).not.toHaveBeenCalled();
+      expect(retained.renderSample).not.toHaveBeenCalled();
+      expect(requestFrame).not.toHaveBeenCalled();
+      expect(value.frameCount).toBe(1);
+      value.dispose();
+    },
+  );
+
+  test('a replacement renderer still allocates matching-size buffers instead of using its predecessor cache', async () => {
+    const value = runtime();
+    value.resizeBuffers(800, 600, 1);
+    const next = fakeRenderer();
+    createRenderer.mockResolvedValue(next);
+    value.resize.mockImplementation(() => value.resizeBuffers(800, 600, 1));
+    expect(await value.setRendererBackend('webgpu')).toBe(true);
+    expect(next.setSize).toHaveBeenCalledExactlyOnceWith(800, 600, false);
+    value.resizeBuffers(800, 600, 1);
+    expect(next.setSize).toHaveBeenCalledOnce();
+    value.dispose();
+  });
+
+  test('a resized unpaused tracer presents raster before awaiting the next expensive sample', async () => {
+    const value = runtime();
+    value.resizeBuffers(800, 600, 1);
+    await value.frame(0);
+    const path = retainedPath(value, { paused: false, complete: false });
+    const sample = deferred<boolean>();
+    path.renderSample.mockReturnValue(sample.promise);
+    value.currentRenderer.render.mockClear();
+    value.resizeBuffers(1000, 600, 1);
+    requestFrame.mockClear();
+    await value.frame(1000);
+    expect(value.currentRenderer.render).toHaveBeenCalledExactlyOnceWith(value.scene, value.camera);
+    expect(path.renderSample).not.toHaveBeenCalled();
+    expect(path.present).not.toHaveBeenCalled();
+    expect(requestFrame).toHaveBeenCalledOnce();
+    const sampling = value.frame(1016);
+    expect(path.renderSample).toHaveBeenCalledOnce();
+    expect(value.frameInProgress).toBe(true);
+    expect(value.currentRenderer.render).toHaveBeenCalledOnce();
+    sample.resolve(false);
+    await sampling;
+    expect(value.frameInProgress).toBe(false);
+    expect(requestFrame).toHaveBeenCalledOnce();
+    value.dispose();
+  });
+  test('hidden formal updates defer path rebuilds and GPU frames until reactivation', async () => {
+    const value = runtime();
+    const renderer = value.renderer;
+    const retained = retainedPath(value);
+    value.setActive(false);
+    value.markPathDirty();
+    value.markPathDirty();
+    await vi.advanceTimersByTimeAsync(1000);
+    await value.frame(1000);
+    expect(buildBuilding).not.toHaveBeenCalled();
+    expect(renderer.render).not.toHaveBeenCalled();
+    expect(retained.renderSample).not.toHaveBeenCalled();
+    expect(retained.dispose).not.toHaveBeenCalled();
+    expect(requestFrame).not.toHaveBeenCalled();
+    await expect(value.capturePNG()).rejects.toThrow('render.notReady');
+    const replacement = allocatedPath();
+    buildBuilding.mockReturnValue({
+      root: new THREE.Group(),
+      resources: { ready: async () => {} },
+      dispose: vi.fn(),
+    });
+    createPath.mockResolvedValue(replacement);
+    value.setActive(true);
+    await vi.advanceTimersByTimeAsync(200);
+    expect(buildBuilding).toHaveBeenCalledExactlyOnceWith(value.previous);
+    expect(value.renderer).toBe(renderer);
+    expect(value.path).toBe(replacement);
+    expect(retained.dispose).toHaveBeenCalledOnce();
+    expect(requestFrame).toHaveBeenCalledOnce();
+    value.dispose();
+  });
+
+  test('deactivating during clean-scene decoding releases stale allocations before creating a tracer', async () => {
+    const value = runtime();
+    const pending = deferred<void>();
+    const dispose = vi.fn();
+    buildBuilding.mockReturnValue({
+      root: new THREE.Group(),
+      resources: { ready: () => pending.promise },
+      dispose,
+    });
+    const starting = value.setPathTracing(true);
+    expect(buildBuilding).toHaveBeenCalledOnce();
+    value.setActive(false);
+    pending.resolve();
+    await starting;
+    expect(createPath).not.toHaveBeenCalled();
+    expect(dispose).toHaveBeenCalledOnce();
+    expect(value.pathDirty).toBe(true);
+    expect(value.path).toBeNull();
+    expect(requestFrame).not.toHaveBeenCalled();
+    value.dispose();
+  });
   test.each(['stale', 'failed'] as const)(
     'a %s asynchronous path allocation releases every pending owner when its tracer cleanup fails',
     async (outcome) => {
@@ -500,6 +720,7 @@ describe('production render owners with owned allocation fakes (no GPU claim)', 
       start: vi.fn(async (_scene: THREE.Scene, _camera: THREE.Camera) => {}),
       setMaxSamples: vi.fn(),
       pause: vi.fn(),
+      reset: vi.fn(),
       dispose: vi.fn(),
       updateCamera: vi.fn(),
       renderSample: vi.fn(async () => false),
@@ -825,6 +1046,7 @@ describe('production render owners with owned allocation fakes (no GPU claim)', 
           start: vi.fn(async (_scene: THREE.Scene, _camera: THREE.Camera) => {}),
           setMaxSamples: vi.fn(),
           pause: vi.fn(),
+          reset: vi.fn(),
           dispose: vi.fn(),
           updateCamera: vi.fn(),
           renderSample: vi.fn(async () => false),
@@ -1237,10 +1459,11 @@ describe('production render owners with owned allocation fakes (no GPU claim)', 
     expect(path.updateCamera).toHaveBeenCalledExactlyOnceWith(value.camera);
     expect(path.renderSample).not.toHaveBeenCalled();
     expect(value.currentRenderer.render).toHaveBeenCalledTimes(1);
-    expect(requestFrame).toHaveBeenCalledTimes(1);
+    expect(requestFrame).not.toHaveBeenCalled();
     await value.frame(1151);
-    expect(path.present).toHaveBeenCalledTimes(1);
-    expect(requestFrame).toHaveBeenCalledTimes(1);
+    expect(path.present).not.toHaveBeenCalled();
+    expect(value.currentRenderer.render).toHaveBeenCalledTimes(2);
+    expect(requestFrame).not.toHaveBeenCalled();
     await expect(value.capturePNG()).rejects.toThrow('render.notReady');
   });
 

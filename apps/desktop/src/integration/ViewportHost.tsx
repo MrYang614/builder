@@ -3,11 +3,13 @@ import { ThreeRuntime, isRenderErrorStatus } from '@building/three-runtime';
 import type { Command } from '@building/editor-core';
 import { viewportTokens } from '@building/ui/tokens';
 import { useTheme } from '@building/ui/theme';
-import { useEditor, useDocument, useSession } from '../app/services';
+import { useEditor, useDocument, useSession, useSignal } from '../app/services';
 import { useLanguage } from '../ui/i18n';
 export function ViewportHost() {
   const container = useRef<HTMLDivElement>(null);
   const services = useEditor();
+  const transition = useSignal(services.viewTransition);
+  const active = transition.phase === 'idle' && transition.visible === '3d';
   const { resolved } = useTheme();
   const { t } = useLanguage();
   const doc = useDocument(),
@@ -101,9 +103,17 @@ export function ViewportHost() {
     services.runtimeRef.current?.renderer.domElement.setAttribute('aria-label', t('viewportLabel'));
     services.runtimeRef.current?.setSession();
   }, [t, services]);
+  useLayoutEffect(() => {
+    if (transition.phase === 'idle') {
+      services.runtimeRef.current?.setActive(active);
+    }
+  }, [active, transition.phase, services]);
   return (
     <div
       className="viewport"
+      data-active={transition.visible === '3d'}
+      aria-hidden={!active}
+      inert={!active}
       ref={container}
       data-testid="viewport-host"
       aria-label={t('app')}
@@ -113,7 +123,8 @@ export function ViewportHost() {
         }
       }}
       onKeyDownCapture={(event) => {
-        if (event.target instanceof HTMLCanvasElement) {
+        // Escape cancels a pointer gesture; it must not promote it to keyboard-navigation focus.
+        if (event.key !== 'Escape' && event.target instanceof HTMLCanvasElement) {
           event.target.dataset.focusOrigin = 'keyboard';
         }
       }}

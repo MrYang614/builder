@@ -11,6 +11,8 @@ import {
   type ThreeRuntime,
   type RuntimeSession,
   type RendererBackend,
+  type PlanViewFraming,
+  type ViewTransitionPhase,
 } from '@building/three-runtime';
 import { translate } from '../ui/i18n';
 import { CommandGateway } from './command-gateway';
@@ -71,6 +73,24 @@ export function makeServices(initialError?: string) {
     };
   };
   const camera = new Signal<RuntimeSession['cameraMode']>('edit');
+  const viewMode = new Signal<'3d' | 'plan'>('3d');
+  // Only phase boundaries publish to React; camera and model animation frames stay in runtime.
+  const viewTransition = new Signal<{
+    phase: ViewTransitionPhase;
+    visible: '3d' | 'plan';
+  }>({ phase: 'idle', visible: '3d' });
+  let planFraming: (() => PlanViewFraming) | null = null;
+  /** Registers the mounted SVG camera reader without publishing local pointer updates globally. */
+  const attachPlanFraming = (reader: () => PlanViewFraming) => {
+    planFraming = reader;
+    return () => {
+      if (planFraming === reader) {
+        planFraming = null;
+      }
+    };
+  };
+  const planFocus = new Signal<'level' | 'origin' | 'selected' | 'duplicate'>('level');
+  const planPan = new Signal(false);
   // Registered before viewport listeners: undo, replace and level deletion also reconcile session IDs.
   core.subscribe(() => session.reconcile(core.getSnapshot()));
   const submit = (command: Command) => {
@@ -151,6 +171,12 @@ export function makeServices(initialError?: string) {
     runtimeRef,
     attachRuntime,
     camera,
+    viewMode,
+    viewTransition,
+    attachPlanFraming,
+    readPlanFraming: () => planFraming?.(),
+    planFocus,
+    planPan,
     submit,
     runtimeSession,
     select: (id: string | null, surface?: string) =>

@@ -53,6 +53,20 @@
 
 ## 当前补充要求与限制
 
+### SVG 2D 接入（2026-10-29 用户方案）
+
+本增量覆盖原 PRD 中不新增独立二维流程的旧范围约束；原始 A01–A42 条件保留。用户附件在 10.1 第一条中途截断，实施范围按可见的第 1–9 节及仓库规则确定。以下通过仅指纯模块／浏览器证据，不代表 Windows WebView 或 macOS 原生验收。参考 `packages/1.html` 的切换流程接入后单元 501／501、修正后切换浏览器 8／8、同轮平面回归 10／10；SVG 接入时相关 3D 浏览器 20／20、Rust 38／38。截图和报告保存在 `.test-artifacts/svg-plan/` 与 `.test-artifacts/view-transition-reference/`。
+
+| 要求 | 实现 | 测试与证据 | 状态 | 限制 |
+| --- | --- | --- | --- | --- |
+| 2D／3D 同一工程、命令、历史与稳定 Renderer | PlanView／PlanInteraction、CommandGateway、runtime.setActive | plan-view.browser、runtime-owner-cleanup／runtime-scheduler：跨视图属性同步、同 Canvas／Renderer、隐藏停止 RAF、恢复增量几何 | 验证通过 | 切换停止未提交手势与未完成门动画；浏览器与 owner 单测 |
+| 2D／3D 参考流程切换（2026-10-30） | RuntimeViewTransition：重合俯视淡入、420ms 后启动 1700ms 弧线抬升／模型生长；返回 1300ms 回转压平后淡出 450ms；忙时锁定、80ms 减少动态效果；当前平面窗口可见对象全高取景与临时阴影接收恢复 | view-transition.browser 修正后 8／8、runtime-view-transition／runtime-rendering：实际阶段与投影对齐、全高角点在视口内、数据／历史／Renderer 保持、GLB 全高、偏好变更取消；32 张双语双主题与最小窗口截图在 view-transition-reference/refined，Impeccable 发现的裁切／阴影条纹已修复 | 验证通过 | 原生 WebView／macOS、真实硬件连续帧率待验；软件 GPU 大窗口截图有捕获延迟，仅真实混合帧证明压平外观；当前无家具实例，家具独立生长阶段不适用 |
+| 墙、门窗、楼板的创建／拖动／尺寸编辑与拓扑拒绝 | Core tools／drag helpers、geometry plan footprint、共用 Inspector | plan-interaction／plan-geometry、plan-view.browser：一次拖动一条历史、取消不改文档、非法洞口保留原值、32 种门朝向／铰链几何比较 | 验证通过 | 同厚正交共线／L／T；单选、矩形楼板；T 纹理策略证据仍独立待验 |
+| 坐标、吸附、尺寸、当前楼层与导航 | CSS 像素统一转换、独立平面相机、缓存吸附候选 | plan-interaction：精确坐标、缩放锚点、Alt 旁路、隐藏／跨层过滤；plan-view.browser：平移缩放、楼层切换、聚焦／原点 | 验证通过 | 不重复应用 DPR；真实 DPI／触控板与大型场景性能待验 |
+| 复制／删除／撤销、保存重开与导出 | 原子复制命令、既有删除确认／项目／导出路径 | plan-view.browser：墙连宿主洞口复制、撤销；便携 `.building` 重开；GLB Validator 与动画断言 | 验证通过 | 使用浏览器文件路径；不是原生文件对话框验收 |
+| 双语双主题、最小窗口、两位读数与完整选项 | 语义 token、Numeric precision=2、SVG 独立辅助层 | plan-view.browser：中英×亮暗×1600／900×600、窄面板；截图／报告 `.test-artifacts/svg-plan/`，Impeccable detector 无发现 | 验证通过 | 原生字体、辅助技术仍待验；SVG 绘图区局部 ARIA lint 例外见 CODE-QUALITY |
+| 后续内容资产边界 | ARCHITECTURE：版本化资源与楼层实例、2D 符号／3D builder 约定 | 架构检查与现有 schema 不变 | 已实现未验证 | 第一阶段不接入家具／植物实例、分屏或自动房间，不提前迁移工程模型 |
+
 这些条目记录用户后续要求和当前边界，取代累计逐轮测试报告的做法；不把较早修订的全绿套件扩大为最新结果。
 
 | 要求 | 实现与测试入口 | 当前状态 | 范围与剩余工作 |
@@ -60,6 +74,7 @@
 | Nova 紧凑布局、两主题与离线字体 | App／WorkspacePanels、packages/ui；tests/redesign.browser.spec.ts、tests/header.browser.spec.ts | 验证通过 | 已有浏览器中英／亮暗与 900×600 布局、面板、Canvas／Renderer 保持验证；最新原生与系统字体／DPI 待验 |
 | 默认暗色和有效偏好保留 | HTML、ThemeProvider、平台设置与 Rust 迁移测试 | 验证通过 | 缺失／旧 system／无效值回退 dark；原生重启与首屏仍未完整验证 |
 | 简明中英文与局部控件宽度 | i18n、Floors／ToolOptions、panels.css；tests/slab-floor.browser.spec.ts、tests/redesign.browser.spec.ts | 验证通过 | 楼板用途 112px、数字 80px；选中值完整，允许不扰乱布局的自然换行；新增 UI 仍须实际中英文截图 |
+| Esc 取消不触发鼠标绘图区蓝框 | ViewportHost 排除 Escape 的键盘焦点升级；PlanView／plan.css 共享指针来源策略；tests/uiux.browser.spec.ts 聚焦 5／5，截图／报告在 `.test-artifacts/escape-focus/` | 验证通过 | 中英×亮暗×3D／2D×1600／900×600：鼠标 Esc 无边框、Tab／方向键提示保留、工具栏与输入焦点不转移、草稿取消不改文档／历史；不代替原生 Escape 验收 |
 | 小数输入最多两位 | Numeric precision=2、number-format；共享 inputs 和 numeric-display 测试 | 验证通过 | 新输入／粘贴四舍五入，IME 与中间态保留；通用组件缺省精度不变，领域范围继续由 Core 校验 |
 | 选点读数最多两位，正式精度保持 | runtime snapping、本地坐标 DOM；tests/numeric-display.browser.spec.ts | 验证通过 | 中英亮暗／1600 和 900 的实际鼠标与聚焦回归；显示和精确吸附不能静默改写正式数据 |
 | 相关编辑器 E2E | tests/snapping.browser.spec.ts 等相关 30 项 | 验证失败 | 29 通过／1 失败；光追采样两次在 10 秒后为 0，预期至少 1，原因未定。不得改限时或用历史通过覆盖 |

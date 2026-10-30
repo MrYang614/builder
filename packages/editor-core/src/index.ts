@@ -6,4 +6,6 @@ export * from './session';
 export * from './tools';
 export * from './queries';
 export * from './snap';
+export * from './drag-anchor';
+export * from './drag-geometry';
 export { createWall as newWall, createSlab as newSlab, createOpening as newOpening } from './model';

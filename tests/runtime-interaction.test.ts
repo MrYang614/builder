@@ -140,6 +140,35 @@ function fixture(tool: RuntimeSession['tool'] = 'select') {
 }
 
 describe('runtime interaction ownership and formal preview isolation', () => {
+  test('inactive views discard capture and ignore input across session changes and renderer rebinding', () => {
+    const value = fixture();
+    const formal = value.core.getSnapshot();
+    value.canvas().dispatchEvent(pointer('pointerdown'));
+    value.canvas().dispatchEvent(pointer('pointermove', 0.05, 1));
+    expect(value.interaction.diagnostics().dragging).toBe(true);
+    value.interaction.setActive(false);
+    expect(value.canvas().captured.size).toBe(0);
+    expect(value.interaction.diagnostics().dragging).toBe(false);
+    expect(value.controls.enabled).toBe(false);
+    expect(value.interaction.listenerCount).toBe(1);
+    value.canvas().dispatchEvent(pointer('pointerup', 0.05, 1));
+    value.session.tool = 'wall';
+    value.interaction.setSession();
+    const canvas = value.replaceCanvas();
+    value.interaction.bindCanvas();
+    window.dispatchEvent(new Event('blur'));
+    canvas.dispatchEvent(pointer('pointerdown', 5, 5));
+    canvas.dispatchEvent(pointer('pointerdown', 9, 5));
+    expect(value.controls.enabled).toBe(false);
+    expect(value.core.getSnapshot()).toBe(formal);
+    expect(value.command).not.toHaveBeenCalled();
+    value.interaction.setActive(true);
+    expect(value.interaction.listenerCount).toBe(8);
+    canvas.dispatchEvent(pointer('pointerdown', 5, 5));
+    canvas.dispatchEvent(pointer('pointerdown', 9, 5));
+    expect(value.command).toHaveBeenCalledOnce();
+    expect(value.core.getSnapshot().walls).toHaveLength(2);
+  });
   test.each(['door', 'window'] as const)(
     '%s placement preserves the resolved raw offset when snapping is disabled or bypassed',
     (tool) => {

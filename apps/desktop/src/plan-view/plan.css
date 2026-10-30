@@ -1,0 +1,140 @@
+.plan-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--viewport-background);
+}
+.plan-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+.plan-canvas:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+.plan-canvas[data-focus-origin='pointer']:focus-visible {
+  outline: none;
+}
+.plan-canvas [data-object-id] {
+  cursor: pointer;
+}
+.plan-canvas [data-handle] {
+  cursor: crosshair;
+}
+.plan-canvas[data-panning='true'] {
+  cursor: grab;
+}
+.plan-canvas line,
+.plan-canvas polygon,
+.plan-canvas polyline,
+.plan-canvas circle {
+  vector-effect: non-scaling-stroke;
+}
+.plan-canvas text {
+  vector-effect: non-scaling-stroke;
+}
+.plan-grid {
+  stroke: var(--grid);
+  stroke-width: 0.5;
+}
+.plan-axis {
+  stroke: var(--muted-foreground);
+  stroke-width: 1;
+}
+.plan-slab {
+  fill: var(--muted);
+  stroke: var(--muted-foreground);
+  stroke-width: 1;
+}
+.plan-wall {
+  fill: var(--foreground);
+  stroke: none;
+}
+.plan-wall line {
+  stroke: var(--foreground);
+  stroke-width: 1;
+}
+.plan-wall .plan-hit {
+  stroke-width: 12;
+  stroke-opacity: 0;
+  pointer-events: stroke;
+}
+.plan-wall[data-selected='true'] {
+  fill: var(--selection);
+}
+.plan-opening {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-width: 1.5;
+}
+.plan-opening-gap {
+  fill: var(--viewport-background);
+}
+.plan-swing {
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}
+.plan-slab[data-selected='true'],
+.plan-opening[data-selected='true'] {
+  stroke: var(--selection);
+  stroke-width: 2;
+}
+.plan-selection {
+  fill: var(--selection);
+  stroke: var(--selection);
+}
+.plan-selection line {
+  stroke-dasharray: 5 4;
+  stroke-width: 1;
+  pointer-events: none;
+}
+.plan-selection circle {
+  fill: var(--background);
+  stroke-width: 2;
+}
+.plan-canvas text {
+  fill: var(--foreground);
+  stroke: var(--viewport-background);
+  stroke-width: 3px;
+  paint-order: stroke;
+  text-anchor: middle;
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
+.plan-draft {
+  fill: none;
+  stroke: var(--preview);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.plan-draft polygon {
+  fill: var(--accent);
+  fill-opacity: 0.6;
+}
+.plan-draft[data-valid='false'] {
+  stroke: var(--preview-invalid);
+}
+.plan-snap {
+  fill: var(--snap);
+  stroke: var(--background);
+  stroke-width: 1;
+  pointer-events: none;
+}
+.plan-help {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  left: 10px;
+  pointer-events: none;
+  text-align: right;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.plan-viewport .plan-readout {
+  bottom: 28px;
+}

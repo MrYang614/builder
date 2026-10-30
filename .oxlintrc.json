@@ -73,6 +73,7 @@
     "test-results/**",
     "playwright-report/**",
     "tests/artifacts/**",
+    "packages/1.html",
     "apps/desktop/src-tauri/gen/**",
     "apps/desktop/src-tauri/.webdriver/**"
   ]

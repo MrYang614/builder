@@ -96,3 +96,39 @@ test('disposing an in-flight frame suppresses both queued input and sampling con
   expect(cancel).not.toHaveBeenCalled();
   expect(scheduler.diagnostics()).toEqual({ frameCount: 0, pendingFrame: false });
 });
+
+test('a hidden viewport cancels queued frames and coalesces updates into one resumed draw', async () => {
+  const render = vi.fn(async () => ({ rendered: true, continueRendering: false }));
+  const scheduler = new RuntimeScheduler(render);
+  scheduler.invalidate();
+  scheduler.setActive(false);
+  scheduler.invalidate();
+  scheduler.invalidate();
+  expect(cancel).toHaveBeenCalledExactlyOnceWith(1);
+  await run();
+  expect(render).not.toHaveBeenCalled();
+  expect(scheduler.diagnostics()).toEqual({ frameCount: 0, pendingFrame: false });
+  scheduler.setActive(true);
+  scheduler.setActive(true);
+  expect(request).toHaveBeenCalledTimes(2);
+  await run();
+  expect(render).toHaveBeenCalledOnce();
+  expect(scheduler.diagnostics()).toEqual({ frameCount: 1, pendingFrame: false });
+});
+
+test('suspending an awaited GPU frame suppresses continuation until the viewport is active', async () => {
+  const pending = deferred();
+  const render = vi.fn(() => pending.promise);
+  const scheduler = new RuntimeScheduler(render);
+  scheduler.invalidate();
+  const running = run();
+  scheduler.setActive(false);
+  scheduler.invalidate();
+  pending.resolve({ rendered: true, continueRendering: true });
+  await running;
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(scheduler.diagnostics().pendingFrame).toBe(false);
+  scheduler.setActive(true);
+  expect(request).toHaveBeenCalledTimes(2);
+  scheduler.dispose();
+});

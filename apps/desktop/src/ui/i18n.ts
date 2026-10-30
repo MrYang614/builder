@@ -1,6 +1,7 @@
 import { extraMessages } from './errors';
 import { renderMessages } from './render-messages';
 import { editingMessages } from './editing-messages';
+import { planMessages } from '../plan-view/messages';
 export type Language = 'en' | 'zh-CN';
 const en = {
   app: 'Building editor',
@@ -442,6 +443,7 @@ export function translate(
 ) {
   const map = lang === 'en' ? en : zh;
   let text =
+    planMessages[lang][key] ??
     renderMessages[lang][key] ??
     extraMessages[lang][key] ??
     editingMessages[lang][key] ??
@@ -455,12 +457,14 @@ export function translate(
 export { LanguageProvider, useLanguage, useOptionalLanguage } from './language-context';
 export const languageKeys = {
   en: [
+    ...Object.keys(planMessages.en),
     ...Object.keys(en),
     ...Object.keys(extraMessages.en),
     ...Object.keys(renderMessages.en),
     ...Object.keys(editingMessages.en),
   ],
   zh: [
+    ...Object.keys(planMessages['zh-CN']),
     ...Object.keys(zh),
     ...Object.keys(extraMessages['zh-CN']),
     ...Object.keys(renderMessages['zh-CN']),

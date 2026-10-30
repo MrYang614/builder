@@ -33,6 +33,7 @@ export class RuntimePathTracing {
   private pathCameraKey = '';
   private lastSamplePublish = 0;
   private disposed = false;
+  private viewportActive = true;
 
   constructor(
     private readonly scene: THREE.Scene,
@@ -48,6 +49,9 @@ export class RuntimePathTracing {
   }
   get samples(): number {
     return this.path?.getStats().samples ?? 0;
+  }
+  get paused(): boolean {
+    return this.path?.getStats().paused ?? this.pathPaused;
   }
 
   private cameraSignature(): string {
@@ -160,6 +164,23 @@ export class RuntimePathTracing {
     this.path?.pause(paused);
   }
 
+  /** Defers hidden-view rebuilds and rejects pending allocations without releasing a retained tracer. */
+  setActive(active: boolean): void {
+    if (this.disposed || this.viewportActive === active) {
+      return;
+    }
+    this.viewportActive = active;
+    if (!active) {
+      this.pathRequest++;
+      if (this.pathTimer !== null) {
+        clearTimeout(this.pathTimer);
+        this.pathTimer = null;
+      }
+    } else if (this.pathDirty) {
+      this.markDirty();
+    }
+  }
+
   /** Coalesces formal edits without rebuilding the clean geometry on pointer previews. */
   markDirty(): void {
     if (this.hooks.state().mode !== 'pathtrace' || this.disposed) {
@@ -170,6 +191,10 @@ export class RuntimePathTracing {
     const request = ++this.pathRequest;
     if (this.pathTimer !== null) {
       clearTimeout(this.pathTimer);
+      this.pathTimer = null;
+    }
+    if (!this.viewportActive) {
+      return;
     }
     this.pathTimer = setTimeout(() => {
       this.pathTimer = null;
@@ -182,6 +207,7 @@ export class RuntimePathTracing {
   private async rebuild(request: number): Promise<void> {
     if (
       this.disposed ||
+      !this.viewportActive ||
       this.hooks.state().mode !== 'pathtrace' ||
       this.hooks.state().environmentLoading
     ) {
@@ -203,6 +229,10 @@ export class RuntimePathTracing {
       const renderer = this.hooks.renderer();
       built = buildBuilding(snapshot);
       await built.resources.ready();
+      if (this.disposed || !this.viewportActive || request !== this.pathRequest) {
+        cleanupAfterFailure(releasePending);
+        return;
+      }
       const scene = new THREE.Scene();
       scene.add(built.root);
       for (const light of this.scene.children) {
@@ -226,13 +256,22 @@ export class RuntimePathTracing {
       }
       scene.background ??= new THREE.Color().setScalar(0.12);
       const { PathTraceSession } = await import('./pathtracing');
+      if (this.disposed || !this.viewportActive || request !== this.pathRequest) {
+        cleanupAfterFailure(releasePending);
+        return;
+      }
       path = await PathTraceSession.create(renderer, {
         maxSamples: this.hooks.state().targetSamples,
       });
+      if (this.disposed || !this.viewportActive || request !== this.pathRequest) {
+        cleanupAfterFailure(releasePending);
+        return;
+      }
       await path.start(scene, this.camera);
       const current = this.hooks.document();
       if (
         this.disposed ||
+        !this.viewportActive ||
         request !== this.pathRequest ||
         renderer !== this.hooks.renderer() ||
         snapshot.id !== current.id ||

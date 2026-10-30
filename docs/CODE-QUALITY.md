@@ -57,7 +57,11 @@ React refs／immutability／exhaustive-deps均保持启用。渲染期间写ref�
 
 ## 格式化排除
 
+SVG `PlanView` 的 `role=application` 绘图区局部豁免 `jsx-a11y/no-noninteractive-element-interactions` 和 `no-noninteractive-tabindex`：它需要可聚焦的 SVG 指针捕获及 Escape／复制快捷键，不能伪装成按钮或表格。对象树与 Numeric 属性面板保留等价选中／编辑入口；豁免只包围该 SVG，不关闭文件或项目规则。
+
 第三方Skills有固定SHA256，token CSS与生成器逐字比较，原始PRD和验收表的42行条件精确校验。故排除 `.agents`、生成CSS、原文两份Markdown、测试／构建产物、Tauri生成schema、示例source JSON及锁文件；源token JSON、实际源码和测试仍在检查中。导入、Tailwind类与package.json不自动排序，保留副作用导入及数据键顺序。完整列表在 `.oxfmtrc.json` 和 `.oxlintrc.json`。
+
+用户提供的 `packages/1.html` 是 2D／3D 动效参考原件，不属于应用源码或构建入口；格式化与 lint 排除该文件以保留原始内容。接入后的 TypeScript／CSS 实现仍执行全部质量检查。
 
 ## 日常命令与CI
 

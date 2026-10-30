@@ -245,4 +245,21 @@ describe('door playback ownership after runtime composition', () => {
     expect(command).not.toHaveBeenCalled();
     expect(owner.snapshot()).toBe(core.getSnapshot());
   });
+
+  test('hiding the viewport restores formal door poses without delayed playback commits', () => {
+    const { core, door, owner, building, command } = animations();
+    vi.spyOn(performance, 'now').mockReturnValue(100);
+    const formal = core.getSnapshot();
+    owner.animate(door.id, 90);
+    owner.advance(100 + door.duration * 500);
+    const pivot = building.get(door.id)!.root.getObjectByName(`HingePivot_${door.id}`)!;
+    expect(Math.abs(pivot.rotation.y)).toBeCloseTo(Math.PI / 4);
+    owner.cancel();
+    expect(pivot.rotation.y).toBeCloseTo(0);
+    expect(owner.active).toBe(false);
+    owner.advance(100 + door.duration * 2000);
+    expect(owner.snapshot()).toBe(formal);
+    expect(core.getSnapshot()).toBe(formal);
+    expect(command).not.toHaveBeenCalled();
+  });
 });

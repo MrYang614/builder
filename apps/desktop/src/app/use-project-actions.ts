@@ -204,6 +204,10 @@ export function useProjectActions({
         return;
       }
       e.preventDefault();
+      // The reference view sequence owns input until the camera and model have settled.
+      if (services.viewTransition.get().phase !== 'idle') {
+        return;
+      }
       if (
         (intent === 'undo' || intent === 'redo') &&
         services.session.getSnapshot().wholeBuildingPreview
